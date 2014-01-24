@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <link rel="stylesheet" href="/css/main.css">
+        <title>
+            <%- @title %>
+        </title>
+    </head>
+    
+    <body>
+        <header>
+            <nav class="navbar navbar-primary navbar-fixed-top">
+                <div id="menu">
+                    <% content 'navbar' %>
+                </div>
+            </nav>
+        </header>
+        <div id="main">
+            <% content %>
+        </div>
+    </body>
+
+</html>
