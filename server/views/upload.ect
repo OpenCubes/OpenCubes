@@ -1,0 +1,57 @@
+<% extend 'layout.ect' %>
+    <form class="form-horizontal col-md-10" method="post">
+        <fieldset class="col-md-10">
+            <!-- Form Name -->
+            <legend>Upload a new mod</legend>
+            <!-- Text input-->
+            <% if @hasError : %>
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Incorrect username of password</h3>
+                    </div>
+                </div>
+            <% end %>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="name">Name</label>
+                    <div class="col-md-6">
+                        <input id="name" name="name" placeholder="Name your mod" class="form-control input-md"
+                        required="" type="text">
+                    </div>
+                </div>
+                <!-- Textarea -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="summary">Summary</label>
+                    <div class="col-md-6">
+                        <textarea class="form-control" id="summary" name="summary"></textarea>
+                    </div>
+                </div>
+                <!-- Textarea -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="description">Description</label>
+                    <div class="col-md-6">
+                        <textarea class="form-control" id="description" name="description"></textarea>
+                    </div>
+                </div>
+                <!-- Multiple Checkboxes -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="published"></label>
+                    <div class="col-md-6">
+                        <div class="checkbox">
+                            <label for="published-0">
+                                <input name="published" id="published-0" value="true" type="checkbox">Do not publish this mod immediatly</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="submit"></label>
+                    <div class="col-md-6">
+                        <input type="submit" id="submit" name="submit" class="btn btn-success"
+                        value="Submit" />
+                    </div>
+                </div>
+        </fieldset>
+    </form>
+    <% block 'navbar' : %>
+        <% include 'main-nav.ect'%>
+            <% end %>

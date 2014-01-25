@@ -2,14 +2,5 @@
 	<h1>Hello, world!</h1>
 	
 <% block 'navbar' : %>
-
-<div id="main-nav">
-    <a href="/browse" data-icon="home">Home</a>
-    <a href="/add" data-icon="O">Search</a>
-    <a href="/upload" data-icon="upload">Add mod</a>
-</div>
-<div id="user">
-    <a href="/register" data-icon="user">Register</a>
-    <a id="login" href="/login" title="" onclick="return false">Login</a>
-</div>
+<% include 'main-nav.ect'%>
 <% end %>
