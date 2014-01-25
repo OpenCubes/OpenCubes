@@ -4,20 +4,20 @@ var ModSchema = mongoose.Schema({
 
     name: String,
     version: String,
-    author: {
+    /*author: {
         type: Schema.Types.ObjectId,
         ref: 'userauths'
-    },
+    },*/
     summary: String,
     body: String,
     logo: String,
     dl_id: String,
     creation_date: Date,
     lmodified_date: Date,
-    category_id: {
+    /*category_id: {
         type: Schema.Types.ObjectId,
         ref: 'categories'
-    },
+    },*/
    // voters: [starSchema],
     vote_count: Number,
     //versions: [versionSchema],
@@ -39,8 +39,8 @@ ModSchema.statics = {
      */
 
     load: function(data, cb) {
-        var query = object.find(null);
-        query.populate('category_id').populate('author', 'username _id').select('name summary category_id creation_date _id slug');
+        var query = this.findOne(data);
+       // query.populate('category_id').populate('author', 'username _id').select('name summary category_id creation_date _id slug');
         query.exec(cb);
     },
 

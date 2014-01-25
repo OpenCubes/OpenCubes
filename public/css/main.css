@@ -375,15 +375,14 @@ aside .current {
   margin: 20px 0 20px 0;
   color: #1e1f1b;
 }
-.meta .logo {
-  float: left;
-}
-.meta .logo img {
+.meta .mod_logo {
   height: 100px;
   width: 100px;
+  float: left;
+  margin: 10px;
 }
 .meta .title {
-  font-size: 24px;
+  font-size: 28px;
 }
 .meta .stats {
   margin-top: 15px;
@@ -396,18 +395,6 @@ aside .current {
   display: block;
   margin-left: 10px;
 }
-fieldset {
-  border: none;
-  width: 320px;
-}
-legend {
-  font-size: 18px;
-  margin: 0px;
-  padding: 10px 0px;
-  color: #b0232a;
-  font-weight: bold;
-}
-label {
-  display: block;
-  margin: 15px 0 5px;
+.main-desc {
+  margin-top: 80px;
 }
