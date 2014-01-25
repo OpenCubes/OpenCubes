@@ -18,12 +18,12 @@ exports.index = function(req, res) {
         page: page
     };
 
-    Mod.list(options, function(err, articles) {
+    Mod.list(options, function(err, mods) {
         if (err) return res.render('500');
         Mod.count().exec(function(err, count) {
-            res.render('articles/index', {
-                title: 'Articles',
-                articles: articles,
+            res.render('../views/index.ect', {
+                title: 'Mods - OpenCubes',
+                mods: mods,
                 page: page + 1,
                 pages: Math.ceil(count / perPage)
             });
