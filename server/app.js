@@ -1,6 +1,6 @@
 String.prototype.getParent = function() {
     return this.toString().substring(0, this.toString().lastIndexOf('/'));
-}
+};
 var app = {
     controllers: {},
     models: {},
@@ -12,7 +12,7 @@ var app = {
         var path = require('path');
         var config = require('./config');
         var router = require('./router');
-        var fs = require('fs')
+        var fs = require('fs');
         var ECT = require('ect');
         var lessMiddleware = require('less-middleware');
 
@@ -60,18 +60,18 @@ var app = {
 
         var timer2 = new Date().getTime();
         // Bootstrap models
-        var models_path = __dirname + '/models'
+        var models_path = __dirname + '/models';
         fs.readdirSync(models_path).forEach(function(file) {
-            if (~file.indexOf('.js')) require(models_path + '/' + file)
-        })
+            if (~file.indexOf('.js')) require(models_path + '/' + file);
+        });
         // Bootstrap models
-        var controllers_path = __dirname + '/controllers'
+        var controllers_path = __dirname + '/controllers';
         fs.readdirSync(controllers_path).forEach(function(file) {
             if (~file.indexOf('.js')) {
                 //  console.log(file.slice(0,-3));
-                app.controllers[file.slice(0, - 3)] = require(controllers_path + '/' + file)
+                app.controllers[file.slice(0, - 3)] = require(controllers_path + '/' + file);
             }
-        })
+        });
 
         console.log(('  Debug - Bootstraping took ' + (new Date().getTime() - timer2) + ' ms').cyan);
 
