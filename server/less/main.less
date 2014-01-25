@@ -325,15 +325,16 @@ aside {
 .meta {
     margin: 20px 0 20px 0;
     color: @text_color;
-    .logo {
-        float: left;
-        img {
+    .mod_logo {
         height: 100px;
         width: 100px;
-        }
+        
+        float: left;
+        margin: 10px;
     }
     .title {
-        font-size: 24px;
+        font-size: 28px;
+        
     }
     .stats {
         margin-top: 15px;
@@ -347,25 +348,6 @@ aside {
         }
     }
 }
-fieldset {
-    border:none;
-    width:320px;
+.main-desc {
+    margin-top: 80px;
 }
-legend {
-    font-size:18px;
-    margin:0px;
-    padding:10px 0px;
-    color:#b0232a;
-    font-weight:bold;
-}
-label {
-    display:block;
-    margin:15px 0 5px;
-}
-.highcontrast (@a) when (lightness(@a) >= 50%) {
-  background-color: black;
-}
-.highcontrast (@a) when (lightness(@a) < 50%) {
-  background-color: white;
-}
-

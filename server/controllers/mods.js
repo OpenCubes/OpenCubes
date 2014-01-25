@@ -1,13 +1,13 @@
 var mongoose = require('mongoose'),
-    Mod = mongoose.model('Mod');
+    Mod = mongoose.model('Mod'),
+    marked = require('marked');
 
-exports.load = function(req, res, next, id) {
-
-    Mod.load(id, function(err, mod) {
-        if (err) return next(err);
-        if (!mod) return next(new Error('not found'));
-        req.mod = mod;
-        next();
+exports.view = function(req, res) {
+    Mod.load({_id: req.params['id']}, function(err, mod) {
+        if (err) return res.send(err);
+        if (!mod) return res.send('Not found');
+        mod.htmlbody = marked(mod.body);
+        res.render('../views/view.ect', {mod: mod});
     });
 };
 exports.index = function(req, res) {
@@ -34,16 +34,13 @@ exports.upload = function(req, res) {
     res.render('../views/upload.ect');
 };
 exports.doUpload = function(req, res) {
-    console.log('Received');
     var mod = new Mod({
         name: req.body.name,
         summary: req.body.summary,
         body: req.body.description
     });
-    console.log('Saving');
     mod.save(function(err, doc) {
 
-        console.log('Saved (or not)');
         if (err) {
             res.render('../views/upload.ect', {
                 hasError: true
