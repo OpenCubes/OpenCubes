@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
     marked = require('marked');
 
 exports.view = function(req, res) {
-    Mod.load({_id: req.params['id']}, function(err, mod) {
+    Mod.load({_id: req.params.id}, function(err, mod) {
         if (err) return res.send(err);
         if (!mod) return res.send('Not found');
         mod.htmlbody = marked(mod.body);
