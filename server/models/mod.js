@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
+var slug = require('mongoose-slug');
 var ModSchema = mongoose.Schema({
 
     name: String,
@@ -21,12 +22,11 @@ var ModSchema = mongoose.Schema({
    // voters: [starSchema],
     vote_count: Number,
     //versions: [versionSchema],
-    slug: String
 
 });
 ModSchema.path('name').required(true, 'Article title cannot be blank');
 ModSchema.path('body').required(true, 'Article body cannot be blank');
-
+ModSchema.plugin(slug('name'));
 
 ModSchema.statics = {
 

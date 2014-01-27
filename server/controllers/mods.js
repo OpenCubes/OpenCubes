@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
 
 exports.view = function(req, res) {
     Mod.load({
-        _id: req.params.id
+        slug: req.params.id
     }, function(err, mod) {
         if (err || !mod) {
             res.reason = 'Mod not found';
