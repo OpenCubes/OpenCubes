@@ -15,6 +15,7 @@ var app = {
         var fs = require('fs');
         var ECT = require('ect');
         var lessMiddleware = require('less-middleware');
+        var utils = require('./controllers/utils.js');
 
         require('colors');
         console.log(('  Debug - Loading dependencies took ' + (new Date().getTime() - timer) + ' ms').cyan);
@@ -56,29 +57,7 @@ var app = {
 
             server.use(express.static(path.join(__dirname.getParent(), 'public')));
             server.use(server.router);
-            server.use(function(req, res, next) {
-                res.status(404);
-            
-                // respond with html page
-                if (req.accepts('html')) {
-                    res.render('utils/404.ect', {
-                        url: req.url,
-                        title: '404 Not found'
-                    });
-                    return;
-                }
-            
-                // respond with json
-                if (req.accepts('json')) {
-                    res.send({
-                        error: 'Not found'
-                    });
-                    return;
-                }
-            
-                // default to plain-text. send()
-                res.type('txt').send('Not found');
-            });
+            server.use(utils.notfound);
 
             // development only
             if ('development' == server.get('env')) {

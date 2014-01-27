@@ -1,20 +1,30 @@
 <% extend './layout.ect' %>
     <div class="page-header">
-        <img class="pull-left img-circle" src="/images/404.jpg" style="height: 100px;width: 100px;">
-        <h1>  Why, is it lost?</h1>
+        <img class="pull-left img-circle" src="/images/these_are_not_the_droids.jpg" style="height: 100px;width: 100px;" />
+       
+        <h1>This is not the page you are looking for.<br /> <small>404 not found</small></h1>
     </div>
-    <br />
     <h3>
-         - Yes, yes, and I want to get unlost as soon as possible.
-    </h3>
-    <h3>
-         - Ooh! We knows! We knows safe paths for users. Safe paths on the web. Go <a href="/">this way</a>, yes my precious
-    </h3>
-    <h3>
+    <p>
+        
+        This is not the page we are looking for,
+    </p><p>
+        
+        Let's <a href="#" onclick="history.go(-1)">go back!</a>
+    </p>
+        We have to <a href="/">go home</a>
+  
     </h3>
     <hr />
     <br />
     <h3>
-        The url <code><%- @url %></code> can't be found. If you think it's a bug, please contact us 
+       You failed! This is indeed the page I am looking for; let's <a href="//github.com/CraftYourModCorporation/OpenCubes/issues"> tell it</a>
+    </h3>
+    <br />
+    <hr />
+    <h3>
+    <strong>Info:</strong><br />
+        The url <code><%- @url %></code> can't be found. <br />
+        Reason: <code><%- @reason %></code>
     </h3>
     

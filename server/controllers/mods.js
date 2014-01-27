@@ -1,13 +1,20 @@
 var mongoose = require('mongoose'),
     Mod = mongoose.model('Mod'),
-    marked = require('marked');
+    marked = require('marked'),
+    utils = require('./utils');
 
 exports.view = function(req, res) {
-    Mod.load({_id: req.params.id}, function(err, mod) {
-        if (err) return res.send(err);
-        if (!mod) return res.send('Not found');
+    Mod.load({
+        _id: req.params.id
+    }, function(err, mod) {
+        if (err || !mod) {
+            res.reason = 'Mod not found';
+            return utils.notfound(req, res, function() {});
+        }
         mod.htmlbody = marked(mod.body);
-        res.render('../views/view.ect', {mod: mod});
+        res.render('../views/view.ect', {
+            mod: mod
+        });
     });
 };
 exports.index = function(req, res) {
