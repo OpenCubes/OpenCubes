@@ -1,7 +1,8 @@
 var mongoose = require('mongoose'),
     Mod = mongoose.model('Mod'),
     marked = require('marked'),
-    utils = require('./utils');
+    utils = require('./utils'),
+    paginator = require('../paginator.js');
 
 exports.view = function(req, res) {
     Mod.load({
@@ -19,7 +20,7 @@ exports.view = function(req, res) {
 };
 exports.index = function(req, res) {
     var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
-    var perPage = 30;
+    var perPage = 2;
     var options = {
         perPage: perPage,
         page: page
@@ -33,7 +34,13 @@ exports.index = function(req, res) {
                 title: 'Mods - OpenCubes',
                 mods: mods,
                 page: page + 1,
-                pages: Math.ceil(count / perPage)
+                pages: Math.ceil(count / perPage),
+                pagination: paginator.create('search', {prelink:'/', current: page + 1, rowsPerPage: perPage, totalResult: count/*, translator: function () {
+                    return {
+                        'PREVIOUS': '&laquo;',
+                        'NEXT': '&raquo;'
+                    }
+                }*/}).render()
             });
         });
     });
