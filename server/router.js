@@ -23,6 +23,7 @@ module.exports = function(app) {
         })(req, res, next);
     });
     app.server.get('/signup', app.controllers.users.signup);
+    app.server.get('/user/:name', app.controllers.users.show);
     app.server.post('/signup', app.controllers.users.create);
     app.server.post('/upload', auth.requiresLogin, app.controllers.mods.doUpload);
     app.server.get('/logout', function(req, res) {

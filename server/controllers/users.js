@@ -3,8 +3,9 @@
  */
 
 var mongoose = require('mongoose'),
-    User = mongoose.model('User')
-    //  , utils = require('../../lib/utils');
+    User = mongoose.model('User'),
+    utils = require('./utils');
+//  , utils = require('../../lib/utils');
 
 var login = function(req, res) {
     var redirectTo = req.session.returnTo ? req.session.returnTo : '/';
@@ -89,11 +90,20 @@ exports.create = function(req, res, next) {
  */
 
 exports.show = function(req, res) {
-    var user = req.profile;
-    res.render('users/show', {
-        title: user.name,
-        user: user
-    });
+    User.findOne({
+        username: req.params.name
+    }).exec(function(err, user) {
+        if (err) return utils.notfound(req, res, function() {});
+        if (!user) {
+            req.reason = 'No user is called like that'
+            return utils.notfound(req, res, function() {});
+        }
+        res.render('users/user.ect', {
+            title: user.name,
+            user: user
+        });
+    })
+
 };
 
 /**
