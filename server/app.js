@@ -16,6 +16,8 @@ var app = {
         var ECT = require('ect');
         var lessMiddleware = require('less-middleware');
         var utils = require('./controllers/utils.js');
+        var flash = require('express-flash');
+        var passport = require('passport');
 
         require('colors');
         console.log(('  Debug - Loading dependencies took ' + (new Date().getTime() - timer) + ' ms').cyan);
@@ -23,6 +25,23 @@ var app = {
         var mongoose = require('mongoose');
         mongoose.connect(config.db_uri, config.db_opt, function(err) {
             if (err) return console.log(('  Error - Can\'t connect to mongodb').red);
+                        var timer2 = new Date().getTime();
+            // Bootstrap models
+            var models_path = __dirname + '/models';
+            fs.readdirSync(models_path).forEach(function(file) {
+                if (~file.indexOf('.js')) require(models_path + '/' + file);
+            });
+            // Bootstrap models
+            var controllers_path = __dirname + '/controllers';
+            fs.readdirSync(controllers_path).forEach(function(file) {
+                if (~file.indexOf('.js')) {
+                    //  console.log(file.slice(0,-3));
+                    app.controllers[file.slice(0, - 3)] = require(controllers_path + '/' + file);
+                }
+            });
+
+            console.log(('  Debug - Bootstraping took ' + (new Date().getTime() - timer2) + ' ms').cyan);
+
             var server;
             app.server = server = express();
 
@@ -36,6 +55,16 @@ var app = {
             server.use(express.methodOverride());
             server.use(express.cookieParser(config.securitySalt));
             server.use(express.session());
+            server.use(flash());
+            require('./passport')(passport, config);
+            // use passport session
+            server.use(passport.initialize());
+            server.use(passport.session());
+           server.use(function(req, res, next) {
+                res.locals.user = req.user;
+                next();
+            })
+            app.passport = passport;
 
             var ectRenderer = ECT({
                 watch: true,
@@ -64,24 +93,8 @@ var app = {
                 server.use(express.errorHandler());
             }
 
-            var timer2 = new Date().getTime();
-            // Bootstrap models
-            var models_path = __dirname + '/models';
-            fs.readdirSync(models_path).forEach(function(file) {
-                if (~file.indexOf('.js')) require(models_path + '/' + file);
-            });
-            // Bootstrap models
-            var controllers_path = __dirname + '/controllers';
-            fs.readdirSync(controllers_path).forEach(function(file) {
-                if (~file.indexOf('.js')) {
-                    //  console.log(file.slice(0,-3));
-                    app.controllers[file.slice(0, - 3)] = require(controllers_path + '/' + file);
-                }
-            });
-
-            console.log(('  Debug - Bootstraping took ' + (new Date().getTime() - timer2) + ' ms').cyan);
-
             router(app);
+
 
             http.createServer(server).listen(server.get('port'), function() {
                 console.log(('  Debug - Express server listening on port ' + server.get('port') + ' in ' + (new Date().getTime() - timer) + ' ms').green);

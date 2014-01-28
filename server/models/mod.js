@@ -5,10 +5,10 @@ var ModSchema = mongoose.Schema({
 
     name: String,
     version: String,
-    /*author: {
+    author: {
         type: Schema.Types.ObjectId,
-        ref: 'userauths'
-    },*/
+        ref: 'users'
+    },
     summary: String,
     body: String,
     logo: String,

@@ -10,12 +10,14 @@
     "ejs": "*",
     "less-middleware": "~0.1.15",
     "dot": "*",
-    "passport": "*",
+    "passport": "~0.2.0",
     "mongoose": "*",
     "ect": "~0.5.6",
     "colors": "~0.6.2",
     "marked": "~0.3.0",
-    "mongoose-slug": "~1.2.0"
+    "mongoose-slug": "~1.2.0",
+    "express-flash": "0.0.2",
+    "passport-local": "~0.1.6"
   },
   "devDependencies": {
     "grunt": "*",

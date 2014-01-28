@@ -4,6 +4,12 @@
     <a href="/upload" data-icon="upload">Add mod</a>
 </div>
 <div id="user">
+<%if !@user: %>
+
     <a href="/register" data-icon="user">Register</a>
-    <a id="login" href="/login" title="" onclick="return false">Login</a>
+    <a id="login" href="/login">Login</a>
+<% else :%>
+    <a href="/user" data-icon="user"><%- @user.username %></a>
+    <a id="login" href="/logout">Logout</a>
+<% end %>
 </div>

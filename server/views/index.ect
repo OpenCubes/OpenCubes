@@ -19,6 +19,7 @@
 </li>
 <% end %>
 <% extend 'layout.ect' %>
+    <% include 'utils/flash.ect' %>
 	<% if @mods?.length : %>
 	<ul>
 		<% for mod in @mods : %>

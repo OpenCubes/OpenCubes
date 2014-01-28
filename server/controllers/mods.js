@@ -28,6 +28,7 @@ exports.index = function(req, res) {
     Mod.list(options, function(err, mods) {
         if (err) return res.render('500');
         Mod.count().exec(function(err, count) {
+
             res.render('../views/index.ect', {
                 title: 'Mods - OpenCubes',
                 mods: mods,
