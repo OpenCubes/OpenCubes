@@ -7,7 +7,7 @@ var ModSchema = mongoose.Schema({
     version: String,
     author: {
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'User'
     },
     summary: String,
     body: String,
@@ -55,7 +55,7 @@ ModSchema.statics = {
     list: function(options, cb) {
         var criteria = options.criteria || {};
 
-        this.find(criteria).sort(options.sort).limit(options.perPage).skip(options.perPage * options.page).exec(cb);
+        this.find(criteria).sort(options.sort).limit(options.perPage).populate('author', 'username').skip(options.perPage * options.page).exec(cb);
     }
 
 };

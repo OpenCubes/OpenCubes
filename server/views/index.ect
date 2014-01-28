@@ -8,7 +8,7 @@
     </div>
     <div class="modinfo">
         <a href="/mod/<%- mod.slug%>" class="view">
-            <h1 class="title"><%- mod.name%></h1><h6 class="summary text"><%- mod.summary%></h6></a>
+            <h1 class="title"><%- mod.name%> <small class="author"> <a href="/user/<%- mod.author.username%>">by <%- mod.author.username%></small></a></h1><h6 class="summary text"><%- mod.summary%></h6></a>
         <div class="links">
             <a href="/demo/<%- mod.slug%>" id="demo" data-icon="play">demo</a>
             <a href="/view/<%- mod.slug%>" id="view" data-icon="eye">view</a>

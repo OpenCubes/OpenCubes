@@ -42,10 +42,12 @@ exports.upload = function(req, res) {
     res.render('../views/upload.ect');
 };
 exports.doUpload = function(req, res) {
+    
     var mod = new Mod({
         name: req.body.name,
         summary: req.body.summary,
-        body: req.body.description
+        body: req.body.description,
+        author: req.user._id
     });
     mod.save(function(err, doc) {
 
