@@ -17,7 +17,8 @@
     "marked": "~0.3.0",
     "mongoose-slug": "~1.2.0",
     "express-flash": "0.0.2",
-    "passport-local": "~0.1.6"
+    "passport-local": "~0.1.6",
+    "mongoose-times": "~0.1.0"
   },
   "devDependencies": {
     "grunt": "*",

@@ -23,7 +23,7 @@ exports.index = function(req, res) {
     var page = (req.params.page > 0 ? req.param('page') : 1) - 1;
     var sort = (req.param('sort')) || 'date';
     var filter = (req.param('filter')) || 'all';
-    var perPage = 2;
+    var perPage = 10;
     var options = {
         perPage: perPage,
         page: page,
@@ -57,10 +57,11 @@ exports.doUpload = function(req, res) {
         name: req.body.name,
         summary: req.body.summary,
         body: req.body.description,
-        author: req.user._id
+        author: req.user._id,
+        category: req.body.category || 'misc'
     });
     mod.save(function(err, doc) {
-
+        console.log(doc)
         if (err) {
             res.render('../views/upload.ect', {
                 hasError: true

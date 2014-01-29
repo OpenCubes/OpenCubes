@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 var slug = require('mongoose-slug');
+var timestamps = require('mongoose-times');
 var ModSchema = mongoose.Schema({
 
     name: String,
@@ -15,19 +16,16 @@ var ModSchema = mongoose.Schema({
     dl_id: String,
     creation_date: Date,
     lmodified_date: Date,
-    /*category_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'categories'
-    },*/
+    category: String,
    // voters: [starSchema],
     vote_count: Number,
     //versions: [versionSchema],
 
 });
-ModSchema.path('name').required(true, 'Article title cannot be blank');
-ModSchema.path('body').required(true, 'Article body cannot be blank');
+ModSchema.path('name').required(true, 'Mod title cannot be blank');
+ModSchema.path('body').required(true, 'Mod body cannot be blank');
 ModSchema.plugin(slug('name'));
-
+ModSchema.plugin(timestamps);
 ModSchema.statics = {
 
     /**
