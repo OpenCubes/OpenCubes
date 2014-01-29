@@ -63,12 +63,13 @@
 		this.options = {
 			totalResult : 0,
 			prelink : '',
+			postlink : '',
 			rowsPerPage : 10,
 			pageLinks : 5,
 			current : 1,
 			translator : translator,
 			translationCache : false,
-			translationCacheKey : 'en'
+			translationCacheKey : 'en',
 		};
 		for( keys = Object.keys(options), i = 0, len = keys.length; i < len; i++) {
 			this.set(keys[i], options[keys[i]]);
@@ -94,6 +95,7 @@
 			var oldPageLinks = (pageLinks % 2 === 0) ? 1 : 0, i, half;
 			var result = {
 				prelink : this.options.prelink,
+				postlink : this.options.postlink,
 				current : current,
 				previous : null,
 				next : null,
@@ -209,7 +211,7 @@
 		prelink = this.preparePreLink(result.prelink);
 
 		if(result.previous) {
-			html += '<li><a href="' + prelink + result.previous + '" class="paginator-previous">' + this.options.translator('PREVIOUS') + '</a></li>';
+			html += '<li><a href="' + prelink + result.previous + result.postlink + '" class="paginator-previous">' + this.options.translator('PREVIOUS') + '</a></li>';
 		}
 
 		if(result.range.length) {
@@ -224,11 +226,11 @@
 				//} else if(i == len - 1) {
 					//className += ' paginator-page-last';
 				//}
-				html += '<li class="'+((result.range[i] == result.current) ? 'active' : '')+'" ><a href="' + prelink + result.range[i] + '">' + result.range[i] + '</a></li>';
+				html += '<li class="'+((result.range[i] == result.current) ? 'active' : '')+'" ><a href="' + prelink + result.range[i]  + result.postlink + '">' + result.range[i] + '</a></li>';
 			}
 		}
 		if(result.next) {
-			html += '<li><a href="' + prelink + result.next + '" class="paginator-next">' + this.options.translator('NEXT') + '</a></li>';
+			html += '<li><a href="' + prelink + result.next + result.postlink  + '" class="paginator-next">' + this.options.translator('NEXT') + '</a></li>';
 		}
 		html += '</ul></div>';
 		return html;

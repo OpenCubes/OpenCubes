@@ -1,7 +1,7 @@
 var auth = require('./middlewares/auth.js');
 module.exports = function(app) {
     console.log(('  Debug - Loading routes...').cyan);
-    app.server.get('/', app.controllers.mods.index);
+    app.server.get('/(page/:page)?', app.controllers.mods.index);
     app.server.get('/mod/:id', app.controllers.mods.view);
     app.server.get('/upload', auth.requiresLogin, app.controllers.mods.upload);
     app.server.get('/login', app.controllers.users.login);

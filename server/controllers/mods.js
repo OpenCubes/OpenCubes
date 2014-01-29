@@ -3,6 +3,7 @@ var mongoose = require('mongoose'),
     marked = require('marked'),
     utils = require('./utils'),
     paginator = require('../paginator.js');
+    var url = require('url');
 
 exports.view = function(req, res) {
     Mod.load({
@@ -19,12 +20,19 @@ exports.view = function(req, res) {
     });
 };
 exports.index = function(req, res) {
-    var page = (req.param('page') > 0 ? req.param('page') : 1) - 1;
+    var page = (req.params.page > 0 ? req.param('page') : 1) - 1;
+    var sort = (req.param('sort')) || 'date';
+    var filter = (req.param('filter')) || 'all';
     var perPage = 2;
     var options = {
         perPage: perPage,
-        page: page
+        page: page,
+        sort: sort,
+        filter: filter
     };
+    // We get the params in the url -> Preserve the params in the links
+    var url_parts = url.parse(req.url, true);
+    var query = url_parts.search;
 
     Mod.list(options, function(err, mods) {
         if (err) return res.render('500');
@@ -35,12 +43,7 @@ exports.index = function(req, res) {
                 mods: mods,
                 page: page + 1,
                 pages: Math.ceil(count / perPage),
-                pagination: paginator.create('search', {prelink:'/', current: page + 1, rowsPerPage: perPage, totalResult: count/*, translator: function () {
-                    return {
-                        'PREVIOUS': '&laquo;',
-                        'NEXT': '&raquo;'
-                    }
-                }*/}).render()
+                pagination: paginator.create('search', {prelink:'', current: page + 1, rowsPerPage: perPage, totalResult: count, postlink: query }).render()
             });
         });
     });
