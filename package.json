@@ -18,7 +18,8 @@
     "mongoose-slug": "~1.2.0",
     "express-flash": "0.0.2",
     "passport-local": "~0.1.6",
-    "mongoose-times": "~0.1.0"
+    "mongoose-times": "~0.1.0",
+    "URIjs": "~1.12.0"
   },
   "devDependencies": {
     "grunt": "*",

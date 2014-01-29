@@ -1,19 +1,54 @@
 <aside class="col-md-offset-1 col-md-2 pull-left">
     <ul class="nav nav-pills nav-stacked col-md-12">
         <li>
-            <strong>Sort by</strong>
+            <strong>Sort by:</strong>
         </li>
         <li>
-            <a href="?sort=-created">Date (old first)</a>
+            <a class="<%- 'selected' if @isQueried 'sort', 'created' %>" href="<%- @urlHelper 'sort', 'created' %>">Date (old first)</a>
         </li>
         <li>
-            <a href="?sort=created">Date (recent first)</a>
+            <a class="<%- 'selected' if @isQueried 'sort', '-created' %>"  href="<%- @urlHelper 'sort', '-created' %>">Date (recent first)</a>
         </li>
         <li>
-            <a href="?sort=-name">Name (A-Z)</a>
+            <a class="<%- 'selected' if @isQueried 'sort', 'created' %>"  href="<%- @urlHelper 'sort', 'name' %>">Name (A-Z)</a>
         </li>
         <li>
-            <a href="?sort=name">Name (Z-A)</a>
+            <a class="<%- 'selected' if @isQueried 'sort', '-name' %>"  href="<%- @urlHelper 'sort', '-name' %>">Name (Z-A)</a>
         </li>
     </ul>
-        </aside>
+    <ul class="nav nav-pills nav-stacked col-md-12">
+        <li>
+            <strong>Filter by category:</strong>
+        </li>
+        <li>
+            <a class="<%- 'selected' if @isQueried 'filter', 'api' %>" href="<%- @urlHelper 'filter', 'api' %>">APIs</a>
+        </li>
+        <li>
+            <a class="<%- 'selected' if @isQueried 'filter', 'cheats' %>" href="<%- @urlHelper 'filter', 'cheats' %>">Cheats</a>
+        </li>
+        <li>
+            <a class="<%- 'selected' if @isQueried 'filter', 'decoration' %>" href="<%- @urlHelper 'filter', 'decoration' %>">Decoration</a>
+        </li>
+        <li>
+            <a class="<%- 'selected' if @isQueried 'filter', 'fixes' %>" href="<%- @urlHelper 'filter', 'fixes' %>">Fixes</a>
+        </li>
+        <li>
+            <a class="<%- 'selected' if @isQueried 'filter', 'gameplay' %>" href="<%- @urlHelper 'filter', 'gameplay' %>">Gameplay</a>
+        </li>
+        <li>
+            <a class="<%- 'selected' if @isQueried 'filter', 'gui' %>" href="<%- @urlHelper 'filter', 'gui' %>">GUI</a>
+        </li>
+        <li>
+            <a class="<%- 'selected' if @isQueried 'filter', 'misc' %>" href="<%- @urlHelper 'filter', 'misc' %>">Miscellaneous</a>
+        </li>
+        <li>
+            <a class="<%- 'selected' if @isQueried 'filter', 'mobs' %>" href="<%- @urlHelper 'filter', 'mobs' %>">Mobs</a>
+        </li>
+        <li>
+            <a class="<%- @isQueried 'filter', 'sounds' %>" href="<%- @urlHelper 'filter', 'sounds' %>">Sounds</a>
+        </li>
+        <li>
+            <a class="<%- @isQueried 'filter', 'world' %>" href="<%- @urlHelper 'filter', 'world' %>">World</a>
+        </li>
+    </ul>
+</aside>
