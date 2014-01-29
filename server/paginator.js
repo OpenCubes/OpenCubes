@@ -251,6 +251,7 @@
 		}
 		if(!translationCache.CURRENT_PAGE_REPORT.hasOwnProperty(this.options.translationCacheKey)) {
 			template = "return '" + (this.options.translator('CURRENT_PAGE_REPORT').replace("'", "\'").replace('{FromResult}', "' + fromResult + '").replace('{ToResult}', "' + toResult + '").replace('{TotalResult}', "' + totalResult + '")) + "';";
+			/*jshint -W054 */ 
 			translationCache.CURRENT_PAGE_REPORT[this.options.translationCacheKey] = new Function('fromResult, toResult, totalResult', template);
 		}
 		return translationCache.CURRENT_PAGE_REPORT[this.options.translationCacheKey](fromResult, toResult, totalResult);
@@ -296,6 +297,7 @@
 		switch(type) {
 			case 'item':
 				return new ItemPaginator(options);
+			/*jshint -W086 */ 
 			case 'search':
 			default:
 				return new SearchPaginator(options);
