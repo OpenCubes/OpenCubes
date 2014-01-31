@@ -1,0 +1,54 @@
+<% extend 'edit/edit.ect' %>
+    <% block 'form': %>
+    <form method="post">
+        
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="name">Name</label>
+            <div class="col-md-10">
+                <input id="name" name="name" placeholder="Name your mod" class="form-control input-md"
+                required="" type="text" value="<%- @mod.name %>">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="category">Category</label>
+            <div class="col-md-10">
+                <select id="category" name="category" class="form-control" value="<%- @mod.category %>">
+                    <option value="api">API</option>
+                    <option value="cheats">Cheats</option>
+                    <option value="decoration">Decoration</option>
+                    <option value="fixes">Fixes</option>
+                    <option value="gameplay">Gameplay</option>
+                    <option value="gui">GUI</option>
+                    <option value="miscellaneous">Miscellaneous</option>
+                    <option value="mobs">Mobs</option>
+                    <option value="sounds">Sounds</option>
+                    <option value="world">World</option>
+                </select>
+            </div>
+        </div>
+        <!-- Textarea -->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="summary">Summary</label>
+            <div class="col-md-10">
+                <textarea class="form-control" id="summary" name="summary" value=""><%- @mod.summary %></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="published"></label>
+            <div class="col-md-10">
+                <div class="checkbox">
+                    <label for="published-0">
+                        <input name="published" id="published-0" value="true" type="checkbox">Do not publish this mod immediatly</label>
+                </div>
+            </div>
+        </div>
+        <!-- Button -->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="submit"></label>
+            <div class="col-md-10">
+                <input type="submit" id="submit" name="submit" class="btn btn-block btn-success"
+                value="Save Changes" />
+            </div>
+        </div>
+    </form>
+        <% end %>

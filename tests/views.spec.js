@@ -54,6 +54,9 @@ describe("template", function() {
                             mod: {
                                 name: 'foo'
                             },
+                            user: {
+                                username: 'foo'
+                            }
                         })
                         renderer.render(path, data);
                         var elapsed = (new Date().getTime()) - timer;

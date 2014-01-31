@@ -1,6 +1,14 @@
 String.prototype.getParent = function() {
     return this.toString().substring(0, this.toString().lastIndexOf('/'));
 };
+Object.defineProperty(Array.prototype, "in", {
+    enumerable: false,
+    configurable: false,
+    writable: false,
+    value: function(value, def) {
+        return this.indexOf(value) !== -1 ? value : def;
+    }
+});
 var app = {
     controllers: {},
     models: {},
@@ -25,7 +33,7 @@ var app = {
         var mongoose = require('mongoose');
         mongoose.connect(config.db_uri, config.db_opt, function(err) {
             if (err) return console.log(('  Error - Can\'t connect to mongodb').red);
-                        var timer2 = new Date().getTime();
+            var timer2 = new Date().getTime();
             // Bootstrap models
             var models_path = __dirname + '/models';
             fs.readdirSync(models_path).forEach(function(file) {
@@ -60,7 +68,7 @@ var app = {
             // use passport session
             server.use(passport.initialize());
             server.use(passport.session());
-           server.use(function(req, res, next) {
+            server.use(function(req, res, next) {
                 res.locals.user = req.user;
                 next();
             })

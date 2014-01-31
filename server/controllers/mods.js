@@ -5,6 +5,8 @@ var mongoose = require('mongoose'),
     paginator = require('../paginator.js');
 var url = require('url');
 var URI = require('URIjs');
+var check = require('check-types');
+
 
 exports.view = function(req, res) {
     Mod.load({
@@ -16,8 +18,76 @@ exports.view = function(req, res) {
         }
         mod.htmlbody = marked(mod.body);
         res.render('../views/view.ect', {
-            mod: mod
+            mod: mod,
+            canEdit: req.user ? mod.author.equals(req.user.id) : false
         });
+    });
+};
+
+exports.edit = function(req, res) {
+    Mod.load({
+        slug: req.params.id,
+        author: req.user._id
+    }, function(err, mod) {
+        if (err || !mod) {
+            return res.send(403, 'You are not the author');
+        }
+        // Check the section exists
+        var section = ['general', 'description', 'files']. in (req.params.section, 'general');
+        res.render('../views/edit/' + section + '.ect', {
+            mod: mod,
+            title: 'Editing ' + mod.name,
+            url: '/mod/'+mod.slug+'/edit'
+        });
+    });
+};
+exports.doEdit = function(req, res) {
+    Mod.load({
+        slug: req.params.id,
+        author: req.user._id
+    }, function(err, mod) {
+        if (err || !mod) {
+            return res.send(403, 'You are not the author');
+        }
+        var data = req.body;
+        // Check the section exists
+        var section = ['general', 'description', 'files']. in (req.params.section, 'general');
+        var map = check.map({
+            name: data.name,
+            category: data.category,
+            summary: data.summary
+        }, {
+            name: check.unemptyString,
+            category: check.unemptyString,
+            summary: check.unemptyString
+        });
+        if (!check.every(map)) {
+            req.flash('error', 'Something is missing...');
+            return res.render('../views/edit/' + section + '.ect', {
+                mod: mod
+            });
+
+        }
+        switch (section) {
+        case 'general':
+            mod.name = data.name;
+            mod.category = data.category;
+            mod.summary = data.summary;
+            mod.save(function(err, doc) {
+                if (err) {
+                    req.flash('error', 'Something is missing...');
+                    return res.render('../views/edit/' + section + '.ect', {
+                        mod: mod,
+                        title: 'Editing ' + mod.name,
+                         url: '/mod/'+mod.slug+'/edit'
+                    });
+                }
+                req.flash('success', 'Succesfully edited!');
+                return res.redirect('/mod/' + mod.slug + '/edit')
+
+            });
+        }
+
     });
 };
 exports.index = function(req, res) {

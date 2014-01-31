@@ -1,0 +1,21 @@
+<% extend 'edit/edit.ect' %>
+    <% block 'form': %>
+    <form method="post">
+        
+        <!-- Textarea -->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="body">Summary</label>
+            <div class="col-md-10">
+                <textarea class="form-control" id="body" name="body" value=""><%- @mod.body %></textarea>
+            </div>
+        </div>
+        <!-- Button -->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="submit"></label>
+            <div class="col-md-10">
+                <input type="submit" id="submit" name="submit" class="btn btn-block btn-success"
+                value="Save Changes" />
+            </div>
+        </div>
+    </form>
+        <% end %>
