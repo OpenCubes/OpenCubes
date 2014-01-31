@@ -16,13 +16,19 @@ module.exports = function(grunt) {
                     document: true
                 }
             }
+        },
+        jasmine: {
+            pivotal: {
+                src: 'tests/*'
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
-
     grunt.registerTask('test', ['jshint']);
 
     grunt.registerTask('default', ['jshint']);
+
+
 
 };

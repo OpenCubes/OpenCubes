@@ -44,7 +44,7 @@ exports.index = function(req, res) {
         Mod.count().exec(function(err, count) {
             console.log(('  Loading mods took ' + (new Date().getTime() - listing + ' ms')).cyan);
 
-            res.render('../views/index.ect', {
+            res.render('../views/index.ect', utils.ectHelpers(req, {
                 title: 'Mods - OpenCubes',
                 mods: mods,
                 page: page + 1,
@@ -56,13 +56,7 @@ exports.index = function(req, res) {
                     totalResult: count,
                     postlink: query
                 }).render(),
-                urlHelper: function (key, value) {
-                    return (new URI(req.url)).setQuery(key, value);
-                },
-                isQueried: function (key, value) {
-                    return (new URI(req.url)).hasQuery(key, value);
-                }
-            });
+            }));
         });
     });
 };
