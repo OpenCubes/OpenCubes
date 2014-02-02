@@ -4,5 +4,7 @@ module.exports = {
     db_opt: {
         'user': 'server',
         'pass': 'faae5288a8a0e9f986d9e496926beb55a7e9c041'
-    }
+    },
+    port: process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000,
+    ip: process.env.OPENSHIFT_NODEJS_IP || process.env.IP || '127.0.0.1'
 };

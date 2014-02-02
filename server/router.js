@@ -1,6 +1,6 @@
 var auth = require('./middlewares/auth.js');
 module.exports = function(app) {
-    console.log(('  Debug - Loading routes...').cyan);
+    var timer = new Date().getTime();
     app.server.get('/(page/:page)?', app.controllers.mods.index);
     app.server.get('/mod/:id', app.controllers.mods.view);
     app.server.get('/mod/:id/edit/(:section)?', auth.requiresLogin, app.controllers.mods.edit);
@@ -33,5 +33,6 @@ module.exports = function(app) {
         req.logout();
         res.redirect('/');
     });
+    console.log(('  Info - Loading routes took ' + (new Date().getTime() - timer + '').bold + ' ms').cyan);
 
 };

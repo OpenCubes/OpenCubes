@@ -1,0 +1,50 @@
+<% extend 'edit/edit.ect' %>
+    <% block 'form': %>
+        <blockquote>
+        <p>File Upload widget with multiple file selection, drag&amp;drop support, progress bar, validation and preview images, audio and video for jQuery.<br>
+        Supports cross-domain, chunked and resumable file uploads and client-side image resizing.<br>
+        Works with any server-side platform (PHP, Python, Ruby on Rails, Java, Node.js, Go etc.) that supports standard HTML form file uploads.</p>
+    </blockquote>
+    <br>
+    <!-- The fileinput-button span is used to style the file input field as button -->
+    <span class="btn btn-success fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Add files...</span>
+        <!-- The file input field used as target for the file upload widget -->
+        <input id="fileupload" type="file" name="files[]" multiple>
+    </span>
+    <br>
+    <br>
+    <!-- The global progress bar -->
+    <div id="progress" class="progress">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+    <!-- The container for the uploaded files -->
+    <div id="files" class="files"></div>
+    <br>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Demo Notes</h3>
+        </div>
+        <div class="panel-body">
+           
+        </div>
+    </div>
+        <% end %>
+            <% block 'head': %>
+                <link rel="stylesheet" type="text/css" href="/css/jquery.fileupload.css">
+                <link rel="stylesheet" type="text/css" href="/css/jquery.fileupload-ui.css">
+                <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+                <script src="/js/vendor/jquery.ui.widget.js"></script>
+                <script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.min.js"></script>
+                <script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+                <script src="/js/jquery.iframe-transport.js"></script>
+                <script src="/js/jquery.fileupload.js"></script>
+                <script src="/js/jquery.fileupload-process.js"></script>
+                <script src="/js/jquery.fileupload-image.js"></script>
+                <script src="/js/jquery.fileupload-audio.js"></script>
+                <script src="/js/jquery.fileupload-video.js"></script>
+                <script src="/js/jquery.fileupload-validate.js"></script>
+                <script src="/js/jquery.fileupload-ui.js"></script>
+                <script src="/js/file-upload.js"></script>
+                <% end %>

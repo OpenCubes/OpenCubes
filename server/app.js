@@ -13,7 +13,7 @@ var app = {
     controllers: {},
     models: {},
     init: function(cb) {
-        console.log('Trying to run server at ' + process.env.OPENSHIFT_NODEJS_IP + ' throught ' + process.env.OPENSHIFT_NODEJS_PORT);
+        
         var timer = new Date().getTime();
         var express = require('express');
         var http = require('http');
@@ -28,7 +28,8 @@ var app = {
         var passport = require('passport');
 
         require('colors');
-        console.log(('  Debug - Loading dependencies took ' + (new Date().getTime() - timer) + ' ms').cyan);
+        console.log(('  Info - Trying to run server at ' + config.ip.bold + ' throught ' + config.port.bold).yellow);
+        console.log(('  Info - Loading dependencies took ' + (new Date().getTime() - timer +'').bold + ' ms').cyan);
 
         var mongoose = require('mongoose');
         mongoose.connect(config.db_uri, config.db_opt, function(err) {
@@ -48,12 +49,13 @@ var app = {
                 }
             });
 
-            console.log(('  Debug - Bootstraping took ' + (new Date().getTime() - timer2) + ' ms').cyan);
+            console.log(('  Info - Bootstraping took ' + (new Date().getTime() - timer2 +'').bold + ' ms').cyan);
 
             var server;
             app.server = server = express();
 
-            server.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000);
+            server.set('port', config.port);
+            server.set('ip', config.ip);
             server.set('views', path.join(__dirname, 'views'));
             server.set('view engine', 'html');
             server.use(express.favicon());
@@ -104,8 +106,8 @@ var app = {
             router(app);
 
 
-            http.createServer(server).listen(server.get('port'), process.env.OPENSHIFT_NODEJS_IP || process.env.IP, function() {
-                console.log(('  Debug - Express server listening on port ' + server.get('port') + ' in ' + (new Date().getTime() - timer) + ' ms').green);
+            http.createServer(server).listen(server.get('port'), server.get('ip'), function() {
+                console.log(('  Info - Express server listening on port ' + server.get('port').bold + ' in ' + (new Date().getTime() - timer + '').bold + ' ms').green);
                 cb();
             });
         });
