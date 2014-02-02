@@ -13,7 +13,7 @@ var app = {
     controllers: {},
     models: {},
     init: function(cb) {
-
+        console.log('Trying to run server at ' + process.env.OPENSHIFT_NODEJS_IP + ' throught ' + process.env.OPENSHIFT_NODEJS_PORT);
         var timer = new Date().getTime();
         var express = require('express');
         var http = require('http');
@@ -104,7 +104,7 @@ var app = {
             router(app);
 
 
-            http.createServer(server).listen(server.get('port'), function() {
+            http.createServer(server).listen(server.get('port'), process.env.OPENSHIFT_NODEJS_IP || process.env.IP, function() {
                 console.log(('  Debug - Express server listening on port ' + server.get('port') + ' in ' + (new Date().getTime() - timer) + ' ms').green);
                 cb();
             });
