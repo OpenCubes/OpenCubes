@@ -9,6 +9,36 @@ Object.defineProperty(Array.prototype, "in", {
         return this.indexOf(value) !== -1 ? value : def;
     }
 });
+Object.defineProperty(Array.prototype, "findIn", {
+    enumerable: false,
+    configurable: false,
+    writable: false,
+    value: function(obj) {
+        var index = -1; // not found initially
+        var keys = Object.keys(obj);
+        // filter the collection with the given criterias
+        var arr = this;
+        
+        var result = arr.filter(function(doc, idx) {
+            // keep a counter of matched key/value pairs
+            var matched = 0;
+
+            // loop over criteria
+            for (var i = keys.length - 1; i >= 0; i--) {
+                if (doc[keys[i]] === obj[keys[i]]) {
+                    matched++;
+
+                    // check if all the criterias are matched
+                    if (matched === keys.length) {
+                        index = idx;
+                        return arr[idx];
+                    }
+                }
+            }
+        });
+        return index === -1 ? undefined : arr[index];
+    }
+});
 var app = {
     controllers: {},
     models: {},
@@ -53,7 +83,6 @@ var app = {
 
             var server;
             app.server = server = express();
-
             server.set('port', config.port);
             server.set('ip', config.ip);
             server.set('views', path.join(__dirname, 'views'));
@@ -95,6 +124,7 @@ var app = {
             }));
 
             server.use(express.static(path.join(__dirname.getParent(), 'public')));
+            server.use({uploadDir:__dirname.getParent()+'/temp'});
             server.use(server.router);
             server.use(utils.notfound);
 

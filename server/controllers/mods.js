@@ -34,11 +34,15 @@ exports.edit = function(req, res) {
         }
         // Check the section exists
         var section = ['general', 'description', 'files']. in (req.params.section, 'general');
-        res.render('../views/edit/' + section + '.ect', {
-            mod: mod,
-            title: 'Editing ' + mod.name,
-            url: '/mod/'+mod.slug+'/edit'
-        });
+        mod.listVersion(function(v) {
+            console.log(v);
+            res.render('../views/edit/' + section + '.ect', {
+                mod: mod,
+                title: 'Editing ' + mod.name,
+                url: '/mod/' + mod.slug + '/edit',
+                versions: v
+            });
+        })
     });
 };
 exports.doEdit = function(req, res) {
@@ -79,7 +83,7 @@ exports.doEdit = function(req, res) {
                     return res.render('../views/edit/' + section + '.ect', {
                         mod: mod,
                         title: 'Editing ' + mod.name,
-                         url: '/mod/'+mod.slug+'/edit'
+                        url: '/mod/' + mod.slug + '/edit'
                     });
                 }
                 req.flash('success', 'Succesfully edited!');

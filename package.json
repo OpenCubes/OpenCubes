@@ -1,9 +1,9 @@
 {
-  "name": "application-name",
+  "name": "opencubes",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "*",
@@ -21,7 +21,8 @@
     "mongoose-times": "*",
     "URIjs": "*",
     "check-types": "~1.1.1",
-    "jquery-file-upload-middleware": "~0.1.0"
+    "formidable": "~1.0.14",
+    "node-uuid": "~1.4.1"
   },
   "devDependencies": {
     "grunt": "*",
