@@ -1,7 +1,7 @@
-var upload = require('express-upload');
 var formidable = require('formidable');
 var util = require('util');
 var fs = require('fs');
+var archiver = require('archiver');
 var uuid = require('node-uuid');
 var Mod = require('mongoose').model('Mod');
 module.exports.upload = function(req, res) {
@@ -10,8 +10,8 @@ module.exports.upload = function(req, res) {
     form.uploadDir = __dirname.getParent() + '/temp/';
     form.parse(req, function(err, fields, files) {
         var uid = uuid.v4();
-        var newfile = __dirname.getParent()+ '/uploads/' + uid;
-        console.log('field:',fields);
+        var newfile = __dirname.getParent() + '/uploads/' + uid;
+        console.log('field:', fields);
         var versionName = fields.version;
         var path = fields.path;
         if (!path || !versionName || path === '' || versionName === '') {
@@ -63,6 +63,57 @@ module.exports.upload = function(req, res) {
         res.redirect('/');
     });*/
 };
+
+exports.download = function(req, res) {
+    Mod.load({
+        slug: req.params.id
+    }, function(err, mod) {
+        if (err || !mod) {
+            res.reason = 'Mod not found';
+            return res.send('Not found');
+        }
+        var version = req.query.v;
+        if (!version) {
+            return mod.listVersion(function(data) {
+                res.render('mods/download.ect', {
+                    versions: data
+                });
+            });
+        }
+        else {
+            mod.listVersion(function(data) {
+                version = version.replace('/', '#');
+                var files = data[version];
+                var id = uuid.v1();
+                var output = fs.createWriteStream(__dirname.getParent() + '/temp/' + id);
+                var archive = archiver('zip');
+                archive.on('error', function(err) {
+                    console.log(err);
+                });
+
+                res.set({
+                    "Content-Disposition": 'attachment; filename="' + mod.name + ' v' + version + '.zip"'
+                });
+                archive.pipe(res);
+                for (var file in files) {
+                    if (files.hasOwnProperty(file)) {
+
+                        archive.append(fs.createReadStream(__dirname.getParent() + '/uploads/' + files[file]), {
+                            name: file
+                        })
+                        console.log('Adding file ' + files[file] + ' to ' + file);
+                    }
+                }
+                archive.finalize(function(err, bytes) {
+                    if (err) {
+                        throw err;
+                    }
+                    console.log(bytes + ' total bytes');
+                });
+            });
+        }
+    });
+}
 
 function copyFile(source, target, cb) {
     var cbCalled = false;

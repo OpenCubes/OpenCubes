@@ -6,8 +6,17 @@ var mongoose = require('mongoose'),
 var url = require('url');
 var URI = require('URIjs');
 var check = require('check-types');
-
-
+var archiver = require('archiver');
+marked.setOptions({
+    renderer: new marked.Renderer(),
+    gfm: true,
+    tables: true,
+    breaks: false,
+    pedantic: false,
+    sanitize: true,
+    smartLists: true,
+    smartypants: false
+});
 exports.view = function(req, res) {
     Mod.load({
         slug: req.params.id
@@ -19,7 +28,8 @@ exports.view = function(req, res) {
         mod.htmlbody = marked(mod.body);
         res.render('../views/view.ect', {
             mod: mod,
-            canEdit: req.user ? mod.author.equals(req.user.id) : false
+            canEdit: req.user ? mod.author.equals(req.user.id) : false,
+            title: mod.name + ' - OpenCubes'
         });
     });
 };
@@ -45,7 +55,9 @@ exports.edit = function(req, res) {
         })
     });
 };
+
 exports.doEdit = function(req, res) {
+    console.log(req.body)
     Mod.load({
         slug: req.params.id,
         author: req.user._id
@@ -54,26 +66,28 @@ exports.doEdit = function(req, res) {
             return res.send(403, 'You are not the author');
         }
         var data = req.body;
-        // Check the section exists
+        // Check the section exists');
+        console.log(req.params.section);
         var section = ['general', 'description', 'files']. in (req.params.section, 'general');
-        var map = check.map({
-            name: data.name,
-            category: data.category,
-            summary: data.summary
-        }, {
-            name: check.unemptyString,
-            category: check.unemptyString,
-            summary: check.unemptyString
-        });
-        if (!check.every(map)) {
-            req.flash('error', 'Something is missing...');
-            return res.render('../views/edit/' + section + '.ect', {
-                mod: mod
-            });
-
-        }
+        console.log(section);
         switch (section) {
         case 'general':
+            var map = check.map({
+                name: data.name,
+                category: data.category,
+                summary: data.summary
+            }, {
+                name: check.unemptyString,
+                category: check.unemptyString,
+                summary: check.unemptyString
+            });
+            if (!check.every(map)) {
+                req.flash('error', 'Something is missing...');
+                return res.render('../views/edit/' + section + '.ect', {
+                    mod: mod
+                });
+
+            }
             mod.name = data.name;
             mod.category = data.category;
             mod.summary = data.summary;
@@ -90,10 +104,35 @@ exports.doEdit = function(req, res) {
                 return res.redirect('/mod/' + mod.slug + '/edit')
 
             });
+            break;
+        case 'description':
+            if(!data.body){
+                req.flash('error', 'Something is missing...');
+                return res.render('../views/edit/' + section + '.ect', {
+                    mod: mod
+                });
+
+            }
+            mod.body = data.body;
+            mod.save(function(err, doc) {
+                if (err) {
+                    req.flash('error', 'Something is missing in mod...');
+                    return res.render('../views/edit/' + section + '.ect', {
+                        mod: mod,
+                        title: 'Editing ' + mod.name,
+                        url: '/mod/' + mod.slug + '/edit'
+                    });
+                }
+                req.flash('success', 'Succesfully edited!');
+                return res.redirect('/mod/' + mod.slug + '/edit')
+
+            });
         }
+
 
     });
 };
+
 exports.index = function(req, res) {
     var page = (req.params.page > 0 ? req.param('page') : 1) - 1;
     var sort = (req.param('sort')) || 'date';
@@ -134,9 +173,11 @@ exports.index = function(req, res) {
         });
     });
 };
+
 exports.upload = function(req, res) {
     res.render('../views/upload.ect');
 };
+
 exports.doUpload = function(req, res) {
 
     var mod = new Mod({

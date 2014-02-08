@@ -5,7 +5,8 @@ module.exports = function(app) {
     app.server.get('/mod/:id', app.controllers.mods.view);
     app.server.get('/mod/:id/edit/(:section)?', auth.requiresLogin, app.controllers.mods.edit);
     app.server.post('/mod/:id/edit/files', auth.requiresLogin, app.controllers.files.upload);
-    app.server.post('/mod/:id/edit/(/:section)?', auth.requiresLogin, app.controllers.mods.doEdit);
+    app.server.get('/mod/:id/download', app.controllers.files.download);
+    app.server.post('/mod/:id/edit/(:section)?', auth.requiresLogin, app.controllers.mods.doEdit);
 
     app.server.get('/upload', auth.requiresLogin, app.controllers.mods.upload);
     app.server.get('/login', app.controllers.users.login);
