@@ -64,6 +64,9 @@ ModSchema.methods = {
     addFile: function(uid, path, version, cb) {
         mongoose.model('File').createFile(uid, path, this, version, cb);
     },
+    deleteFile: function(uid, cb){
+        mongoose.model('File').remove({uid: uid}, cb);
+    },
 
     /**
      * 

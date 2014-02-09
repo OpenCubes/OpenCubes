@@ -4,6 +4,7 @@ var fs = require('fs');
 var archiver = require('archiver');
 var uuid = require('node-uuid');
 var Mod = require('mongoose').model('Mod');
+var File = require('mongoose').model('File');
 module.exports.upload = function(req, res) {
     var form = new formidable.IncomingForm();
 
@@ -52,17 +53,45 @@ module.exports.upload = function(req, res) {
 
         });
     });
-    /*   console.log(req.files);
-    upload()//.accept('image/jpeg')
-    // .gm(function(gm) {
-    //    return gm.resize(false, 100);
-    //   })
-    .to('temp').exec(req.files['file-raw'], function(err, file) {
-        if (err) req.flash('error', 'Oops! Something went wrong...');
-        else req.flash('success', 'Successfully uploaded!');
-        res.redirect('/');
-    });*/
+
 };
+exports.delete = function(req, res) {
+    File.findOne({
+        uid: req.params.uid
+    }, function(err, doc) {
+        if (err || !doc) {
+            if(err)
+                console.log(err);
+            req.flash('error', 'There was an error while deleting file. Please retry.')
+            return res.redirect('/');
+        }
+        console.log(req.user);
+        Mod.findOne({
+            'versions._id': doc.version,
+            'author': req.user._id
+        }, function(err, mod) {
+            if (err || !mod) {
+                if(err)
+                console.log(err);
+                req.flash('error', 'There was an error while deleting file. Perhaps you do not own this mod. Please retry.')
+                return res.redirect('/');
+            }
+            doc.remove();
+            var file = __dirname.getParent() + '/uploads/' + doc.uid;
+            fs.unlink(file, function(err) {
+                if (err) {
+                    req.flash('error', 'Oops, something went wrong! (reason: deletion)');
+                    return res.redirect('/');
+                }
+                req.flash('success', 'Successfully deleted file #' + doc.uid + ' ' + doc.path);
+                return res.redirect('/');
+
+
+            });
+
+        })
+    })
+}
 
 exports.download = function(req, res) {
     Mod.load({
