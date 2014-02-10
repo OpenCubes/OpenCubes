@@ -6,5 +6,5 @@ module.exports = {
         'pass': 'faae5288a8a0e9f986d9e496926beb55a7e9c041'
     },
     port: process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 5000,
-    ip: process.env.OPENSHIFT_NODEJS_IP || process.env.IP || undefined
+    ip: process.env.OPENSHIFT_NODEJS_IP || process.env.IP || ''
 };
