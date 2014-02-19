@@ -1,7 +1,8 @@
-String.prototype.getParent = function() {
-    return this.toString().substring(0, this.toString().lastIndexOf('/'));
+String.prototype.getParent = function () {
+	var replaced = this.replace(new RegExp("\\\\", "g"), '/');
+	var index = replaced.lastIndexOf('/');
+	return replaced.substring(0, index);
 };
-
 Object.defineProperty(Array.prototype, "in", {
     enumerable: false,
     configurable: false,
