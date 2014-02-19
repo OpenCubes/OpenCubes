@@ -1,24 +1,5 @@
 <% extend 'layout.ect' %>
-    <div class="meta">
-        <div class="logo">
-            <img class="mod_logo" src="/images/puzzle.png" />
-            <div class="metatext">
-                <div class="title">
-                    <span class="name">
-                        <%- @mod.name %>
-                    </span>
-                    <span class="version">1.6.6#5.2.3</span>
-                    <span class="v2a">by</span>
-                    <span class="author">
-                        <a>Vinz243</a>
-                    </span>
-                </div>
-            </div>
-            <div class="main-desc">
-                <%- @mod.htmlbody %>
-            </div>
-        </div>
-    </div>
+    <% include 'mods/view-body.ect' %>
     <% end %>
 <% block 'navbar' : %>
     <% include 'navs/main-nav.ect'%>

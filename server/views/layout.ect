@@ -5,6 +5,7 @@
         <link rel="stylesheet" href="/css/main.css">
         <link rel="stylesheet" href="/css/bootstrap.min.css"> 
         <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+        <script src="/js/main.js"></script>
         <% content 'head' %>
         <title>
             <%- @title %>
@@ -13,12 +14,14 @@
     
     <body>
         <header>
+            
             <nav class="navbar navbar-primary navbar-fixed-top">
                 <div id="menu">
                     <% content 'navbar' %>
                 </div>
             </nav>
         </header>
+        <div class="screen"><div class="text"><img src="/images/spinner.gif" /></div></div>
             <% content 'sidebar' %>
         <div id="main" class="col-md-8">
             <% content %>

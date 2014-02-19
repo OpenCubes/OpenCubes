@@ -26,11 +26,17 @@ exports.view = function(req, res) {
             return utils.notfound(req, res, function() {});
         }
         mod.htmlbody = marked(mod.body);
-        res.render('../views/view.ect', {
-            mod: mod,
-            canEdit: req.user ? mod.author.equals(req.user.id) : false,
-            title: mod.name + ' - OpenCubes'
-        });
+        
+            res.render((req.query.ajax ? '../views/mods/view-body.ect': 'view.ect'), {
+                mod: mod,
+                canEdit: req.user ? mod.author.equals(req.user.id) : false,
+                title: mod.name + ' - OpenCubes'
+            }, (req.query.ajax ? function (err, html) {
+                var result = {};
+                result.body = html;
+                res.send(result);
+            } : undefined));
+        
     });
 };
 
@@ -106,7 +112,7 @@ exports.doEdit = function(req, res) {
             });
             break;
         case 'description':
-            if(!data.body){
+            if (!data.body) {
                 req.flash('error', 'Something is missing...');
                 return res.render('../views/edit/' + section + '.ect', {
                     mod: mod
