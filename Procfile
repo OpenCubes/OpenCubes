@@ -1,1 +1,3 @@
-web: node web.js
+web: npm start
+:set fileformat=unix
+:w

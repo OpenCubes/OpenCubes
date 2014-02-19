@@ -13,6 +13,4 @@ results
 
 npm-debug.log
 node_modules
-server/temp/*
-server/uploads/*
 public/css/main.css
