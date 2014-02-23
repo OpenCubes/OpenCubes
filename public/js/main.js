@@ -12,7 +12,7 @@
     $.joconut.on('fetch', function() { // Page changed
 
         console.log('fetched');
-
+        triggerLoad();
         isFetchingNow = false;
     });
 
@@ -45,4 +45,15 @@
         });
     }
 
+
 })();
+$(document).ready((triggerLoad = function() {
+    if ($.fn.markdown) {
+
+        $('.markdown-enabled').markdown({
+            onPreview: function (e) {
+                return marked(e.getContent());
+            }
+        });
+    }
+}));

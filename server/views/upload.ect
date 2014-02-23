@@ -1,6 +1,6 @@
 <% extend 'layout.ect' %>
-    <form class="form-horizontal col-md-10" method="post">
-        <fieldset class="col-md-10">
+    <form class="form-horizontal col-md-12" method="post">
+        <fieldset class="col-md-12">
             <!-- Form Name -->
             <legend>Upload a new mod</legend>
             <!-- Text input-->
@@ -12,15 +12,15 @@
                 </div>
             <% end %>
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="name">Name</label>
-                    <div class="col-md-6">
+                    <label class="col-md-2 control-label" for="name">Name</label>
+                    <div class="col-md-10">
                         <input id="name" name="name" placeholder="Name your mod" class="form-control input-md"
                         required="" type="text">
                     </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-4 control-label" for="category">Category</label>
-                  <div class="col-md-6">
+                  <label class="col-md-2 control-label" for="category">Category</label>
+                  <div class="col-md-10">
                     <select id="category" name="category" class="form-control">
                       <option value="api">API</option>
                       <option value="cheats">Cheats</option>
@@ -37,22 +37,22 @@
                 </div>
                 <!-- Textarea -->
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="summary">Summary</label>
-                    <div class="col-md-6">
+                    <label class="col-md-2 control-label" for="summary">Summary</label>
+                    <div class="col-md-10">
                         <textarea class="form-control" id="summary" name="summary"></textarea>
                     </div>
                 </div>
                 <!-- Textarea -->
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="description">Description</label>
-                    <div class="col-md-6">
-                        <textarea class="form-control" id="description" name="description"></textarea>
+                    <label class="col-md-2 control-label" for="description">Description</label>
+                    <div class="col-md-10">
+                        <textarea class="form-control markdown-enabled" id="description" name="description" rows="20"></textarea>
                     </div>
                 </div>
                 <!-- Multiple Checkboxes -->
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="published"></label>
-                    <div class="col-md-6">
+                    <label class="col-md-2 control-label" for="published"></label>
+                    <div class="col-md-10">
                         <div class="checkbox">
                             <label for="published-0">
                                 <input name="published" id="published-0" value="true" type="checkbox">Do not publish this mod immediatly</label>
@@ -61,9 +61,9 @@
                 </div>
                 <!-- Button -->
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="submit"></label>
-                    <div class="col-md-6">
-                        <input type="submit" id="submit" name="submit" class="btn btn-success"
+                    <label class="col-md-2 control-label" for="submit"></label>
+                    <div class="col-md-12">
+                        <input type="submit" id="submit" name="submit" class="btn btn-success btn-block"
                         value="Submit" />
                     </div>
                 </div>
@@ -71,4 +71,9 @@
     </form>
     <% block 'navbar' : %>
         <% include 'navs/main-nav.ect'%>
-            <% end %>
+    <% end %>
+    <% block 'head' : %>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.1/marked.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.1.1/js/bootstrap-markdown.js"></script>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.1.1/css/bootstrap-markdown.min.css">
+    <% end %>
