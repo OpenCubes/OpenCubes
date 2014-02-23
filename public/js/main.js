@@ -1,16 +1,48 @@
-// Dynamically bining event for links to come 
-$(document).on('click', 'a[data-ajax=true]', function(event) {
-    event.preventDefault();
-    history.pushState({}, "page 2", $(this).attr('href'));
-    $('.screen').css({display: 'none'});   
-    $('.screen').fadeIn();
-    $('html, body').animate({scrollTop:0}, 'slow');
+(function() {
+    var isFetchingNow = false;
+    $.joconut.on('error', function(err) { // fires on timeout, page without <body>, invalid requests
 
-    $.ajax({
-        url: $(this).attr('href') + '?ajax=true',
-        success: function (data) {
-            $('#main').html(data.body);
-            $('.screen').fadeOut();
-        }
-    })
-});
+        console.log('errorr')
+        stopProgress();
+        isFetchingNow = false;
+
+        $('#main').prepend('<div class="panel panel-danger"><div class="panel-heading"><h3 class="panel-title pull-left">' + 'There was an error fetching new page (' + err.message + ')</h3>' + '<button type="button" class="close pull-right" aria-hidden="true" onclick="$(\'.panel-danger\').remove()">' + '&times;</button><div class="clearfix col-x"></div></div></div>');
+    });
+
+    $.joconut.on('fetch', function() { // Page changed
+
+        console.log('fetched');
+
+        isFetchingNow = false;
+    });
+
+    $.joconut.on('before:fetch', function() { // page will be loaded now
+        if (!isFetchingNow) {
+            console.log('fetching')
+            startProgress();
+            isFetchingNow = true;
+        };
+
+
+    });
+    var startProgress = function() {
+        $('.screen').fadeIn(100);
+        $('html, body').animate({
+            scrollTop: 0
+        }, 'fast');
+        $('#main').animate({
+            opacity: 0.5
+        }, 'fast');
+    }
+    var stopProgress = function() {
+        $('.screen').fadeOut(100, function() {
+            $('.screen').css({
+                display: 'none'
+            });
+            $('#main').animate({
+                opacity: 1
+            }, 'fast');
+        });
+    }
+
+})();
