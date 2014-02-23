@@ -182,6 +182,43 @@ exports.index = function (req, res) {
 	});
 };
 
+exports.star = function (req, res) {
+	var slug = req.params.slug;
+	if (!slug || slug === '') {
+		return res.send(400, 'Missing slug');
+	}
+	if (!req.user)
+		return res.send(401, 'You are not logged in');
+
+	Mod.load({
+		slug: slug,
+		'stargazers.id': req.user.id
+	}, function (err, doc) {
+		if (err) return res.send(500, 'Unknown error on database...');
+		if (doc) {
+			doc.vote_count--;
+			doc.stargazers[0].remove();
+			doc.save();
+			return res.redirect('/mod/' + slug);
+		} else {
+			Mod.load({
+				slug: slug
+			}, function (err, doc) {
+				if (err) return res.send(500, 'Unknown error on database...');
+				doc.stargazers.push({
+					id: req.user._id,
+					date: Date.now()
+				});
+				doc.vote_count = (doc.vote_count || 0) + 1;
+				doc.save();
+
+				return res.redirect('/mod/' + slug);
+			});
+		}
+	});
+
+};
+
 exports.upload = function (req, res) {
 	res.render('../views/upload.ect');
 };

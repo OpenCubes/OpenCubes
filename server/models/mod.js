@@ -17,9 +17,11 @@ var ModSchema = mongoose.Schema({
     creation_date: Date,
     lmodified_date: Date,
     category: String,
-    // voters: [starSchema],
     vote_count: Number,
-
+	stargazers: [{
+		id: Schema.Types.ObjectId,
+		date: Date
+	}],
     versions: [{
         name: String
     }],
