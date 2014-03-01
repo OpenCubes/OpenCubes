@@ -5,44 +5,12 @@
 <% extend 'layout.ect' %>
 <% include './utils/flash.ect' %>
 <div class="col-md-6 col-md-offset-3">
-    <div class="panel panel-primary" id="signin-panel">
+<div class="panel panel-primary" id="signin-panel">
         <div class="panel-heading">
             Sign in
         </div>
         <div class="panel-body">
-            <form class="form-horizontal col-md-12" method="post">
-                <fieldset class="col-md-12">
-                    <!-- Form Name -->
-                    
-                    <!-- Text input-->
-                    <div class="form-group">
-                      <label class="col-md-3 control-label" for="username">Username</label>  
-                      <div class="col-md-7 ">
-                      <input id="username" name="username" placeholder="Hi, I am..." class="form-control input-md" type="text" value="<%- if @user then @user.username  %>">
-                        
-                      </div>
-                    </div>
-                    
-                    <!-- Password input-->
-                    <div class="form-group">
-                      <label class="col-md-3 control-label" for="password">Password</label>
-                      <div class="col-md-7">
-                        <input id="password" name="password" placeholder="My secret pass is..." class="form-control input-md" type="password">
-                        
-                      </div>
-                    </div>
-                    
-                     <input id="target" name="target" placeholder="" class="form-control input-md" type="hidden" value="<%- @target %>">
-                    <!-- Button -->
-                    <div class="form-group">
-                      <label class="col-md-3 control-label" for="login"></label>
-                      <div class="col-md-7">
-                        <button id="login" name="login" class="btn btn-success">Login on OpenCubes</button>
-                      </div>
-                    </div>
-                       
-                </fieldset>
-            </form>
-        </div>
+    <% include 'forms/login.ect' %>
+      </div>
     </div>
 </div>

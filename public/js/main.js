@@ -51,9 +51,31 @@ $(document).ready((triggerLoad = function() {
     if ($.fn.markdown) {
 
         $('.markdown-enabled').markdown({
-            onPreview: function (e) {
+            onPreview: function(e) {
                 return marked(e.getContent());
             }
         });
     }
+    $('#login').click(function(event) {
+        event.preventDefault();
+        bootbox.dialog({
+            message: '<img class="col-md-4 col-md-offset-4" src="/images/load/spinner-256.gif" />',
+            title: "Please login",
+            buttons: {
+              'cancel':{
+                  label: 'cancel',
+                  className: 'btn-link'
+              }
+            }
+        });
+        $('.bootbox-body').addClass('loading-bb');
+        $.ajax({
+            url: '/api/ajax/login',
+            success: function(data) {
+
+                $('.bootbox-body').html(data)
+                $('.bootbox-body').removeClass('loading-bb');
+            }
+        })
+    })
 }));

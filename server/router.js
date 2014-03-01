@@ -37,6 +37,9 @@ module.exports = function(app) {
         req.logout();
         res.redirect('/');
     });
+    
+    // API
+    app.server.get('/api/ajax/login', app.controllers.api.ajaxLogin)
     console.log(('  Info - Loading routes took ' + (new Date().getTime() - timer + '').bold + ' ms').cyan);
 
 };
