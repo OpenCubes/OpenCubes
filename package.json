@@ -24,7 +24,8 @@
     "formidable": "~1.0.14",
     "node-uuid": "~1.4.1",
     "archiver": "~0.5.2",
-    "html-minifier": "~0.5.5"
+    "html-minifier": "~0.5.5",
+    "markdown-symbols": "~0.1.0"
   },
   "devDependencies": {
     "grunt": "*",

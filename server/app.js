@@ -15,7 +15,7 @@ var app = {
 		var utils = require('./controllers/utils.js');
 		var flash = require('express-flash');
 		var passport = require('passport');
-
+        app.parser = require('./parser.js');
 		require('colors');
 		console.log(('  Info - Trying to run server at ' + config.ip.bold + ' throught ' + config.port.bold).yellow);
 		console.log(('  Info - Loading dependencies took ' + (new Date().getTime() - timer + '').bold + ' ms').cyan);
@@ -60,6 +60,7 @@ var app = {
 			server.use(passport.session());
 			server.use(function (req, res, next) {
 				res.locals.user = req.user;
+				req.application = app;
 				next();
 			})
 			app.passport = passport;

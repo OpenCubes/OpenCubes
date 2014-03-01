@@ -26,7 +26,7 @@ exports.view = function (req, res) {
 				res.reason = 'Mod not found';
 				return utils.notfound(req, res, function () {});
 			}
-			mod.htmlbody = marked(mod.body);
+			mod.htmlbody = req.application.parser(mod.body);
 
 			res.render((req.query.ajax ? '../views/mods/view-body.ect' : 'view.ect'), {
 				mod: mod,
