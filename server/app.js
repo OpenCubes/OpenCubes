@@ -82,7 +82,6 @@ var app = {
 				// through changes
 				force: config.env === 'dev'
 			}));
-
 			server.use(express.static(path.join(__dirname.getParent(), 'public')));
 			server.use({
 				uploadDir: __dirname.getParent() + '/temp'

@@ -1,0 +1,7 @@
+<div>
+    <ul>
+        <% for className in (@list or []): %>
+            <li class="glyphicon glyphicon-<%- className %> col-md-2 icon-item" data-x-icon="<%- className %>"></li>
+        <%end%>
+    </ul>
+</div>

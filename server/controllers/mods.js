@@ -1,22 +1,12 @@
 var mongoose = require('mongoose'),
 	Mod = mongoose.model('Mod'),
-	marked = require('marked'),
 	utils = require('./utils'),
 	paginator = require('../paginator.js');
 var url = require('url');
 var URI = require('URIjs');
 var check = require('check-types');
 var archiver = require('archiver');
-marked.setOptions({
-	renderer: new marked.Renderer(),
-	gfm: true,
-	tables: true,
-	breaks: false,
-	pedantic: false,
-	sanitize: true,
-	smartLists: true,
-	smartypants: false
-});
+
 exports.view = function (req, res) {
 	setTimeout(function () {
 		Mod.load({
