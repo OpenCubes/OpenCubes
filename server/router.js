@@ -18,14 +18,28 @@ module.exports = function(app) {
                 return next(err);
             }
             if (!user) {
-                req.flash('error', 'Invalid username or password');
-                return res.redirect('/login' + (req.body.target ? '?target=' + req.body.target : ''));
+                if (req.accepts('html')) {
+                    req.flash('error', 'Invalid username or password');
+                    return res.redirect('/login' + (req.body.target ? '?target=' + req.body.target : ''));
+                }
+                else if (req.accepts('json')) {
+
+                    return res.send({
+                        'error': 'invalid_credentials'
+                    });
+                };
             }
             req.logIn(user, function(err) {
                 if (err) {
                     return next(err);
                 }
-                return res.redirect(req.body.target || '/');
+                if (req.accepts('html')) {
+                    return res.redirect(req.body.target || '/');
+                }
+                else if (req.accepts('json')) {
+
+                    return res.send({});
+                };
             });
         })(req, res, next);
     });
@@ -37,7 +51,7 @@ module.exports = function(app) {
         req.logout();
         res.redirect('/');
     });
-    
+
     // API
     app.server.get('/api/ajax/login', app.controllers.api.ajaxLogin)
     console.log(('  Info - Loading routes took ' + (new Date().getTime() - timer + '').bold + ' ms').cyan);
