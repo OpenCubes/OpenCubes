@@ -130,10 +130,26 @@ $(document).ready((triggerLoad = function() {
                         name: "cmdHelp",
                         title: "Help",
                         btnClass: 'btn btn-info btn-sm',
-                        icon: "glyphicon glyphicon-question-sign",
-                        btnText: '<img width="20" src="images/markdown-mark.svg" />',
+                        btnText: '<img width="22" src="images/markdown-mark.svg" />  Help',
                         callback: function(e) {
-                            // TODO help
+                            bootbox.dialog({
+                                message: '<img class="col-md-4 col-md-offset-4" src="/images/load/spinner-256.gif" />',
+                                title: "Help: Markdown Cheatsheet",
+                                buttons: {}
+                            });
+                            $('.bootbox-body').addClass('row');
+                            $('.bootbox-body').addClass('loading-bb');
+                            $.ajax({
+                                url: '/help/markdown-cs.md',
+                                success: function(data) {
+                                    $('.bootbox-body').fadeOut(150, function() {
+                                        $('.bootbox-body').removeClass('loading-bb');
+                                        $('.bootbox-body').html(data);
+                                        $('.bootbox-body').fadeIn(150);
+
+                                    })
+                                }
+                            })
                         }
                     },]
                 }]

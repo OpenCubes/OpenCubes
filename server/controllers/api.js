@@ -1,4 +1,3 @@
-var formidable = require('formidable');
 
 exports.ajaxLogin = function(req, res) {
     res.render('forms/login.ect');
@@ -13,4 +12,4 @@ exports.glyphicons = function(req, res) {
 exports.parseMd = function(req, res) {
     return res.send(req.application.parser(req.body.markdown || ''));
 
-}
+s}
