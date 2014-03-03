@@ -1,15 +1,37 @@
-<div id="main-nav">
-    <a href="/" data-icon="home">Home</a>
-    <a href="/search" data-icon="O">Search</a>
-    <a href="/upload" data-icon="upload">Add mod</a>
+<div class="navbar-header">
+    <button type="button" data-toggle="collapse" data-target=".navbar-collapse"
+    class="navbar-toggle">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+    <a href="/" class="navbar-brand">OpenCubes</a>
 </div>
-<div id="user">
-<%if !@user: %>
-
-    <a href="/register" data-icon="user">Register</a>
-    <a class="no-joconut" id="login" href="/login">Login</a>
-<% else :%>
-    <a href="/user" data-icon="user"><%- @user.username %></a>
-    <a id="logout" href="/logout">Logout</a>
-<% end %>
+<div class="nav navbar-nav">
+    <li>
+        <a href="/" data-icon="home">Home</a>
+    </li>
+    <li>
+        <a href="/search" data-icon="O">Search</a>
+    </li>
+    <li>
+        <a href="/upload" data-icon="upload">Add mod</a>
+    </li>
+</div>
+<div class="nav navbar-nav pull-right visible-md visible-lg visible-sm">
+    <%if !@user: %>
+        <li>
+            <a href="/register" data-icon="user">Register</a>
+        </li>
+        <li>
+            <a class="no-joconut" id="login" href="/login">Login</a>
+        </li>
+    <% else :%>
+        <li>
+            <a href="/user" data-icon="user"><%- @user.username %></a>
+        </li>
+        <li>
+            <a id="logout" href="/logout">Logout</a>
+        </li>
+    <% end %>
 </div>

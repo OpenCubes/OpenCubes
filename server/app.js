@@ -60,6 +60,8 @@ var app = {
 			server.use(passport.session());
 			server.use(function (req, res, next) {
 				res.locals.user = req.user;
+				res.locals.theme = config.theme;
+				res.locals.parse = app.parser;
 				req.application = app;
 				next();
 			})
