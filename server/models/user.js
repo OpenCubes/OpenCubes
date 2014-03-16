@@ -1,168 +1,190 @@
-/**
- * Module dependencies.
- */
+/*
+Module dependencies.
+*/
 
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    crypto = require('crypto'),
-    oAuthTypes = ['github', 'twitter', 'facebook', 'google', 'linkedin']
 
-    /**
-     * User Schema
-     */
+(function() {
+  var Schema, UserSchema, crypto, mongoose, oAuthTypes, validatePresenceOf;
 
-var UserSchema = new Schema({
+  mongoose = require("mongoose");
+
+  Schema = mongoose.Schema;
+
+  crypto = require("crypto");
+
+  oAuthTypes = ["github", "twitter", "facebook", "google", "linkedin"];
+
+  /*
+  User Schema
+  */
+
+
+  UserSchema = new Schema({
     email: {
-        type: String,
-        default: ''
+      type: String,
+      "default": ""
     },
     username: {
-        type: String,
-        default: ''
+      type: String,
+      "default": ""
     },
     provider: {
-        type: String,
-        default: ''
+      type: String,
+      "default": ""
     },
     hashed_password: {
-        type: String,
-        default: ''
+      type: String,
+      "default": ""
     },
     salt: {
-        type: String,
-        default: ''
+      type: String,
+      "default": ""
     },
     authToken: {
-        type: String,
-        default: ''
+      type: String,
+      "default": ""
     },
     facebook: {},
     twitter: {},
     github: {},
     google: {},
     linkedin: {}
-})
+  });
 
-/**
- * Virtuals
- */
+  /*
+  Virtuals
+  */
 
-UserSchema.virtual('password').set(function(password) {
-    this._password = password
-    this.salt = this.makeSalt()
-    this.hashed_password = this.encryptPassword(password)
-}).get(function() {
-    return this._password
-})
 
-/**
- * Validations
- */
+  UserSchema.virtual("password").set(function(password) {
+    this._password = password;
+    this.salt = this.makeSalt();
+    this.hashed_password = this.encryptPassword(password);
+  }).get(function() {
+    return this._password;
+  });
 
-var validatePresenceOf = function(value) {
-    return value && value.length
-}
+  /*
+  Validations
+  */
 
-// the below 5 validations only apply if you are signing up traditionally
 
-UserSchema.path('email').validate(function(email) {
-    if (this.doesNotRequireValidation()) return true
-    return email.length
-}, 'Email cannot be blank')
+  validatePresenceOf = function(value) {
+    return value && value.length;
+  };
 
-UserSchema.path('email').validate(function(email, fn) {
-    var User = mongoose.model('User')
-    if (this.doesNotRequireValidation()) fn(true)
-
-    // Check only when it is a new user or when email field is modified
-    if (this.isNew || this.isModified('email')) {
-        User.find({
-            email: email
-        }).exec(function(err, users) {
-            fn(!err && users.length === 0);
-        });
+  UserSchema.path("email").validate((function(email) {
+    if (this.doesNotRequireValidation()) {
+      return true;
     }
-    else fn(true);
-}, 'Email already exists');
+    return email.length;
+  }), "Email cannot be blank");
 
-UserSchema.path('username').validate(function(username) {
-    if (this.doesNotRequireValidation()) return true;
-    return username.length
-}, 'Username cannot be blank')
+  UserSchema.path("email").validate((function(email, fn) {
+    var User;
+    User = mongoose.model("User");
+    if (this.doesNotRequireValidation()) {
+      fn(true);
+    }
+    if (this.isNew || this.isModified("email")) {
+      User.find({
+        email: email
+      }).exec(function(err, users) {
+        fn(!err && users.length === 0);
+      });
+    } else {
+      fn(true);
+    }
+  }), "Email already exists");
 
-UserSchema.path('hashed_password').validate(function(hashed_password) {
-    if (this.doesNotRequireValidation()) return true
-    return hashed_password.length
-}, 'Password cannot be blank')
+  UserSchema.path("username").validate((function(username) {
+    if (this.doesNotRequireValidation()) {
+      return true;
+    }
+    return username.length;
+  }), "Username cannot be blank");
+
+  UserSchema.path("hashed_password").validate((function(hashed_password) {
+    if (this.doesNotRequireValidation()) {
+      return true;
+    }
+    return hashed_password.length;
+  }), "Password cannot be blank");
+
+  /*
+  Pre-save hook
+  */
 
 
-/**
- * Pre-save hook
- */
+  UserSchema.pre("save", function(next) {
+    if (!this.isNew) {
+      return next();
+    }
+    if (!validatePresenceOf(this.password) && !this.doesNotRequireValidation()) {
+      next(new Error("Invalid password"));
+    } else {
+      next();
+    }
+  });
 
-UserSchema.pre('save', function(next) {
-    if (!this.isNew) return next();
+  /*
+  Methods
+  */
 
-    if (!validatePresenceOf(this.password) && !this.doesNotRequireValidation()) next(new Error('Invalid password'));
-    else next();
-});
 
-/**
- * Methods
- */
-
-UserSchema.methods = {
-
-    /**
-     * Authenticate - check if the passwords are the same
-     *
-     * @param {String} plainText
-     * @return {Boolean}
-     * @api public
-     */
+  UserSchema.methods = {
+    /*
+    Authenticate - check if the passwords are the same
+    
+    @param {String} plainText
+    @return {Boolean}
+    @api public
+    */
 
     authenticate: function(plainText) {
-        return this.encryptPassword(plainText) === this.hashed_password;
+      return this.encryptPassword(plainText) === this.hashed_password;
     },
-
-    /**
-     * Make salt
-     *
-     * @return {String}
-     * @api public
-     */
+    /*
+    Make salt
+    
+    @return {String}
+    @api public
+    */
 
     makeSalt: function() {
-        return Math.round((new Date().valueOf() * Math.random())) + '';
+      return Math.round(new Date().valueOf() * Math.random()) + "";
     },
-
-    /**
-     * Encrypt password
-     *
-     * @param {String} password
-     * @return {String}
-     * @api public
-     */
+    /*
+    Encrypt password
+    
+    @param {String} password
+    @return {String}
+    @api public
+    */
 
     encryptPassword: function(password) {
-        if (!password) return '';
-        var encrypred;
-        try {
-            encrypred = crypto.createHash('sha256', this.salt).update(password).digest('hex');
-            return encrypred;
-        }
-        catch (err) {
-            return '';
-        }
+      var encrypred, err;
+      if (!password) {
+        return "";
+      }
+      encrypred = void 0;
+      try {
+        encrypred = crypto.createHash("sha256", this.salt).update(password).digest("hex");
+        return encrypred;
+      } catch (_error) {
+        err = _error;
+        return "";
+      }
     },
-
-    /**
-     * Validation is not required if using OAuth
-     */
+    /*
+    Validation is not required if using OAuth
+    */
 
     doesNotRequireValidation: function() {
-        return ~oAuthTypes.indexOf(this.provider);
+      return ~oAuthTypes.indexOf(this.provider);
     }
-};
+  };
 
-mongoose.model('User', UserSchema);
+  mongoose.model("User", UserSchema);
+
+}).call(this);

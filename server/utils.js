@@ -1,43 +1,54 @@
-String.prototype.getParent = function () {
-	var replaced = this.replace(new RegExp("\\\\", "g"), '/');
-	var index = replaced.lastIndexOf('/');
-	return replaced.substring(0, index);
-};
-Object.defineProperty(Array.prototype, "in", {
+(function() {
+  String.prototype.getParent = function() {
+    var index, replaced;
+    replaced = this.replace(new RegExp("\\\\", "g"), "/");
+    index = replaced.lastIndexOf("/");
+    return replaced.substring(0, index);
+  };
+
+  Object.defineProperty(Array.prototype, "fetch", {
     enumerable: false,
     configurable: false,
     writable: false,
     value: function(value, def) {
-        return this.indexOf(value) !== -1 ? value : def;
+      if (this.indexOf(value) !== -1) {
+        return value;
+      } else {
+        return def;
+      }
     }
-});
-Object.defineProperty(Array.prototype, "findIn", {
+  });
+
+  Object.defineProperty(Array.prototype, "findIn", {
     enumerable: false,
     configurable: false,
     writable: false,
     value: function(obj) {
-        var index = -1; // not found initially
-        var keys = Object.keys(obj);
-        // filter the collection with the given criterias
-        var arr = this;
-
-        var result = arr.filter(function(doc, idx) {
-            // keep a counter of matched key/value pairs
-            var matched = 0;
-
-            // loop over criteria
-            for (var i = keys.length - 1; i >= 0; i--) {
-                if (doc[keys[i]] === obj[keys[i]]) {
-                    matched++;
-
-                    // check if all the criterias are matched
-                    if (matched === keys.length) {
-                        index = idx;
-                        return arr[idx];
-                    }
-                }
+      var arr, index, keys, result;
+      index = -1;
+      keys = Object.keys(obj);
+      arr = this;
+      result = arr.filter(function(doc, idx) {
+        var i, matched;
+        matched = 0;
+        i = keys.length - 1;
+        while (i >= 0) {
+          if (doc[keys[i]] === obj[keys[i]]) {
+            matched++;
+            if (matched === keys.length) {
+              index = idx;
+              return arr[idx];
             }
-        });
-        return index === -1 ? undefined : arr[index];
+          }
+          i--;
+        }
+      });
+      if (index === -1) {
+        return undefined;
+      } else {
+        return arr[index];
+      }
     }
-});
+  });
+
+}).call(this);

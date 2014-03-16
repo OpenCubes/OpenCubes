@@ -1,15 +1,20 @@
+(function() {
+  exports.ajaxLogin = function(req, res) {
+    res.render("forms/login.ect");
+  };
 
-exports.ajaxLogin = function(req, res) {
-    res.render('forms/login.ect');
-}
-exports.glyphicons = function(req, res) {
-    var data = require('../../public/api/glyphicons.json');
+  exports.glyphicons = function(req, res) {
+    var data;
+    data = require("../../public/api/glyphicons.json");
     console.log(data);
-    res.render('utils/glyphicons.ect', {
-        list: data
+    res.render("utils/glyphicons.ect", {
+      list: data
     });
-}
-exports.parseMd = function(req, res) {
-    return res.send(req.application.parser(req.body.markdown || ''));
+  };
 
-s}
+  exports.parseMd = function(req, res) {
+    return res.send(req.application.parser(req.body.markdown || ""));
+    s;
+  };
+
+}).call(this);

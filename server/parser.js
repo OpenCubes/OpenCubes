@@ -1,6 +1,11 @@
-var symbols = require('markdown-symbols');
-var marked = require('marked');
-marked.setOptions({
+(function() {
+  var marked, symbols;
+
+  symbols = require("markdown-symbols");
+
+  marked = require("marked");
+
+  marked.setOptions({
     renderer: new marked.Renderer(),
     gfm: true,
     tables: true,
@@ -9,14 +14,13 @@ marked.setOptions({
     sanitize: true,
     smartLists: true,
     smartypants: false,
-    langPrefix: 'language-',
-   
-});
+    langPrefix: "language-"
+  });
 
-module.exports = function(md) {
-    
-    var html = marked(md);
-    // We end with symbols b/c otherwise
-    // the tags created by symbols would be deleted by marked
+  module.exports = function(md) {
+    var html;
+    html = marked(md);
     return symbols.process(html);
-};
+  };
+
+}).call(this);
