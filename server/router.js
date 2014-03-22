@@ -47,8 +47,6 @@
         });
       })(req, res, next);
     });
-    
-    
     app.server.get("/signup", app.controllers.users.signup);
     app.server.get("/user/:name", app.controllers.users.show);
     app.server.post("/signup", app.controllers.users.create);
@@ -60,6 +58,9 @@
     app.server.post("/api/ajax/parse.md", app.controllers.api.parseMd);
     app.server.get("/api/ajax/login", app.controllers.api.ajaxLogin);
     app.server.get("/api/ajax/glyphicons", app.controllers.api.glyphicons);
+    app.server.get("/api/cart/:cart/push/:id", app.controllers.api.addToCart);
+    app.server.get("/api/cart/:cart", app.controllers.api.lsCart);
+    app.server.get("/api/cart/create", app.controllers.api.createCart);
     app.server.get("/help/(:section)?.md", app.controllers.help.raw);
     app.server.get("/help/(:section)?", app.controllers.help.getHelp);
     console.log(("  Info - Loading routes took " + (new Date().getTime() - timer + "").bold + " ms").cyan);

@@ -18,7 +18,8 @@ exports.raw = (req, res) ->
   console.log req.params.section
   section = (req.params.section or "welcome")
   file = __dirname.getParent() + "/views/help/" + section + ".md"
-  fs.readFile file, read = (err, data) ->
+
+  fs.readFile file, read = (err, data="Page not found") ->
     console.log err  if err
     html = req.application.parser(data.toString())
     res.send html

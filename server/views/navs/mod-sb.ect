@@ -11,6 +11,7 @@
             </a>
             <a href="<%- @mod.slug %>/download" class="">Download this mod</a>
             <a href="/star/<%- @mod.slug %>" class="">Star this mod (<%- @mod.vote_count or 0 %>)</a>
+            <a href="#" id="add-to-cart" data-mod-id="<%- @mod._id %>" class="no-joconut" onclick="addToCart('<%- @mod._id %>')"><span class="glyphicon glyphicon-shopping-cart"></span>Add to cart</a>
         </li>
     </ul>
     <ul class="nav nav-pills nav-stacked col-md-12"></ul>
