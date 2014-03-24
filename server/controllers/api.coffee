@@ -52,6 +52,7 @@ exports.lsCart = (req, res)->
   )
 
 exports.createCart = (req, res)->
+  console.log "creeating cart"
   cart = new Cart()
   cart.save()
   res.send

@@ -25,12 +25,13 @@ exports.view = (req, res) ->
         result.body = html
         res.send result
         return
-       else `undefined`))
+       else undefined))
       return
 
     return
   ), 0
   return
+
 
 
 exports.edit = (req, res) ->
@@ -223,3 +224,17 @@ exports.doUpload = (req, res) ->
     return
 
   return
+
+Cart = mongoose.model "Cart"
+
+exports.cart = (req, res) ->
+  if(!req.params.id)
+    res.reason = "Missing id"
+    return utils.notfound(req, res, ->
+    )
+  Cart.findById(req.params.id).populate("mods").exec((err, cart) ->
+    if(err || !cart)
+      res.reason = "DB Problem"
+      return utils.notfound(req, res, ->)
+    res.render("users/cart.ect", {cart: cart})
+  )

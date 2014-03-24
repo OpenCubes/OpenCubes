@@ -1,5 +1,5 @@
 (function() {
-  var Mod, URI, archiver, check, mongoose, paginator, url, utils;
+  var Cart, Mod, URI, archiver, check, mongoose, paginator, url, utils;
 
   mongoose = require("mongoose");
 
@@ -36,7 +36,7 @@
           result = {};
           result.body = html;
           res.send(result);
-        } : undefined));
+        } : void 0));
       });
       return;
     }), 0);
@@ -238,6 +238,24 @@
       } else {
         res.redirect("/");
       }
+    });
+  };
+
+  Cart = mongoose.model("Cart");
+
+  exports.cart = function(req, res) {
+    if (!req.params.id) {
+      res.reason = "Missing id";
+      return utils.notfound(req, res, function() {});
+    }
+    return Cart.findById(req.params.id).populate("mods").exec(function(err, cart) {
+      if (err || !cart) {
+        res.reason = "DB Problem";
+        return utils.notfound(req, res, function() {});
+      }
+      return res.render("users/cart.ect", {
+        cart: cart
+      });
     });
   };
 

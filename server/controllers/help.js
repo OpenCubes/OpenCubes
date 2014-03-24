@@ -28,6 +28,9 @@
     file = __dirname.getParent() + "/views/help/" + section + ".md";
     fs.readFile(file, read = function(err, data) {
       var html;
+      if (data == null) {
+        data = "Page not found";
+      }
       if (err) {
         console.log(err);
       }

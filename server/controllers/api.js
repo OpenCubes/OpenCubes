@@ -67,6 +67,7 @@
 
   exports.createCart = function(req, res) {
     var cart;
+    console.log("creeating cart");
     cart = new Cart();
     cart.save();
     return res.send({

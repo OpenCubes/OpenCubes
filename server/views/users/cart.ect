@@ -1,0 +1,21 @@
+<% block 'navbar' : %>
+<% include 'navs/main-nav.ect'%>
+<% end %>
+<% extend 'layout.ect' %>
+<% include './utils/flash.ect' %>
+<div class="col-md-9 col-md-offset-3">
+<% for mod in @cart.mods : %>
+<div class="media">
+  <a class="pull-right" href="#">
+    <h3 class="glyphicon glyphicon-trash"></h3>
+  </a>
+  <a class="pull-left" href="#">
+    <img class="media-object" src="/images/puzzle.png" width="64" height="64" alt="Icon">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading"><%- mod.name %> </h4>
+   <%- mod.summary %>
+  </div>
+</div>
+<%end%>
+</div>
