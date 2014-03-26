@@ -5,6 +5,7 @@ CartSchema = mongoose.Schema(
 
 )
 CartSchema.methods = {}
+
 CartSchema.statics = {}
 
 mongoose.model "Cart", CartSchema

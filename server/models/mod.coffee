@@ -1,5 +1,6 @@
 mongoose = require("mongoose")
 Schema = mongoose.Schema
+Cart = mongoose.model("Cart")
 slug = require("mongoose-slug")
 timestamps = require("mongoose-times")
 ModSchema = mongoose.Schema(
@@ -28,6 +29,10 @@ ModSchema.path("body").required true, "Mod body cannot be blank"
 ModSchema.plugin slug("name")
 ModSchema.plugin timestamps
 ModSchema.methods =
+  fillCart: (cart)->
+    @carted = true for mod in cart.mods when mod.toString() is @_id.toString()
+    return
+    
   addVersion: (data, cb) ->
     v = @versions.push(data)
     self = this
@@ -126,10 +131,25 @@ ModSchema.statics =
   @param {Object} options
   @param {Function} cb
   @api private
+  
   ###
   list: (options, cb) ->
     criteria = options.criteria or {}
-    @find(criteria).sort(options.sort).limit(options.perPage).populate("author", "username").skip(options.perPage * options.page).exec cb
+    @find(criteria).sort(options.sort)
+      .limit(options.perPage).populate("author", "username")
+      .skip(options.perPage * options.page)
+      .exec (err, mods) ->
+        if err or !mods
+          return cb err, mods
+        if options.cart
+          Cart.findById(options.cart, (err, cart)->
+            if !err and cart
+              mod.fillCart cart for mod in mods
+              cb(err, mods)
+          )
+        else
+          cb(err, mods)
+              
     return
 
 mongoose.model "Mod", ModSchema

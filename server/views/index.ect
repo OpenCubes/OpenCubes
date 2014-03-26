@@ -4,7 +4,12 @@
     <img class="mod_logo" src="/images/puzzle.png" />
     <div class="actions btn-group-vertical">
         <a class="download btn btn-primary" data-icon="download" target="_blank" href="/pack/?id=<%- mod.id%>">Download now</a>
-        <div class="cart btn btn-primary" data-id="<%- mod.id%>" data-icon="cartfill">Add to cart</div>
+        <% if mod.carted is true : %>
+        <div class="cart btn btn-primary btn-lg" data-id="52e8f0a1b31cc100000a171d"><span class="glyphicon glyphicon-ok"></span> Remove</div>
+        <% else :%>
+        <div class="cart btn btn-primary" data-id="<%- mod.id%>" data-icon="cartfill" onclick="pushToCart('<%- mod.id%>')" >Add to cart</div>
+        <% end %>
+      
     </div>
     <div class="modinfo">
         <a href="/mod/<%- mod.slug%>" data-ajax="true" class="view">

@@ -174,7 +174,6 @@ aside {
     .actions {
         float: right;
         font-size: 16px;
-        .border-radius(6px);
         div {
             padding: 10px;
         }
@@ -182,7 +181,17 @@ aside {
         }
         .cart {
             cursor: pointer;
+            .transition-property(color);
+            .transition-duration(500ms);
+            .transition-timing-function(linear, ease-in);
+            &.cart-loading {
+                color: rgba(0,0,0,0.1);
+                .transition-property(color);
+                .transition-duration(500ms);
+                .transition-timing-function(linear, ease-in);
+            }
         }
+
     }
     .author {
         font-size: 18px;

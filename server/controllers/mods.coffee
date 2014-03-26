@@ -141,8 +141,9 @@ exports.index = (req, res) ->
     sort: sort
     filter: filter
     criteria: ((if filter isnt "all" then category: filter else {}))
+    cart: req.cookies.cart_id
 
-  
+  cart = req.cookies.cart_id;
   # We get the params in the url -> Preserve the params in the links
   url_parts = url.parse(req.url, true)
   query = url_parts.search
