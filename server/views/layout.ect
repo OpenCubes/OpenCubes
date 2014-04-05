@@ -2,18 +2,17 @@
 <html>
     
     <head>
-        <link rel="stylesheet" href="/css/main.css">
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/<%- @theme or 'united' %>/bootstrap.min.css">
-        <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.2.0/bootbox.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
+        <link data-no-instant rel="stylesheet" href="/css/main.css">
+        <link data-no-instant rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/<%- @theme or 'united' %>/bootstrap.min.css">
+        <script data-no-instant src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+        <script data-no-instant src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.2.0/bootbox.min.js"></script>
+        <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
         
-        <script src="/js/joconut.min.js"></script>
-        
+        <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/instantclick/2.1.0/instantclick.min.js"></script>
         
         <% content 'head' %>
-        <script src="/js/main.js"></script>
+        <script src="/js/main.js" data-no-instant></script>
         <title><%- (@title or 'OpenCubes').replace /(\r\n|\n|\r)/g, "" %></title>
     </head>
     
