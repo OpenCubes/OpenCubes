@@ -5,9 +5,11 @@
     <div class="actions btn-group-vertical">
         <a class="download btn btn-primary" data-icon="download" target="_blank" href="/pack/?id=<%- mod.id%>">Download now</a>
         <% if mod.carted is true : %>
-        <div class="cart btn btn-primary btn-lg" data-id="52e8f0a1b31cc100000a171d"><span class="glyphicon glyphicon-ok"></span> Remove</div>
+        <div class="cart btn btn-primary btn-lg" data-id="<%- mod.id%>" onclick="dropCart('<%- mod.id%>')"><span class="glyphicon glyphicon-ok"></span> Remove</div>
         <% else :%>
-        <div class="cart btn btn-primary" data-id="<%- mod.id%>" data-icon="cartfill" onclick="pushToCart('<%- mod.id%>')" >Add to cart</div>
+        <div class="cart btn btn-primary" data-id="<%- mod.id%>"  onclick="pushToCart('<%- mod.id%>')">
+          <span class="cart-btn cart-a cart-<%-mod.id %>" data-icon="cartfill">Add to cart</span>
+        </div>
         <% end %>
       
     </div>

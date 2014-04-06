@@ -136,6 +136,15 @@ aside {
     
    
 }
+.cart {
+    overflow: hidden;
+}
+.cart-btn {
+    position: relative;
+}
+.cart-b {
+    top: -20px;
+}
 .filter {
     cursor: pointer;
 }
@@ -182,12 +191,12 @@ aside {
         .cart {
             cursor: pointer;
             .transition-property(color);
-            .transition-duration(500ms);
+            .transition-duration(400ms);
             .transition-timing-function(linear, ease-in);
             &.cart-loading {
-                color: rgba(0,0,0,0.1);
+                color: rgba(0,0,0,0);
                 .transition-property(color);
-                .transition-duration(500ms);
+                .transition-duration(400ms);
                 .transition-timing-function(linear, ease-in);
             }
         }

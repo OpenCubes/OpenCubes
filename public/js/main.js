@@ -261,12 +261,12 @@ var addToCart = function(id, cb) {
     if (!cart) {
         return ajax('/api/cart/create', function(data) {
             if (data.status === "success") {
-                $('#main').prepend(bs_alert('success', data.message));
+                if (!cb) $('#main').prepend(bs_alert('success', data.message));
                 $.cookie('cart_id', data.data.cart._id, {
                     path: '/',
                     expires: 365
                 });
-                addToCart(id);
+                addToCart(id, cb);
             }
             if (data.status === "error") {
                 $('#main').prepend(bs_alert('danger', data.message));
@@ -285,10 +285,17 @@ var addToCart = function(id, cb) {
 }
 pushToCart = function(id) {
     var $el = $('.cart[data-id=' + id + ']');
-    $el.addClass('cart-loading')
+    var $a = $('.cart-a.cart-' + id);
     addToCart(id, function(data) {
-
-        $el.attr('data-icon', '').addClass('btn-lg').html('<span class="glyphicon glyphicon-ok"></span> Remove');
-        $el.removeClass('cart-loading')
+        $a.animate({
+            'top': '+=20px'
+        }, 250, function() {
+            $el.html('<span class="cart-btn cart-b cart-' + id + '"><span class="glyphicon glyphicon-ok"></span> Remove</span>');
+            $el.attr('onclick', 'dropCartItem(\'' + id + '\')')
+            var $b = $('.cart-b.cart-' + id);
+            $b.animate({
+                'top': '+=20px'
+            }, 250);
+        });
     });
 }
