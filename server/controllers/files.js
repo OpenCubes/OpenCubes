@@ -176,4 +176,47 @@
     });
   };
 
+  exports.remove = function(req, res) {
+    var uid;
+    uid = req.params.uid;
+    if (!uid) {
+      return res.send({
+        status: "error",
+        code: 400,
+        id: "missing_param",
+        message: "Please enter a file uid"
+      });
+    } else {
+      File.remove({
+        uid: uid
+      }, function(err) {
+        var file;
+        if (err) {
+          return res.send({
+            status: "error",
+            code: 500,
+            id: "database_error",
+            message: "An error occured. Please try again"
+          });
+        }
+        file = __dirname.getParent() + "/uploads/" + uid;
+        return fs.unlink(file, function(err) {
+          if (err) {
+            return res.send({
+              status: "error",
+              code: 500,
+              id: "fs_error",
+              message: "An error occured. Please try again"
+            });
+          }
+          return res.send({
+            status: "success",
+            code: 200,
+            message: "Done!"
+          });
+        });
+      });
+    }
+  };
+
 }).call(this);

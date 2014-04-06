@@ -69,10 +69,10 @@
                             <small><%- @versions[version][file] %></small>
                         </td>
                         <td>
-                         <a href="/file/<%- @versions[version][file] %>/delete" class="glyphicon glyphicon-trash"></a>
+                        <a href="/file/<%- @versions[version][file] %>/delete" data-no-instant class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                         <td>
-                         <a href="/file/<%- @versions[version][file] %>" class="glyphicon glyphicon-download"></a>
+                         <a href="/file/<%- @versions[version][file] %>" class="glyphicon glyphicon-download btn"></a>
                         </td>
                     </tr>
                 <%end>

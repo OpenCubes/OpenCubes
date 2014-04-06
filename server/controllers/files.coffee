@@ -149,3 +149,36 @@ exports.download = (req, res) ->
     return
 
   return
+
+exports.remove = (req, res) ->
+  uid = req.params.uid
+  unless uid
+    return res.send
+      status: "error"
+      code: 400
+      id: "missing_param"
+      message: "Please enter a file uid"
+  else
+    File.remove({uid: uid}, (err) ->
+      if err
+        return res.send
+          status: "error"
+          code: 500
+          id: "database_error"
+          message: "An error occured. Please try again"
+      file = __dirname.getParent() + "/uploads/" + uid
+      fs.unlink file, (err) ->
+        if err
+          return res.send
+            status: "error"
+            code: 500
+            id: "fs_error"
+            message: "An error occured. Please try again"
+        
+        res.send
+          status: "success"
+          code: 200
+          message: "Done!"
+    )
+
+  return

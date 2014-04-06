@@ -11,7 +11,7 @@
     app.server.get("/mod/:id/edit/(:section)?", auth.requiresLogin, app.controllers.mods.edit);
     app.server.post("/mod/:id/edit/files", auth.requiresLogin, app.controllers.files.upload);
     app.server.get("/mod/:id/download", app.controllers.files.download);
-    app.server.get("/file/:uid/delete", auth.requiresLogin, app.controllers.files.doDelete);
+    app.server.get("/file/:uid/delete", auth.requiresLogin, app.controllers.files.remove);
     app.server.get("/star/:slug", auth.requiresLogin, app.controllers.mods.star);
     app.server.post("/mod/:id/edit/(:section)?", auth.requiresLogin, app.controllers.mods.doEdit);
     app.server.get("/upload", auth.requiresLogin, app.controllers.mods.upload);
