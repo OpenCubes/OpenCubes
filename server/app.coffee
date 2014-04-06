@@ -22,6 +22,18 @@ app =
     mongoose = require("mongoose")
     mongoose.connect config.db_uri, config.db_opt, (err) ->
       return console.log(("  Error - Can't connect to mongodb").red)  if err
+      ###
+      if config.env is "dev"
+        edt = require('express-debug')
+        edt(app, {
+          panels: ['locals', 'request', 'session', 'template', 'software_info', 'profile']
+          depth: 4
+          extra_panels: []
+          path: '/express-debug'
+        })
+        
+      ###
+      
       timer2 = new Date().getTime()
       
       # Bootstrap models
