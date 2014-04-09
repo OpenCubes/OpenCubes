@@ -62,73 +62,18 @@ exports.edit = (req, res) ->
   return
 
 exports.doEdit = (req, res) ->
-  console.log req.body
-  Mod.load
-    slug: req.params.id
-    author: req.user._id
-  , (err, mod) ->
-    return res.send(403, "You are not the author")  if err or not mod
-    data = req.body
-    
-    # Check the section exists');
-    console.log req.params.section
-    section = [
-      "general"
-      "description"
-      "files"
-    ].fetch(req.params.section, "general")
-    console.log section
-    switch section
-      when "general"
-        map = check.map(
-          name: data.name
-          category: data.category
-          summary: data.summary
-        ,
-          name: check.unemptyString
-          category: check.unemptyString
-          summary: check.unemptyString
-        )
-        unless check.every(map)
-          req.flash "error", "Something is missing..."
-          return res.render("../views/edit/" + section + ".ect",
-            mod: mod
-          )
-        mod.name = data.name
-        mod.category = data.category
-        mod.summary = data.summary
-        mod.save (err, doc) ->
-          if err
-            req.flash "error", "Something is missing..."
-            return res.render("../views/edit/" + section + ".ect",
-              mod: mod
-              title: "Editing " + mod.name
-              url: "/mod/" + mod.slug + "/edit"
-            )
-          req.flash "success", "Succesfully edited!"
-          res.redirect "/mod/" + mod.slug + "/edit"
+  args = req.body
+  Mod.findOne({slug: req.params.id, author: req.user._id}, (err, mod) ->
+    if err or !mod
+      if err then console.log err
+      return res.send 403, "Please try again"
+    if args.value and args.value isnt '' and args.name and args.name isnt ''
+      mod[args.name] = args.value
+      mod.save()
+      return res.send 200, "Done!"
+    return res.send 401, "Please fill the field"
+  )
 
-      when "description"
-        unless data.body
-          req.flash "error", "Something is missing..."
-          return res.render("../views/edit/" + section + ".ect",
-            mod: mod
-          )
-        mod.body = data.body
-        mod.save (err, doc) ->
-          if err
-            req.flash "error", "Something is missing in mod..."
-            return res.render("../views/edit/" + section + ".ect",
-              mod: mod
-              title: "Editing " + mod.name
-              url: "/mod/" + mod.slug + "/edit"
-            )
-          req.flash "success", "Succesfully edited!"
-          res.redirect "/mod/" + mod.slug + "/edit"
-
-    return
-
-  return
 
 exports.index = (req, res) ->
   page = ((if req.params.page > 0 then req.param("page") else 1)) - 1

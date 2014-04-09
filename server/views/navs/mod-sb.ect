@@ -1,7 +1,7 @@
 <aside class="col-md-offset-1 col-md-2 pull-left">
     <ul class="nav nav-pills nav-stacked col-md-12">
         <li>
-            <a href="<%- @mod.slug %>/edit" class="">
+            <a href="<%- @mod.slug %>/edit" data-no-instant class="<%- if !@canEdit then 'need-login' %>" >
                 <% if @canEdit: %>
                 Edit this mod
                 <% else: %>

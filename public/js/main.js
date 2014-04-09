@@ -125,12 +125,24 @@ $(document).ready((triggerLoad = function () {
       }
     });
   }
-  $('#login').click(function (event) {
-    event.preventDefault();
-    showLoginPrompt();
-  });
+
 }));
-var showLoginPrompt = function (flash, type) {
+$(document).on('click', 'a.need-login', function (event) {
+  event.preventDefault();
+  var $el = $(this);
+  showLoginPrompt(function(){
+    $el.removeClass('need-login');
+    window.open($el.attr('href'), '_parent');
+  });
+});
+var showLoginPrompt = function (flash, type, cb) {
+  if(typeof flash === 'function'){
+    cb = flash;
+    flash = undefined;
+  }
+  cb = cb || function(){
+    window.location.reload();
+  }
   bootbox.dialog({
     message: '<img class="col-md-4 col-md-offset-4" src="/images/load/spinner-256.gif" />',
     title: "Please login",
@@ -155,7 +167,7 @@ var showLoginPrompt = function (flash, type) {
             success: function (data) {
               if (data.error === 'invalid_credentials') return showLoginPrompt('Invalid username or password. Please retry', 'danger');
               if (data.error) return showLoginPrompt('Unknown error. Please retry', 'danger');
-              window.location.reload();
+              cb();
 
             },
           });
