@@ -15,7 +15,7 @@
         <a href="/search" data-icon="O">Search</a>
     </li>
     <li>
-        <a href="/upload" data-icon="upload">Add mod</a>
+        <a href="/upload" data-icon="upload" data-no-instant <%- if !@user then 'class="need-login"' %>>Submit a mod</a>
     </li>
 </div>
 <div class="nav navbar-nav pull-right visible-md visible-lg visible-sm">
