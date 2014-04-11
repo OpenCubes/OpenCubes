@@ -1,41 +1,36 @@
-
 <% modHelper = (mod) -> %>
 <li class="mix mix_all">
-    <img class="mod_logo" src="/assets/<%- mod.slug %>.png" />
-    <div class="actions btn-group-vertical">
+    <div class="media">
+    <div class="pull-right btn-group-vertical">
         <a class="download btn btn-primary" data-icon="download" target="_blank" href="/pack/?id=<%- mod.id%>">Download now</a>
-        <% if mod.carted is true : %>
+			<% if mod.carted is true : %>
         <div class="cart btn btn-primary btn-lg" data-id="<%- mod.id%>" onclick="dropCart('<%- mod.id%>')"><span class="glyphicon glyphicon-ok"></span> Remove</div>
         <% else :%>
         <div class="cart btn btn-primary" data-id="<%- mod.id%>"  onclick="pushToCart('<%- mod.id%>')">
-          <span class="cart-btn cart-a cart-<%-mod.id %>" data-icon="cartfill">Add to cart</span>
+            <span class="cart-btn cart-a cart-<%-mod.id %>" data-icon="cartfill">Add to cart</span>
         </div>
         <% end %>
-      
     </div>
-    <div class="modinfo">
-        <a href="/mod/<%- mod.slug%>" data-ajax="true" class="view">
-            <h1 class="title"><%- mod.name%> <small class="author"> <a href="/user/<%- mod.author.username%>">by <%- mod.author.username%></small></a></h1><h6 class="summary text"><%- mod.summary%></h6></a>
-        <div class="links">
-            <a href="/demo/<%- mod.slug%>" id="demo" data-icon="play">demo</a>
-            <a href="/view/<%- mod.slug%>" id="view" data-icon="eye">view</a>
-            <a href="/cmod/<%- mod.slug%>" id="cmod" data-icon="cartfill">cart</a> 
-            <a href="#" id="star" data-icon="stare">0</a> 
-        </div>
+    <a class="pull-left" href="/mod/<%- mod.slug%>">
+    <img class="media-object" width="64" height="64" src="/assets/<%- mod.slug %>.png" alt="Logo">
+    </a>
+    <div class="media-body">
+        <h4 class="media-heading"><a href="/mod/<%- mod.slug%>"><%- mod.name%></a> <small class="author"> <a href="/user/<%- mod.author.username%>">by <%- mod.author.username%></small></a></h4>
+		<%- mod.summary%>
     </div>
 </li>
 <% end %>
 <% extend 'layout.ect' %>
-    <% include 'utils/flash.ect' %>
-	<% if @mods?.length : %>
+<% include 'utils/flash.ect' %>
+<% if @mods?.length : %>
 	<ul>
 		<% for mod in @mods : %>
-			<%- modHelper mod %>
-		<% end %>
-	</ul>
-	<%- @pagination %>
+		<%- modHelper mod %>
+    	<% end %>
+		</ul>
+<%- @pagination %>
 <% else : %>
-	<p>No mods.</p>
+	<p>No mods yet in this category.</p>
 <% end %>
 <% block 'navbar' : %>
 <% include 'navs/main-nav.ect'%>
