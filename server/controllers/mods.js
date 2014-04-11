@@ -1,5 +1,5 @@
 (function() {
-  var Cart, Mod, URI, archiver, check, mongoose, paginator, url, utils;
+  var Cart, Mod, URI, archiver, check, fs, mongoose, paginator, send, url, utils, uuid;
 
   mongoose = require("mongoose");
 
@@ -16,6 +16,8 @@
   check = require("check-types");
 
   archiver = require("archiver");
+
+  send = require("send");
 
   exports.view = function(req, res) {
     setTimeout((function() {
@@ -83,6 +85,58 @@
         return res.send(200, "Done!");
       }
       return res.send(401, "Please fill the field");
+    });
+  };
+
+  exports.getLogo = function(req, res) {
+    if (!req.params.slug) {
+      return res.send(403, "no slug");
+    }
+    return Mod.findOne({
+      slug: req.params.slug
+    }, function(err, mod) {
+      if (err || !mod) {
+        return res.send(500, "error");
+      }
+      if (!mod.logo) {
+        return send(req, __dirname.getParent().getParent() + "/public/images/puzzle.png").pipe(res);
+      }
+      return send(req, __dirname.getParent() + "/uploads/" + mod.logo).pipe(res);
+    });
+  };
+
+  uuid = require("node-uuid");
+
+  fs = require("fs");
+
+  exports.setLogo = function(req, res) {
+    var file, newfile, uid;
+    console.log(req.files);
+    file = req.files.file;
+    if (!file) {
+      res.send(401, "missing file");
+    }
+    uid = uuid.v4() + ".png";
+    newfile = __dirname.getParent() + "/uploads/" + uid;
+    return fs.rename(file.path, newfile, function(err) {
+      var slug;
+      if (err) {
+        console.log(err);
+        return res.send(500, "something went wrong while moving");
+      }
+      slug = req.params.id;
+      return Mod.load({
+        slug: slug
+      }, function(err, mod) {
+        if (err || !mod) {
+          console.log(err);
+          return res.send(500, "error with db");
+        }
+        mod.logo = uid;
+        console.log("done!");
+        mod.save();
+        return res.send(200, "done");
+      });
     });
   };
 

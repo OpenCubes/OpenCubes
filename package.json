@@ -25,7 +25,8 @@
     "node-uuid": "~1.4.1",
     "archiver": "~0.5.2",
     "html-minifier": "~0.5.5",
-    "markdown-symbols": "~0.1.0"
+    "markdown-symbols": "~0.1.0",
+    "send": "~0.2.0"
   },
   "devDependencies": {
     "express-debug": "~1.0.3",

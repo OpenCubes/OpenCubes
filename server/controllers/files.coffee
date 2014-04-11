@@ -21,6 +21,7 @@ copyFile = (source, target, cb) ->
 
   rd.pipe wr
   return
+
 formidable = require("formidable")
 util = require("util")
 fs = require("fs")
@@ -28,6 +29,7 @@ archiver = require("archiver")
 uuid = require("node-uuid")
 Mod = require("mongoose").model("Mod")
 File = require("mongoose").model("File")
+
 module.exports.upload = (req, res) ->
   form = new formidable.IncomingForm()
   form.uploadDir = __dirname.getParent() + "/temp/"

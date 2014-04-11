@@ -62,6 +62,8 @@ app =
       server.use express.logger("dev")
       server.use express.json()
       server.use express.urlencoded()
+
+
       server.use express.methodOverride()
       server.use express.cookieParser(config.securitySalt)
       server.use express.session()
@@ -106,6 +108,11 @@ app =
       
       # development only
       server.use express.errorHandler()  if "development" is server.get("env")
+
+      app.bodyParser = express.bodyParser
+        keepExtensions:true,
+        uploadDir: path.join __dirname,'/temp/'
+
       router app
       httpServer = http.createServer(server)
       httpServer.listen server.get("port"), server.get("ip"), ->

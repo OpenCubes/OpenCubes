@@ -2,15 +2,24 @@ auth = require("./middlewares/auth.js")
 module.exports = (app) ->
   timer = new Date().getTime()
   app.server.get "/(page/:page)?", app.controllers.mods.index
+
   app.server.get "/mod/:id", app.controllers.mods.view
+
+  app.server.get "/assets/:slug.png", app.controllers.mods.getLogo
+
   app.server.get "/mod/:id/edit/(:section)?", auth.requiresLogin, app.controllers.mods.edit
   app.server.post "/mod/:id/edit/files", auth.requiresLogin, app.controllers.files.upload
+  app.server.post "/mod/:id/edit/(:section)?/post", auth.requiresLogin, app.controllers.mods.doEdit
+  app.server.post "/mod/:id/edit/logo/upload", app.bodyParser, app.controllers.mods.setLogo
+
   app.server.get "/mod/:id/download", app.controllers.files.download
   app.server.get "/file/:uid/delete", auth.requiresLogin, app.controllers.files.remove
+
   app.server.get "/star/:slug", auth.requiresLogin, app.controllers.mods.star
-  app.server.post "/mod/:id/edit/(:section)?/post", auth.requiresLogin, app.controllers.mods.doEdit
+
   app.server.get "/upload", auth.requiresLogin, app.controllers.mods.upload
   app.server.get "/login", app.controllers.users.login
+
   app.server.post "/login", (req, res, next) ->
     app.passport.authenticate("local", (err, user, info) ->
       return next(err)  if err

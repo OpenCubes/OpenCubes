@@ -6,6 +6,7 @@ url = require("url")
 URI = require("URIjs")
 check = require("check-types")
 archiver = require("archiver")
+send = require("send");
 exports.view = (req, res) ->
   setTimeout (->
     Mod.load
@@ -75,6 +76,45 @@ exports.doEdit = (req, res) ->
   )
 
 
+exports.getLogo = (req, res) ->
+  if !req.params.slug
+    return res.send 403, "no slug"
+  Mod.findOne({slug: req.params.slug}, (err, mod) ->
+    if(err or !mod)
+      return res.send 500, "error"
+    if(!mod.logo)
+      return send(req, __dirname.getParent().getParent() + "/public/images/puzzle.png")
+        .pipe(res)
+
+    send(req, __dirname.getParent() + "/uploads/"+mod.logo)
+      .pipe(res)
+  )
+
+uuid = require("node-uuid")
+fs = require("fs")
+exports.setLogo = (req, res) ->
+  console.log(req.files)
+  file = req.files.file
+  if(!file)
+    res.send 401, "missing file"
+  uid = uuid.v4() + ".png"
+  newfile = __dirname.getParent() + "/uploads/" + uid
+  fs.rename file.path, newfile, (err) ->
+    if err
+      console.log err
+      return res.send 500, "something went wrong while moving"
+    slug = req.params.id
+    Mod.load
+      slug: slug
+      , (err, mod) ->
+        if err or not mod
+          console.log(err)
+          return res.send 500, "error with db"
+        mod.logo = uid
+        console.log("done!")
+        mod.save()
+        return res.send 200, "done"
+
 exports.index = (req, res) ->
   page = ((if req.params.page > 0 then req.param("page") else 1)) - 1
   sort = (req.param("sort")) or "date"
@@ -88,7 +128,7 @@ exports.index = (req, res) ->
     criteria: ((if filter isnt "all" then category: filter else {}))
     cart: req.cookies.cart_id
 
-  cart = req.cookies.cart_id;
+  cart = req.cookies.cart_id
   # We get the params in the url -> Preserve the params in the links
   url_parts = url.parse(req.url, true)
   query = url_parts.search
