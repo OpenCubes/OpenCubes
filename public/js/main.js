@@ -2,10 +2,13 @@ $(document).ready(function () {
   InstantClick.init();
 });
 $(document).on('click', 'a.need-login', function (event) {
+  if($.isLoggedIn)
+    return;
   event.preventDefault();
   var $el = $(this);
   showLoginPrompt(function(){
     $el.removeClass('need-login');
+    if(!$el.hasClass('no-redirect'))
     window.open($el.attr('href'), '_parent');
   });
 });

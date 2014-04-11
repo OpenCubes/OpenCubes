@@ -26,7 +26,9 @@
     "archiver": "~0.5.2",
     "html-minifier": "~0.5.5",
     "markdown-symbols": "~0.1.0",
-    "send": "~0.2.0"
+    "send": "~0.2.0",
+    "sendmail": "~0.2.1",
+    "nodemailer": "~0.6.2"
   },
   "devDependencies": {
     "express-debug": "~1.0.3",

@@ -9,7 +9,7 @@
         <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.2.0/bootbox.min.js"></script>
         <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
         <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/instantclick/2.1.0/instantclick.min.js"></script>
-        
+        <script>$.isLoggedIn = <%- if @user then 'true' else 'false' %></script>
         <% content 'head' %>
         <script src="/js/main.js" data-no-instant></script>
         <title><%- (@title or 'OpenCubes').replace /(\r\n|\n|\r)/g, "" %></title>

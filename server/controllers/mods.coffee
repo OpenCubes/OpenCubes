@@ -11,6 +11,8 @@ exports.view = (req, res) ->
   setTimeout (->
     Mod.load
       slug: req.params.id
+      $cart_id: req.cookies.cart_id
+      $user: req.user
     , (err, mod) ->
       if err or not mod
         res.reason = "Mod not found"

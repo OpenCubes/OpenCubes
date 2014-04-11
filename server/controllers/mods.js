@@ -22,7 +22,9 @@
   exports.view = function(req, res) {
     setTimeout((function() {
       Mod.load({
-        slug: req.params.id
+        slug: req.params.id,
+        $cart_id: req.cookies.cart_id,
+        $user: req.user
       }, function(err, mod) {
         if (err || !mod) {
           res.reason = "Mod not found";

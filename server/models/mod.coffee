@@ -32,7 +32,11 @@ ModSchema.methods =
   fillCart: (cart)->
     @carted = true for mod in cart.mods when mod.toString() is @_id.toString()
     return
-    
+
+  fillStargazer: (luser) ->
+    @starred = true for user in @stargazers when ""+user.id.toString() is ""+luser._id
+    return
+
   addVersion: (data, cb) ->
     v = @versions.push(data)
     self = this
@@ -118,10 +122,22 @@ ModSchema.statics =
   @api private
   ###
   load: (data, cb) ->
+    cartId = data.$cart_id
+    user = data.$user
+    data.$cart_id = undefined
+    data.$user = undefined
     query = @findOne(data)
     
-    # query.populate('category_id').populate('author', 'username _id').select('name summary category_id creation_date _id slug');
-    query.exec cb
+    query.exec (err, mod) ->
+      if cartId
+        return Cart.findById(cartId, (err, cart)->
+          if !err and cart
+            mod.fillCart cart
+          if user
+            mod.fillStargazer user
+          cb(err, mod)
+        )
+      cb err, mod
     return
 
   
