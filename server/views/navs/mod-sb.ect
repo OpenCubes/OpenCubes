@@ -2,20 +2,20 @@
 <div class="col-md-offset-1 col-md-2 pull-left ">
 	<div class="btn-group-vertical">
         <% if @mod.starred is true : %>
-            <a href="/star/<%- @mod.slug %>" class="btn btn-primary btn-lg need-login" data-no-instant>
+            <a href="/star/<%- @mod.slug %>" class="btn btn-primary need-login" data-no-instant>
 				<span class="glyphicon glyphicon-star"></span> Unstar this mod <span class="badge"> <%- @mod.vote_count or 0 %> </span>
 			</a>
         <% else :%>
-            <a href="/star/<%- @mod.slug %>" class="btn btn-primary btn-lg need-login" data-no-instant>
+            <a href="/star/<%- @mod.slug %>" class="btn btn-primary need-login" data-no-instant>
 				<span class="glyphicon glyphicon-star-empty"></span> Star this mod <span class="badge"> <%- @mod.vote_count or 0 %> </span>
 			</a>
         <% end %>
-            <a href="<%- @mod.slug %>/download" class="btn btn-primary btn-lg" data-no-instant>
+            <a href="<%- @mod.slug %>/download" class="btn btn-primary" data-no-instant>
 				<span class="glyphicon glyphicon-download"></span> Download this mod 
 			</a>
 			
 		<% if @mod.carted is true : %>
-        <div class="cart btn btn-primary btn-lg" data-id="<%- @mod.id%>" onclick="dropCart('<%- @mod.id%>')"><span class="glyphicon glyphicon-ok"></span> Remove</div>
+        <div class="cart btn btn-primary" data-id="<%- @mod.id%>" onclick="dropCart('<%- @mod.id%>')"><span class="glyphicon glyphicon-ok"></span> Remove</div>
         <% else :%>
         <div class="cart btn btn-primary" data-id="<%- @mod.id%>"  onclick="pushToCart('<%- @mod.id%>')">
             <span class="cart-btn cart-a cart-<%- @mod.id %>" data-icon="cartfill">Add to cart</span>
@@ -25,7 +25,7 @@
 	</div>
     <ul class="nav nav-pills nav-stacked col-md-12">
 	
-            <a href="<%- @mod.slug %>/edit" data-no-instant class="btn btn-link btn-lg <%- if !@canEdit then 'need-login' %>" >
+            <a href="<%- @mod.slug %>/edit" data-no-instant class="btn btn-link <%- if !@canEdit then 'need-login' %>" >
 				<span class="glyphicon glyphicon-edit"></span>
                 <% if @canEdit: %>
                 Edit this mod

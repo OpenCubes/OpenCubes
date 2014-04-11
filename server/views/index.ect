@@ -4,7 +4,7 @@
     <div class="pull-right btn-group-vertical">
         <a class="download btn btn-primary" data-icon="download" target="_blank" href="/pack/?id=<%- mod.id%>">Download now</a>
 			<% if mod.carted is true : %>
-        <div class="cart btn btn-primary btn-lg" data-id="<%- mod.id%>" onclick="dropCart('<%- mod.id%>')"><span class="glyphicon glyphicon-ok"></span> Remove</div>
+        <div class="cart btn btn-primary" data-id="<%- mod.id%>" onclick="dropCart('<%- mod.id%>')"><span class="glyphicon glyphicon-ok"></span> Remove</div>
         <% else :%>
         <div class="cart btn btn-primary" data-id="<%- mod.id%>"  onclick="pushToCart('<%- mod.id%>')">
             <span class="cart-btn cart-a cart-<%-mod.id %>" data-icon="cartfill">Add to cart</span>
