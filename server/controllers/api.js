@@ -80,6 +80,23 @@
     });
   };
 
+  exports.view = function(req, res) {
+    setTimeout((function() {
+      Mod.load({
+        slug: req.params.id,
+        $cart_id: req.cookies.cart_id,
+        $user: req.user
+      }, function(err, mod) {
+        if (err || !mod) {
+          res.reason = "Mod not found";
+          return utils.notfound(req, res, function() {});
+        }
+        mod.htmlbody = req.application.parser(mod.body);
+        return res.send(mod);
+      });
+    }), 0);
+  };
+
   exports.search = function(req, res) {
     var q, regex;
     regex = new RegExp(req.params.string, 'i');

@@ -58,6 +58,7 @@ module.exports = (app) ->
   app.server.post "/api/ajax/comments/:slug/add", auth.requiresLogin, app.bodyParser, app.controllers.comments.addComment
 
   app.server.get "/api/mods/search/:string", app.controllers.api.search
+  app.server.get "/api/mods/view/:id", app.controllers.api.view
 
   app.server.get "/api/cart/:cart/push/:id", app.controllers.api.addToCart
   app.server.get "/api/cart/create", app.controllers.api.createCart

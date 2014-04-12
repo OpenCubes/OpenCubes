@@ -1,0 +1,78 @@
+<% extend 'edit/edit.ect' %>
+    <% block 'form': %>
+        <form class="form-horizontal">
+            <fieldset>
+
+                <!-- Form Name -->
+                <legend>Add a new dependency</legend>
+
+                <!-- Select Basic -->
+                <div class="form-group">
+                    <label class="col-md-2 control-label" for="mod_name">Select mod</label>
+                    <div class="col-md-8">
+                        <% include 'mods/search-box.ect' %>
+                    </div>
+                </div>
+
+                <!-- Select Basic -->
+                <div class="form-group">
+                    <label class="col-md-2 control-label" for="version">Then select a version</label>
+                    <div class="col-md-8">
+                        <select id="version" name="version">
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Multiple Radios -->
+                <div class="form-group">
+                    <label class="col-md-2 control-label" for="type"></label>
+                    <div class="col-md-8">
+                        <div class="radio">
+                            <label for="type-0">
+                                <input type="radio" name="type" id="type-0" value="required" checked="checked">This is required
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label for="type-1">
+                                <input type="radio" name="type" id="type-1" value="optional">This is optional
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="submit"></label>
+                    <div class="col-md-4">
+                        <button id="submit" name="submit" class="btn btn-primary btn-block">Add</button>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+        <script>
+            $(document).ready(function () {
+                $version = $('#version').selectize({
+                    valueField: 'name',
+                    labelField: 'name',
+                    searchField: ['name']
+                });
+
+                $version[0].selectize.disable();
+
+                $('#search').on('change', function (evt) {
+                    var slug = $(this).val();
+                    $version[0].selectize.load(function (callback) {
+                        ajax('/api/mods/view/' + slug, function (data) {
+                            $version[0].selectize.enable();
+
+                            console.log(data.versions);
+                            callback(data.versions);
+                        });
+                    });
+
+                });
+            });
+        </script>
+
+        <% end %>

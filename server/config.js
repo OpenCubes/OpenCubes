@@ -8,7 +8,7 @@
     },
     port: process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 5000,
     ip: process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "",
-    theme: "lumen",
+    theme: "flatly",
     env: "dev"
   };
 

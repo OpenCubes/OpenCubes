@@ -62,6 +62,25 @@ exports.createCart = (req, res)->
     data:
       cart: cart
 
+exports.view = (req, res) ->
+  setTimeout (->
+    Mod.load
+      slug: req.params.id
+      $cart_id: req.cookies.cart_id
+      $user: req.user
+    , (err, mod) ->
+      if err or not mod
+        res.reason = "Mod not found"
+        return utils.notfound(req, res, ->
+        )
+      mod.htmlbody = req.application.parser(mod.body)
+
+      return res.send mod
+
+    return
+  ), 0
+  return
+
 exports.search = (req, res) ->
 
   regex = new RegExp(req.params.string, 'i')

@@ -49,10 +49,11 @@ exports.edit = (req, res) ->
       "general"
       "description"
       "files"
+      "dependencies"
     ].fetch(req.params.section, "general")
     mod.listVersion (v) ->
       console.log v
-      res.render "../views/edit/" + section + ".ect",
+      res.render "edit/" + section + ".ect",
         mod: mod
         title: "Editing " + mod.name
         url: "/mod/" + mod.slug + "/edit"

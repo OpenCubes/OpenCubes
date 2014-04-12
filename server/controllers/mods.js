@@ -55,10 +55,10 @@
       if (err || !mod) {
         return res.send(403, "You are not the author");
       }
-      section = ["general", "description", "files"].fetch(req.params.section, "general");
+      section = ["general", "description", "files", "dependencies"].fetch(req.params.section, "general");
       mod.listVersion(function(v) {
         console.log(v);
-        res.render("../views/edit/" + section + ".ect", {
+        res.render("edit/" + section + ".ect", {
           mod: mod,
           title: "Editing " + mod.name,
           url: "/mod/" + mod.slug + "/edit",
