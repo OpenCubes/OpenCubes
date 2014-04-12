@@ -39,5 +39,12 @@ Object.defineProperty Array::, "findIn",
         i--
       return
     )
-    (if index is -1 then `undefined` else arr[index])
+    (if index is -1 then undefined else arr[index])
 
+global.status = (status, code, id, message) ->
+  return {
+    status: status
+    code: code
+    id: id
+    message: message
+  }

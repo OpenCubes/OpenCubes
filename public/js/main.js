@@ -12,6 +12,20 @@ $(document).on('click', 'a.need-login', function (event) {
     window.open($el.attr('href'), '_parent');
   });
 });
+$(document).on('click', 'a.bs-tab',function (e) {
+  e.preventDefault();
+  $(this).tab('show');
+});
+$(document).on("eldarion-ajax:begin", function(evt, $el) {
+    $el.html("Processing...");
+});
+$(document).on("eldarion-ajax:success", function(evt, $el, data) {
+    window.location.reload();
+});
+$(document).on("eldarion-ajax:complete", function(evt, $el, xhr, status) {
+  console.log(arguments);
+  $el.html('<p class="text-danger">'+xhr.statusText+'</p>');
+});
 var showLoginPrompt = function (flash, type, cb) {
   if(typeof flash === 'function'){
     cb = flash;

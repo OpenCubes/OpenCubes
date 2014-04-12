@@ -22,6 +22,14 @@ ModSchema = mongoose.Schema(
     id: Schema.Types.ObjectId
     date: Date
   ]
+  comments: [
+    author:
+      type: Schema.Types.ObjectId
+      ref: "User"
+    title: String
+    body: String
+    date: Date
+  ]
   versions: [name: String]
 )
 ModSchema.path("name").required true, "Mod title cannot be blank"
@@ -127,7 +135,7 @@ ModSchema.statics =
     data.$cart_id = undefined
     data.$user = undefined
     query = @findOne(data)
-    
+    query.populate "comments.author"
     query.exec (err, mod) ->
       if cartId
         return Cart.findById(cartId, (err, cart)->

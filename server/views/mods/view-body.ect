@@ -1,16 +1,60 @@
 <div class="meta">
-            <div class="media">
-              <a class="pull-left" href="#">
-                <img class="media-object"  src="/assets/<%- @mod.slug %>.png" alt="logo" height="128" width="128">
+    <div class="media">
+        <a class="pull-left" href="#">
+                <img class="media-object"  src="/assets/<%- @mod.slug %>.png" alt="logo" height="128" width="128" />
               </a>
-              <div class="media-body">
-              <h3 class="media-heading"><%- @mod.name %></h3>
-                        <%- @mod.summary %>
-                        <br />
-              </div>
-            </div>
+        <div class="media-body">
+            <h3 class="media-heading"><%- @mod.name %></h3>
+            <%- @mod.summary %>
+                <br />
+        </div>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#description" data-toggle="tab">Description</a>
+        </li>
+        <li><a href="#comments" data-toggle="tab">Comments</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="description">
+
             <div class="main-desc">
                 <%- @mod.htmlbody %>
             </div>
         </div>
+        <div class="tab-pane" id="comments">
+            <% for comment in @mod.comments : %>
+                <div class="media">
+                    <div class="media-body">
+                        <h4 class="media-heading"><%- comment.title %></h4>
+                        <%- comment.body %>
+                            <br /><small>Posted by
+                            <a href="#">
+                                <%-comment.author.username%>
+                            </a> <abbr class="timeago" title="<%-comment.date.toISOString()%>"></abbr>
+                            </small>
+                    </div>
+                </div>
+                <hr />
+                <%end%><br />
+                    <form class="form col-md-6 ajax" role="form" action="/api/ajax/comments/<%-@mod.slug %>/add" method="post">
+                        <div class="form-group">
+                            <label class="sr-only" for="exampleInputEmail2">Title</label>
+                            <input type="text" name="name" class="form-control" id="exampleInputEmail2" placeholder="Enter title" />
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="exampleInputPassword2">Password</label>
+                            <textarea name="body" class="form-control" id="exampleInputPassword2" placeholder="Content"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-default">Comment</button>
+                    </form>
+        </div>
     </div>
+</div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery("abbr.timeago").timeago();
+    });
+</script>

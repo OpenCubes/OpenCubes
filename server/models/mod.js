@@ -32,6 +32,17 @@
         date: Date
       }
     ],
+    comments: [
+      {
+        author: {
+          type: Schema.Types.ObjectId,
+          ref: "User"
+        },
+        title: String,
+        body: String,
+        date: Date
+      }
+    ],
     versions: [
       {
         name: String
@@ -165,6 +176,7 @@
       data.$cart_id = void 0;
       data.$user = void 0;
       query = this.findOne(data);
+      query.populate("comments.author");
       query.exec(function(err, mod) {
         if (cartId) {
           return Cart.findById(cartId, function(err, cart) {

@@ -21,7 +21,7 @@
 <div class="nav navbar-nav pull-right visible-md visible-lg visible-sm">
     <%if !@user: %>
         <li>
-            <a href="/signup" data-icon="user">Register</a>
+            <a href="/signup" data-icon="user" data-no-instant>Register</a>
         </li>
         <li>
             <a class="need-login no-redirect" id="login" href="/login" data-no-instant>Login</a>
@@ -31,7 +31,7 @@
             <a href="/user" data-icon="user"><%- @user.username %></a>
         </li>
         <li>
-            <a id="logout" href="/logout">Logout</a>
+            <a id="logout" href="/logout" data-no-instant>Logout</a>
         </li>
     <% end %>
 </div>
