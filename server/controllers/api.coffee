@@ -61,3 +61,12 @@ exports.createCart = (req, res)->
     message: "Successfully created cart"
     data:
       cart: cart
+
+exports.search = (req, res) ->
+
+  regex = new RegExp(req.params.string, 'i')
+  console.log(regex)
+  q = Mod.find({name: regex})
+  q.populate("author", "username")
+  q.exec (err,mods) ->
+    return res.send(mods)

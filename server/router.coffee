@@ -3,6 +3,7 @@ module.exports = (app) ->
   timer = new Date().getTime()
   app.server.get "/(page/:page)?", app.controllers.mods.index
 
+  app.server.get "/search", app.controllers.mods.search
   app.server.get "/mod/:id", app.controllers.mods.view
 
   app.server.get "/assets/:slug.png", app.controllers.mods.getLogo
@@ -55,6 +56,8 @@ module.exports = (app) ->
   app.server.get "/api/ajax/login", app.controllers.api.ajaxLogin
   app.server.get "/api/ajax/glyphicons", app.controllers.api.glyphicons
   app.server.post "/api/ajax/comments/:slug/add", auth.requiresLogin, app.bodyParser, app.controllers.comments.addComment
+
+  app.server.get "/api/mods/search/:string", app.controllers.api.search
 
   app.server.get "/api/cart/:cart/push/:id", app.controllers.api.addToCart
   app.server.get "/api/cart/create", app.controllers.api.createCart

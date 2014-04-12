@@ -226,3 +226,9 @@ exports.cart = (req, res) ->
       return utils.notfound(req, res, ->)
     res.render("users/cart.ect", {cart: cart})
   )
+
+exports.search = (req, res) ->
+  res.render "mods/search.ect"
+  return
+
+

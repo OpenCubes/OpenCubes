@@ -268,4 +268,8 @@
     });
   };
 
+  exports.search = function(req, res) {
+    res.render("mods/search.ect");
+  };
+
 }).call(this);
