@@ -84,14 +84,19 @@
     setTimeout((function() {
       Mod.load({
         slug: req.params.id,
-        $cart_id: req.cookies.cart_id,
-        $user: req.user
+        $lean: true
       }, function(err, mod) {
         if (err || !mod) {
-          res.reason = "Mod not found";
-          return utils.notfound(req, res, function() {});
+          if (err) {
+            console.log(err);
+          }
+          return res.send(status("error", "404", "db_error", "Can't find mod `" + req.params.id + "`"));
         }
         mod.htmlbody = req.application.parser(mod.body);
+        mod.urls = {
+          web: "/mod/" + mod.slug,
+          logo: "/assets/" + mod.slug + ".png"
+        };
         return res.send(mod);
       });
     }), 0);
@@ -135,11 +140,13 @@
         for (_i = 0, _len = mods.length; _i < _len; _i++) {
           mod = mods[_i];
           mod.urls = {
-            api: "/api/mods/view/" + mod.slug,
-            web: "/mod/" + mod.slug
+            api: "/api/mods/view/" + mod.slug + ".json",
+            web: "/mod/" + mod.slug,
+            logo: "/assets/" + mod.slug + ".png"
           };
         }
         return res.send({
+          status: "success",
           mods: mods,
           page: page + 1,
           pages: Math.ceil(count / perPage)

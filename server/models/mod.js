@@ -243,13 +243,17 @@
     */
 
     load: function(data, cb) {
-      var cartId, query, user;
+      var cartId, lean, query, user;
       cartId = data.$cart_id;
       user = data.$user;
-      data.$cart_id = void 0;
-      data.$user = void 0;
+      lean = data.$lean;
+      data.$cart_id = data.$user = data.$lean = void 0;
       query = this.findOne(data);
+      if (lean) {
+        query.lean();
+      }
       query.populate("comments.author", "username");
+      query.populate("author", "username");
       query.exec(function(err, mod) {
         if (cartId) {
           return Cart.findById(cartId, function(err, cart) {

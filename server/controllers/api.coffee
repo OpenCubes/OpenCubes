@@ -66,14 +66,15 @@ exports.view = (req, res) ->
   setTimeout (->
     Mod.load
       slug: req.params.id
-      $cart_id: req.cookies.cart_id
-      $user: req.user
+      $lean: true
     , (err, mod) ->
       if err or not mod
-        res.reason = "Mod not found"
-        return utils.notfound(req, res, ->
-        )
+        console.log err if err
+        return res.send(status("error", "404", "db_error", "Can't find mod `"+req.params.id+"`"))
       mod.htmlbody = req.application.parser(mod.body)
+      mod.urls =
+        web: "/mod/"+mod.slug
+        logo: "/assets/"+mod.slug+".png"
 
       return res.send mod
 
@@ -108,9 +109,11 @@ exports.list = (req, res) ->
     Mod.count().exec (err, count) ->
       for mod in mods
         mod.urls =
-          api: "/api/mods/view/"+mod.slug
+          api: "/api/mods/view/"+mod.slug+".json"
           web: "/mod/"+mod.slug
+          logo: "/assets/"+mod.slug+".png"
       res.send
+        status: "success"
         mods: mods
         page: page + 1
         pages: Math.ceil(count / perPage)
