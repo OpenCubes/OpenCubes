@@ -1,4 +1,5 @@
 auth = require("./middlewares/auth.js")
+flood = require("./middlewares/flood.js")
 module.exports = (app) ->
   timer = new Date().getTime()
   app.server.get "/(page/:page)?", app.controllers.mods.index
@@ -69,5 +70,7 @@ module.exports = (app) ->
 
   app.server.get "/help/(:section)?.md", app.controllers.help.raw
   app.server.get "/help/(:section)?", app.controllers.help.getHelp
+  # Just a test
+  app.server.get "/flood", flood(10000, 2, 0), app.controllers.api.glyphicons
   console.log ("  Info - Loading routes took " + (new Date().getTime() - timer + "").bold + " ms").cyan
   return

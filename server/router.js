@@ -1,7 +1,9 @@
 (function() {
-  var auth;
+  var auth, flood;
 
   auth = require("./middlewares/auth.js");
+
+  flood = require("./middlewares/flood.js");
 
   module.exports = function(app) {
     var timer;
@@ -71,6 +73,7 @@
     app.server.get("/api/cart/:cart", app.controllers.api.lsCart);
     app.server.get("/help/(:section)?.md", app.controllers.help.raw);
     app.server.get("/help/(:section)?", app.controllers.help.getHelp);
+    app.server.get("/flood", flood(10000, 2, 0), app.controllers.api.glyphicons);
     console.log(("  Info - Loading routes took " + (new Date().getTime() - timer + "").bold + " ms").cyan);
   };
 
