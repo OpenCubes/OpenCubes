@@ -41,6 +41,16 @@ ModSchema.path("body").required true, "Mod body cannot be blank"
 ModSchema.plugin slug("name")
 ModSchema.plugin timestamps
 ModSchema.methods =
+  fillDeps: (cb) ->
+    ids = []
+    ids.push dep.id for dep in @deps
+    console.log "ids", ids
+    $this = @
+    q = mongoose.model("Mod").find "versions._id": {$in: ids}
+    q.select "name versions deps"
+    q.exec (err, mods) ->
+      cb(mods)
+
   fillCart: (cart)->
     @carted = true for mod in cart.mods when mod.toString() is @_id.toString()
     return
@@ -163,7 +173,7 @@ ModSchema.statics =
     data.$cart_id = undefined
     data.$user = undefined
     query = @findOne(data)
-    query.populate "comments.author"
+    query.populate "comments.author", "username"
     query.exec (err, mod) ->
       if cartId
         return Cart.findById(cartId, (err, cart)->

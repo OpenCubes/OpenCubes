@@ -47,22 +47,25 @@
   };
 
   exports.edit = function(req, res) {
-    Mod.load({
+    return Mod.load({
       slug: req.params.id,
       author: req.user._id
     }, function(err, mod) {
-      var section;
       if (err || !mod) {
         return res.send(403, "You are not the author");
       }
-      section = ["general", "description", "files", "dependencies"].fetch(req.params.section, "general");
-      mod.listVersion(function(v) {
-        console.log(v);
-        res.render("edit/" + section + ".ect", {
-          mod: mod,
-          title: "Editing " + mod.name,
-          url: "/mod/" + mod.slug + "/edit",
-          versions: v
+      mod.fillDeps(function(deps) {
+        var section;
+        section = ["general", "description", "files", "dependencies"].fetch(req.params.section, "general");
+        mod.listVersion(function(v) {
+          console.log(v);
+          res.render("edit/" + section + ".ect", {
+            mod: mod,
+            deps: deps,
+            title: "Editing " + mod.name,
+            url: "/mod/" + mod.slug + "/edit",
+            versions: v
+          });
         });
       });
     });

@@ -43,27 +43,27 @@ exports.edit = (req, res) ->
     author: req.user._id
   , (err, mod) ->
     return res.send(403, "You are not the author")  if err or not mod
-    
-    # Check the section exists
-    section = [
-      "general"
-      "description"
-      "files"
-      "dependencies"
-    ].fetch(req.params.section, "general")
-    mod.listVersion (v) ->
-      console.log v
-      res.render "edit/" + section + ".ect",
-        mod: mod
-        title: "Editing " + mod.name
-        url: "/mod/" + mod.slug + "/edit"
-        versions: v
+    mod.fillDeps (deps)->
+      # Check the section exists
+      section = [
+        "general"
+        "description"
+        "files"
+        "dependencies"
+      ].fetch(req.params.section, "general")
+      mod.listVersion (v) ->
+        console.log v
+        res.render "edit/" + section + ".ect",
+          mod: mod
+          deps: deps
+          title: "Editing " + mod.name
+          url: "/mod/" + mod.slug + "/edit"
+          versions: v
+        return
 
       return
 
     return
-
-  return
 
 exports.doEdit = (req, res) ->
   args = req.body

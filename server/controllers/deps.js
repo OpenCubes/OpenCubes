@@ -20,10 +20,9 @@
       }, {
         "versions.$": 1
       }, function(err, dep) {
-        if (err || !mod) {
+        if (err || !dep) {
           return status("error", 400, "invalid_params", "Can't found dep!");
         }
-        console.log(dep);
         mod.deps.push({
           name: dep.versions[0].name,
           id: dep.versions[0]._id

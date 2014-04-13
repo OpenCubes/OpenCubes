@@ -65,6 +65,26 @@
   ModSchema.plugin(timestamps);
 
   ModSchema.methods = {
+    fillDeps: function(cb) {
+      var $this, dep, ids, q, _i, _len, _ref;
+      ids = [];
+      _ref = this.deps;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        dep = _ref[_i];
+        ids.push(dep.id);
+      }
+      console.log("ids", ids);
+      $this = this;
+      q = mongoose.model("Mod").find({
+        "versions._id": {
+          $in: ids
+        }
+      });
+      q.select("name versions deps");
+      return q.exec(function(err, mods) {
+        return cb(mods);
+      });
+    },
     fillCart: function(cart) {
       var mod, _i, _len, _ref;
       _ref = cart.mods;
@@ -229,7 +249,7 @@
       data.$cart_id = void 0;
       data.$user = void 0;
       query = this.findOne(data);
-      query.populate("comments.author");
+      query.populate("comments.author", "username");
       query.exec(function(err, mod) {
         if (cartId) {
           return Cart.findById(cartId, function(err, cart) {
