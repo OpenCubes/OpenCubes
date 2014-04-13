@@ -123,7 +123,7 @@ exports.download = (req, res) ->
         return
 
     else
-      mod.listVersion (data) ->
+      mod.listVersion((data) ->
         version = version.replace("/", "#")
         files = data[version]
         id = uuid.v1()
@@ -144,11 +144,8 @@ exports.download = (req, res) ->
         archive.finalize (err, bytes) ->
           throw err  if err
           console.log bytes + " total bytes"
-          return
 
-        return
-
-    return
+      , true)
 
   return
 

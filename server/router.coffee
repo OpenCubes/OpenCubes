@@ -9,8 +9,11 @@ module.exports = (app) ->
   app.server.get "/assets/:slug.png", app.controllers.mods.getLogo
 
   app.server.get "/mod/:id/edit/(:section)?", auth.requiresLogin, app.controllers.mods.edit
+
   app.server.post "/mod/:id/edit/files", auth.requiresLogin, app.controllers.files.upload
   app.server.post "/mod/:id/edit/(:section)?/post", auth.requiresLogin, app.controllers.mods.doEdit
+
+  app.server.post "/mod/:slug/edit/dependencies", auth.requiresLogin, app.bodyParser, app.controllers.deps.add
   app.server.post "/mod/:id/edit/logo/upload", app.bodyParser, app.controllers.mods.setLogo
 
   app.server.get "/mod/:id/download", app.controllers.files.download

@@ -30,6 +30,10 @@ ModSchema = mongoose.Schema(
     body: String
     date: Date
   ]
+  deps:[
+    name: String
+    id: Schema.Types.ObjectId
+  ]
   versions: [name: String]
 )
 ModSchema.path("name").required true, "Mod title cannot be blank"
@@ -98,26 +102,50 @@ ModSchema.methods =
   }...
   }
   ###
-  listVersion: (cb) ->
+  listVersion: (cb, processDeps=false) ->
     File = mongoose.model("File")
-    list = (versions, i, data) ->
-      return cb(data)  if i is versions.length
-      File.find(version: versions[i]._id).sort("path").exec (err, doc) ->
-        return console.log(err)  if err
-        verName = versions[i].name
-        files = {}
-        doc.forEach (file) ->
-          files[file.path] = file.uid
-          return
+    versions = []
+    versions.push v._id for v in @versions
 
-        data[verName] = files
-        i++
-        list versions, i, data
-        return
 
-      return
+    console.log "versions:", versions
+    # We copy the deps and the versions b/c in the callack `this` doesn't work
+    $versions = @versions
+    $deps = @deps
+    res = []
+    File.find
+      version: {$in: versions}, (err, files) ->
 
-    list @versions, 0, {}
+        res.push file for file in files
+        data = {}
+        for f in res
+          for v in $versions
+            if v._id.toString() is f.version.toString()
+              data[v.name] = data[v.name] or {}
+              data[v.name][f.path] = f.uid
+        # if We are to add the deps
+        if processDeps is true
+          versions = []
+          console.log "deps:", $deps
+          versions.push v.id for v in $deps
+          console.log("vs:", versions)
+          return File.find
+            version: {$in: versions}, (err, files) ->
+              console.log("files:", files)
+              res = []
+              res.push file for file in files
+              console.log("res:", res)
+              for f in res
+                for v of data
+                  console.log "vf:", v, f
+                  data[v][f.path] = f.uid
+              console.log(data)
+              return cb(data)
+
+
+        console.log(data)
+        return cb(data)
+
     return
 
 ModSchema.statics =

@@ -43,6 +43,12 @@
         date: Date
       }
     ],
+    deps: [
+      {
+        name: String,
+        id: Schema.Types.ObjectId
+      }
+    ],
     versions: [
       {
         name: String
@@ -132,31 +138,78 @@
     }
     */
 
-    listVersion: function(cb) {
-      var File, list;
+    listVersion: function(cb, processDeps) {
+      var $deps, $versions, File, res, v, versions, _i, _len, _ref;
+      if (processDeps == null) {
+        processDeps = false;
+      }
       File = mongoose.model("File");
-      list = function(versions, i, data) {
-        if (i === versions.length) {
-          return cb(data);
+      versions = [];
+      _ref = this.versions;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        v = _ref[_i];
+        versions.push(v._id);
+      }
+      console.log("versions:", versions);
+      $versions = this.versions;
+      $deps = this.deps;
+      res = [];
+      File.find({
+        version: {
+          $in: versions
         }
-        File.find({
-          version: versions[i]._id
-        }).sort("path").exec(function(err, doc) {
-          var files, verName;
-          if (err) {
-            return console.log(err);
+      }, function(err, files) {
+        var data, f, file, _j, _k, _l, _len1, _len2, _len3, _len4, _m;
+        for (_j = 0, _len1 = files.length; _j < _len1; _j++) {
+          file = files[_j];
+          res.push(file);
+        }
+        data = {};
+        for (_k = 0, _len2 = res.length; _k < _len2; _k++) {
+          f = res[_k];
+          for (_l = 0, _len3 = $versions.length; _l < _len3; _l++) {
+            v = $versions[_l];
+            if (v._id.toString() === f.version.toString()) {
+              data[v.name] = data[v.name] || {};
+              data[v.name][f.path] = f.uid;
+            }
           }
-          verName = versions[i].name;
-          files = {};
-          doc.forEach(function(file) {
-            files[file.path] = file.uid;
+        }
+        if (processDeps === true) {
+          versions = [];
+          console.log("deps:", $deps);
+          for (_m = 0, _len4 = $deps.length; _m < _len4; _m++) {
+            v = $deps[_m];
+            versions.push(v.id);
+          }
+          console.log("vs:", versions);
+          return File.find({
+            version: {
+              $in: versions
+            }
+          }, function(err, files) {
+            var _len5, _len6, _n, _o;
+            console.log("files:", files);
+            res = [];
+            for (_n = 0, _len5 = files.length; _n < _len5; _n++) {
+              file = files[_n];
+              res.push(file);
+            }
+            console.log("res:", res);
+            for (_o = 0, _len6 = res.length; _o < _len6; _o++) {
+              f = res[_o];
+              for (v in data) {
+                console.log("vf:", v, f);
+                data[v][f.path] = f.uid;
+              }
+            }
+            console.log(data);
+            return cb(data);
           });
-          data[verName] = files;
-          i++;
-          list(versions, i, data);
-        });
-      };
-      list(this.versions, 0, {});
+        }
+        console.log(data);
+        return cb(data);
+      });
     }
   };
 

@@ -137,13 +137,13 @@
       }
       version = req.query.v;
       if (!version) {
-        mod.listVersion(function(data) {
+        return mod.listVersion(function(data) {
           res.render("mods/download.ect", {
             versions: data
           });
         });
       } else {
-        mod.listVersion(function(data) {
+        return mod.listVersion(function(data) {
           var archive, file, files, id, output;
           version = version.replace("/", "#");
           files = data[version];
@@ -165,13 +165,13 @@
               console.log("Adding file " + files[file] + " to " + file);
             }
           }
-          archive.finalize(function(err, bytes) {
+          return archive.finalize(function(err, bytes) {
             if (err) {
               throw err;
             }
-            console.log(bytes + " total bytes");
+            return console.log(bytes + " total bytes");
           });
-        });
+        }, true);
       }
     });
   };

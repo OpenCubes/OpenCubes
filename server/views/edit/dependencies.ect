@@ -1,6 +1,6 @@
 <% extend 'edit/edit.ect' %>
     <% block 'form': %>
-        <form class="form-horizontal">
+        <form class="form-horizontal" method="post">
             <fieldset>
 
                 <!-- Form Name -->
@@ -10,6 +10,7 @@
                 <div class="form-group">
                     <label class="col-md-2 control-label" for="mod_name">Select mod</label>
                     <div class="col-md-8">
+                        <% @searchname = 'dep' %>
                         <% include 'mods/search-box.ect' %>
                     </div>
                 </div>

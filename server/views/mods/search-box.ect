@@ -1,5 +1,5 @@
 
-  <select id="search" class="search" placeholder="Select a repo"></select>
+  <select id="search" class="search" placeholder="Select a repo" name="<%- @searchname or ''%>"></select>
 <% block 'navbar' : %>
 <% include 'navs/main-nav.ect'%>
 <% end %>
@@ -16,13 +16,13 @@ $('#search').selectize({
     render: {
         option: function(item, escape) {
             console.log('item:', item);
-             return "<div class=\"media\">\n  <a class=\"pull-left\" href=\"#\">\n    <img class=\"media-object\" src=\"/assets/" + item.slug + ".png\" alt=\"Logo\" width=\"32\" height=\"32\">\n  </a>\n  <div class=\"media-body\">\n    <h5 class=\"media-heading\">" + item.name + "</h5>\n    " + item.summary + "\n    <br /><small>\n    <b>Author: </b> " + item.author.username + "\n    <b>Category: </b> " + item.category + "\n    <b>Stars: </b> " + (item.vote_count || 0) + "\n    </small>\n  </div>\n</div>\n";
+             return "<div class=\"media\">\n  <a class=\"pull-left\" href=\"#\">\n    <img class=\"media-object\" src=\"/assets/" + item.slug + ".png\" alt=\"Logo\" width=\"32\" height=\"32\">\n  </a>\n  <div class=\"media-body\">\n    <h5 class=\"media-heading\">" + item.name + "</h5>\n    " + item.summary + "\n    <br /><small>\n    <b>Author: </b> " + item.author.username + "\n   | <b>Category: </b> " + item.category + "\n   | <b>Stars: </b> " + (item.vote_count || 0) + "\n    </small>\n  </div>\n</div>\n";
         }
     },
     score: function(search) {
         var score = this.getScoreFunction(search);
         return function(item) {
-            return score(item) * (1 + Math.min(item.vote_count / 100, 1));
+            return score(item) * (1 + Math.min(item.vote_count || 0 / 100, 1));
         };
     },
     load: function(query, callback) {
