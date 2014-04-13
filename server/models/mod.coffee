@@ -40,6 +40,7 @@ ModSchema.path("name").required true, "Mod title cannot be blank"
 ModSchema.path("body").required true, "Mod body cannot be blank"
 ModSchema.plugin slug("name")
 ModSchema.plugin timestamps
+
 ModSchema.methods =
   fillDeps: (cb) ->
     ids = []
@@ -197,20 +198,22 @@ ModSchema.statics =
   ###
   list: (options, cb) ->
     criteria = options.criteria or {}
-    @find(criteria).sort(options.sort)
+    q = @find(criteria).sort(options.sort)
       .limit(options.perPage).populate("author", "username")
       .skip(options.perPage * options.page)
-      .exec (err, mods) ->
-        if err or !mods
-          return cb err, mods
-        if options.cart
-          Cart.findById(options.cart, (err, cart)->
-            if !err and cart
-              mod.fillCart cart for mod in mods
-              cb(err, mods)
-          )
-        else
-          cb(err, mods)
+      .select("-body -comments")
+    q.lean() if options.doLean
+    q.exec (err, mods) ->
+      if err or !mods
+        return cb err, mods
+      if options.cart
+        Cart.findById(options.cart, (err, cart)->
+          if !err and cart
+            mod.fillCart cart for mod in mods
+            cb(err, mods)
+         )
+       else
+        cb(err, mods)
               
     return
 

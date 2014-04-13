@@ -110,4 +110,42 @@
     });
   };
 
+  exports.list = function(req, res) {
+    var filter, options, page, perPage, sort;
+    page = (req.params.page || 1) - 1;
+    sort = (req.param("sort")) || "-date";
+    filter = (req.param("filter")) || "all";
+    perPage = req.params.perPage || 25;
+    options = {
+      perPage: perPage,
+      page: page,
+      sort: sort,
+      filter: filter,
+      criteria: (filter !== "all" ? {
+        category: filter
+      } : {}),
+      doLean: true
+    };
+    Mod.list(options, function(err, mods) {
+      if (err) {
+        return res.send(status("error", 500, "db_error", "Issues with database. Please retry or contact us"));
+      }
+      Mod.count().exec(function(err, count) {
+        var mod, _i, _len;
+        for (_i = 0, _len = mods.length; _i < _len; _i++) {
+          mod = mods[_i];
+          mod.urls = {
+            api: "/api/mods/view/" + mod.slug,
+            web: "/mod/" + mod.slug
+          };
+        }
+        return res.send({
+          mods: mods,
+          page: page + 1,
+          pages: Math.ceil(count / perPage)
+        });
+      });
+    });
+  };
+
 }).call(this);

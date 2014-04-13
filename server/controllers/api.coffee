@@ -89,3 +89,33 @@ exports.search = (req, res) ->
   q.populate("author", "username")
   q.exec (err,mods) ->
     return res.send(mods)
+
+exports.list = (req, res) ->
+  page =  (req.params.page or 1)- 1
+  sort = (req.param("sort")) or "-date"
+  filter = (req.param("filter")) or "all"
+  perPage = req.params.perPage or 25
+  options =
+    perPage: perPage
+    page: page
+    sort: sort
+    filter: filter
+    criteria: ((if filter isnt "all" then category: filter else {}))
+    doLean: true
+
+  Mod.list options, (err, mods) ->
+    return res.send status("error", 500, "db_error", "Issues with database. Please retry or contact us")  if err
+    Mod.count().exec (err, count) ->
+      for mod in mods
+        mod.urls =
+          api: "/api/mods/view/"+mod.slug
+          web: "/mod/"+mod.slug
+      res.send
+        mods: mods
+        page: page + 1
+        pages: Math.ceil(count / perPage)
+
+
+    return
+
+  return

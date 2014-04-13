@@ -274,9 +274,13 @@
     */
 
     list: function(options, cb) {
-      var criteria;
+      var criteria, q;
       criteria = options.criteria || {};
-      this.find(criteria).sort(options.sort).limit(options.perPage).populate("author", "username").skip(options.perPage * options.page).exec(function(err, mods) {
+      q = this.find(criteria).sort(options.sort).limit(options.perPage).populate("author", "username").skip(options.perPage * options.page).select("-body -comments");
+      if (options.doLean) {
+        q.lean();
+      }
+      q.exec(function(err, mods) {
         if (err || !mods) {
           return cb(err, mods);
         }

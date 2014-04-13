@@ -68,12 +68,12 @@
     app.server.post("/api/ajax/comments/:slug/add", auth.requiresLogin, app.bodyParser, app.controllers.comments.addComment);
     app.server.get("/api/mods/search/:string", app.controllers.api.search);
     app.server.get("/api/mods/view/:id", app.controllers.api.view);
+    app.server.get("/api/mods/list(/perPage:perPage)?/page:page.json", flood(1000, 2, 1000), app.controllers.api.list);
     app.server.get("/api/cart/:cart/push/:id", app.controllers.api.addToCart);
     app.server.get("/api/cart/create", app.controllers.api.createCart);
     app.server.get("/api/cart/:cart", app.controllers.api.lsCart);
     app.server.get("/help/(:section)?.md", app.controllers.help.raw);
     app.server.get("/help/(:section)?", app.controllers.help.getHelp);
-    app.server.get("/flood", flood(10000, 2, 0), app.controllers.api.glyphicons);
     console.log(("  Info - Loading routes took " + (new Date().getTime() - timer + "").bold + " ms").cyan);
   };
 
