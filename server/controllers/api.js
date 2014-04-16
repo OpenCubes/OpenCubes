@@ -1,5 +1,5 @@
 (function() {
-  var Cart, Mod;
+  var Cart, Mod, mongoose;
 
   exports.ajaxLogin = function(req, res) {
     res.render("forms/login.ect");
@@ -18,9 +18,11 @@
     return res.send(req.application.parser(req.body.markdown || ""));
   };
 
-  Mod = require("mongoose").model("Mod");
+  mongoose = require("mongoose");
 
-  Cart = require("mongoose").model("Cart");
+  Mod = mongoose.model("Mod");
+
+  Cart = mongoose.model("Cart");
 
   exports.addToCart = function(req, res) {
     var cart, id;
@@ -86,6 +88,7 @@
         slug: req.params.id,
         $lean: true
       }, function(err, mod) {
+        var Version;
         if (err || !mod) {
           if (err) {
             console.log(err);
@@ -97,7 +100,30 @@
           web: "/mod/" + mod.slug,
           logo: "/assets/" + mod.slug + ".png"
         };
-        return res.send(mod);
+        Version = mongoose.model("Version");
+        return Version.find({
+          mod: mod._id
+        }, function(err, versions) {
+          var file, output, version, _i, _j, _len, _len1, _ref;
+          if (err) {
+            return res.send(mod);
+          }
+          if (!versions) {
+            res.send(mod);
+          }
+          output = {};
+          for (_i = 0, _len = versions.length; _i < _len; _i++) {
+            version = versions[_i];
+            output[version.name] = output[version.name] || {};
+            _ref = version.files;
+            for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+              file = _ref[_j];
+              output[version.name][file.path] = file.uid;
+            }
+          }
+          mod.versions = output;
+          return res.send(mod);
+        });
       });
     }), 0);
   };

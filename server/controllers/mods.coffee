@@ -21,7 +21,7 @@ exports.view = (req, res) ->
       mod.htmlbody = req.application.parser(mod.body)
       res.render ((if req.query.ajax then "../views/mods/view-body.ect" else "view.ect")),
         mod: mod
-        canEdit: (if req.user then mod.author.equals(req.user.id) else false)
+        canEdit: (if req.user then if mod.author is req.user.id or req.user.role is "admin" then true else false)
         title: mod.name + " - OpenCubes"
       , ((if req.query.ajax then (err, html) ->
         result = {}
@@ -43,7 +43,9 @@ exports.edit = (req, res) ->
     author: req.user._id
   , (err, mod) ->
     return res.send(403, "You are not the author")  if err or not mod
-    mod.fillDeps (deps)->
+    mod.fillDeps (err, deps)->
+      if err
+        console.log err
       # Check the section exists
       section = [
         "general"

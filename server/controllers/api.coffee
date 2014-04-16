@@ -13,9 +13,9 @@ exports.glyphicons = (req, res) ->
 exports.parseMd = (req, res) ->
   res.send(req.application.parser(req.body.markdown or ""))
 
-
-Mod = require("mongoose").model("Mod")
-Cart = require("mongoose").model("Cart")
+mongoose = require("mongoose")
+Mod = mongoose.model("Mod")
+Cart = mongoose.model("Cart")
 
 exports.addToCart = (req, res) ->
   id = req.params.id
@@ -76,7 +76,17 @@ exports.view = (req, res) ->
         web: "/mod/"+mod.slug
         logo: "/assets/"+mod.slug+".png"
 
-      return res.send mod
+      Version = mongoose.model "Version"
+      Version.find {mod: mod._id}, (err, versions) ->
+        if err then return res.send mod
+        if !versions then res.send mod
+        output = {}
+        for version in versions
+          output[version.name] = output[version.name] or {}
+          for file in version.files
+            output[version.name][file.path] = file.uid
+        mod.versions = output
+        return res.send mod
 
     return
   ), 0

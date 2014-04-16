@@ -123,7 +123,7 @@ exports.download = (req, res) ->
         return
 
     else
-      mod.listVersion((data) ->
+      mod.listVersion((data, d) ->
         version = version.replace("/", "#")
         files = data[version]
         id = uuid.v1()

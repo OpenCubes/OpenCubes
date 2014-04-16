@@ -33,7 +33,7 @@
         mod.htmlbody = req.application.parser(mod.body);
         return res.render((req.query.ajax ? "../views/mods/view-body.ect" : "view.ect"), {
           mod: mod,
-          canEdit: (req.user ? mod.author.equals(req.user.id) : false),
+          canEdit: (req.user ? mod.author === req.user.id || req.user.role === "admin" ? true : void 0 : false),
           title: mod.name + " - OpenCubes"
         }, (req.query.ajax ? function(err, html) {
           var result;
@@ -54,8 +54,11 @@
       if (err || !mod) {
         return res.send(403, "You are not the author");
       }
-      mod.fillDeps(function(deps) {
+      mod.fillDeps(function(err, deps) {
         var section;
+        if (err) {
+          console.log(err);
+        }
         section = ["general", "description", "files", "dependencies"].fetch(req.params.section, "general");
         mod.listVersion(function(v) {
           console.log(v);

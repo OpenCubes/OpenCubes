@@ -1,5 +1,5 @@
 (function() {
-  var Cart, ModSchema, Schema, mongoose, slug, timestamps;
+  var Cart, ModSchema, Schema, fs, mongoose, slug, timestamps;
 
   mongoose = require("mongoose");
 
@@ -42,18 +42,31 @@
         body: String,
         date: Date
       }
-    ],
-    deps: [
-      {
-        name: String,
-        id: Schema.Types.ObjectId
-      }
-    ],
-    versions: [
-      {
-        name: String
-      }
     ]
+  });
+
+  ModSchema.pre('remove', function(doc) {
+    console.log('`%s` has been removed', doc.name);
+    return mod.listVersion(function(data) {
+      var file, files, _results;
+      _results = [];
+      for (files in data) {
+        _results.push((function() {
+          var _results1;
+          _results1 = [];
+          for (file in files) {
+            if (files.hasOwnProperty(file)) {
+              fs.unlinkSync(files[file]);
+              _results1.push(console.log("Deleted file " + files[file]));
+            } else {
+              _results1.push(void 0);
+            }
+          }
+          return _results1;
+        })());
+      }
+      return _results;
+    });
   });
 
   ModSchema.path("name").required(true, "Mod title cannot be blank");
@@ -64,26 +77,17 @@
 
   ModSchema.plugin(timestamps);
 
+  fs = require("fs");
+
   ModSchema.methods = {
     fillDeps: function(cb) {
-      var $this, dep, ids, q, _i, _len, _ref;
-      ids = [];
-      _ref = this.deps;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        dep = _ref[_i];
-        ids.push(dep.id);
-      }
-      console.log("ids", ids);
-      $this = this;
-      q = mongoose.model("Mod").find({
-        "versions._id": {
-          $in: ids
-        }
+      var q;
+      console.log(this._id);
+      q = mongoose.model("Version").find({
+        "slaves.mod": this._id
       });
-      q.select("name versions deps");
-      return q.exec(function(err, mods) {
-        return cb(mods);
-      });
+      q.populate("mod", "name author");
+      return q.exec(cb);
     },
     fillCart: function(cart) {
       var mod, _i, _len, _ref;
@@ -105,49 +109,11 @@
         }
       }
     },
-    addVersion: function(data, cb) {
-      var self, v;
-      v = this.versions.push(data);
-      self = this;
-      this.save(function(err, doc) {
-        if (err) {
-          return cb(err);
-        }
-        self.getVersion(data, cb);
-      });
-    },
-    getVersion: function(data, cb) {
-      var v;
-      v = this.versions.findIn(data);
-      console.log(v);
-      return cb(undefined, v);
-    },
-    /*
-    Create the version by name if it does not exists
-    */
-
-    getOrCreateVersion: function(name, cb) {
-      var self;
-      self = this;
-      this.getVersion({
-        name: name
-      }, function(err, doc) {
-        if (!doc || err || doc === -1) {
-          return self.addVersion({
-            name: name
-          }, cb);
-        }
-        cb(err, doc);
-      });
-    },
     addFile: function(uid, path, version, cb) {
-      mongoose.model("File").createFile(uid, path, this, version, cb);
+      console.log(arguments);
+      mongoose.model("Version").createFile(uid, path, this, version, cb);
     },
-    deleteFile: function(uid, cb) {
-      mongoose.model("File").remove({
-        uid: uid
-      }, cb);
-    },
+    deleteFile: function(uid, cb) {},
     /*
     Output:
     
@@ -158,77 +124,52 @@
     }
     */
 
-    listVersion: function(cb, processDeps) {
-      var $deps, $versions, File, res, v, versions, _i, _len, _ref;
+    listVersion: function(callback, processDeps) {
+      var Version, self;
       if (processDeps == null) {
         processDeps = false;
       }
-      File = mongoose.model("File");
-      versions = [];
-      _ref = this.versions;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        v = _ref[_i];
-        versions.push(v._id);
-      }
-      console.log("versions:", versions);
-      $versions = this.versions;
-      $deps = this.deps;
-      res = [];
-      File.find({
-        version: {
-          $in: versions
+      Version = mongoose.model("Version");
+      self = this;
+      return Version.find({
+        mod: this._id
+      }, function(err, versions) {
+        var file, output, version, _i, _j, _len, _len1, _ref;
+        if (err) {
+          return callback(void 0, err);
         }
-      }, function(err, files) {
-        var data, f, file, _j, _k, _l, _len1, _len2, _len3, _len4, _m;
-        for (_j = 0, _len1 = files.length; _j < _len1; _j++) {
-          file = files[_j];
-          res.push(file);
+        if (!versions) {
+          return callback();
         }
-        data = {};
-        for (_k = 0, _len2 = res.length; _k < _len2; _k++) {
-          f = res[_k];
-          for (_l = 0, _len3 = $versions.length; _l < _len3; _l++) {
-            v = $versions[_l];
-            if (v._id.toString() === f.version.toString()) {
-              data[v.name] = data[v.name] || {};
-              data[v.name][f.path] = f.uid;
-            }
+        output = {};
+        for (_i = 0, _len = versions.length; _i < _len; _i++) {
+          version = versions[_i];
+          output[version.name] = output[version.name] || {};
+          _ref = version.files;
+          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+            file = _ref[_j];
+            output[version.name][file.path] = file.uid;
           }
         }
-        if (processDeps === true) {
-          versions = [];
-          console.log("deps:", $deps);
-          for (_m = 0, _len4 = $deps.length; _m < _len4; _m++) {
-            v = $deps[_m];
-            versions.push(v.id);
-          }
-          console.log("vs:", versions);
-          return File.find({
-            version: {
-              $in: versions
-            }
-          }, function(err, files) {
-            var _len5, _len6, _n, _o;
-            console.log("files:", files);
-            res = [];
-            for (_n = 0, _len5 = files.length; _n < _len5; _n++) {
-              file = files[_n];
-              res.push(file);
-            }
-            console.log("res:", res);
-            for (_o = 0, _len6 = res.length; _o < _len6; _o++) {
-              f = res[_o];
-              for (v in data) {
-                console.log("vf:", v, f);
-                data[v][f.path] = f.uid;
+        if (processDeps) {
+          return self.fillDeps(function(err, deps) {
+            var dep, _k, _l, _len2, _len3, _ref1;
+            console.log("deps:", deps);
+            for (version in output) {
+              console.log(version);
+              for (_k = 0, _len2 = deps.length; _k < _len2; _k++) {
+                dep = deps[_k];
+                _ref1 = dep.files;
+                for (_l = 0, _len3 = _ref1.length; _l < _len3; _l++) {
+                  file = _ref1[_l];
+                  output[version][file.path] = file.uid;
+                }
               }
             }
-            console.log(data);
-            return cb(data);
+            return callback(output);
           });
         }
-        console.log(data);
-        return cb(data);
+        return callback(output);
       });
     }
   };

@@ -30,27 +30,29 @@ ModSchema = mongoose.Schema(
     body: String
     date: Date
   ]
-  deps:[
-    name: String
-    id: Schema.Types.ObjectId
-  ]
-  versions: [name: String]
 )
+ModSchema.pre 'remove',  (doc) ->
+  console.log('`%s` has been removed', doc.name)
+  mod.listVersion (data) ->
+    for files of data
+      for file of files
+        if files.hasOwnProperty(file)
+          fs.unlinkSync files[file]
+          console.log "Deleted file " + files[file]
+
 ModSchema.path("name").required true, "Mod title cannot be blank"
 ModSchema.path("body").required true, "Mod body cannot be blank"
 ModSchema.plugin slug("name")
 ModSchema.plugin timestamps
+fs = require "fs"
+
 
 ModSchema.methods =
   fillDeps: (cb) ->
-    ids = []
-    ids.push dep.id for dep in @deps
-    console.log "ids", ids
-    $this = @
-    q = mongoose.model("Mod").find "versions._id": {$in: ids}
-    q.select "name versions deps"
-    q.exec (err, mods) ->
-      cb(mods)
+    console.log @_id
+    q = mongoose.model("Version").find {"slaves.mod": @_id}
+    q.populate "mod", "name author"
+    q.exec cb
 
   fillCart: (cart)->
     @carted = true for mod in cart.mods when mod.toString() is @_id.toString()
@@ -60,47 +62,14 @@ ModSchema.methods =
     @starred = true for user in @stargazers when ""+user.id.toString() is ""+luser._id
     return
 
-  addVersion: (data, cb) ->
-    v = @versions.push(data)
-    self = this
-    @save (err, doc) ->
-      return cb(err)  if err
-      self.getVersion data, cb
-      return
-
-    return
-
-  getVersion: (data, cb) ->
-    v = @versions.findIn(data)
-    console.log v
-    cb `undefined`, v
-
-  
-  ###
-  Create the version by name if it does not exists
-  ###
-  getOrCreateVersion: (name, cb) ->
-    self = this
-    @getVersion
-      name: name
-    , (err, doc) ->
-      if not doc or err or doc is -1
-        return self.addVersion(
-          name: name
-        , cb)
-      cb err, doc
-      return
-
-    return
 
   addFile: (uid, path, version, cb) ->
-    mongoose.model("File").createFile uid, path, this, version, cb
+    console.log arguments
+    mongoose.model("Version").createFile uid, path, this, version, cb
     return
 
   deleteFile: (uid, cb) ->
-    mongoose.model("File").remove
-      uid: uid
-    , cb
+    # TODO
     return
 
   
@@ -113,51 +82,30 @@ ModSchema.methods =
   }...
   }
   ###
-  listVersion: (cb, processDeps=false) ->
-    File = mongoose.model("File")
-    versions = []
-    versions.push v._id for v in @versions
+  listVersion: (callback, processDeps=false) ->
+    Version = mongoose.model "Version"
+    self = @
+    Version.find {mod: @_id}, (err, versions) ->
+      if err then return callback undefined, err
+      if !versions then return callback()
+      output = {}
+      for version in versions
+        output[version.name] = output[version.name] or {}
+        for file in version.files
+          output[version.name][file.path] = file.uid
+      if processDeps
+        return self.fillDeps (err, deps) ->
+          console.log "deps:", deps
+          for version of output
+            console.log version
+            for dep in deps
+              for file in dep.files
+                output[version][file.path] = file.uid
 
+          callback output
 
-    console.log "versions:", versions
-    # We copy the deps and the versions b/c in the callack `this` doesn't work
-    $versions = @versions
-    $deps = @deps
-    res = []
-    File.find
-      version: {$in: versions}, (err, files) ->
+      callback output
 
-        res.push file for file in files
-        data = {}
-        for f in res
-          for v in $versions
-            if v._id.toString() is f.version.toString()
-              data[v.name] = data[v.name] or {}
-              data[v.name][f.path] = f.uid
-        # if We are to add the deps
-        if processDeps is true
-          versions = []
-          console.log "deps:", $deps
-          versions.push v.id for v in $deps
-          console.log("vs:", versions)
-          return File.find
-            version: {$in: versions}, (err, files) ->
-              console.log("files:", files)
-              res = []
-              res.push file for file in files
-              console.log("res:", res)
-              for f in res
-                for v of data
-                  console.log "vf:", v, f
-                  data[v][f.path] = f.uid
-              console.log(data)
-              return cb(data)
-
-
-        console.log(data)
-        return cb(data)
-
-    return
 
 ModSchema.statics =
   

@@ -17,14 +17,16 @@ $(document).on('click', 'a.bs-tab',function (e) {
   $(this).tab('show');
 });
 $(document).on("eldarion-ajax:begin", function(evt, $el) {
-    $el.html("Processing...");
+    $('button#submit').html('Please wait...').attr("disabled", true);
 });
 $(document).on("eldarion-ajax:success", function(evt, $el, data) {
     window.location.reload();
 });
 $(document).on("eldarion-ajax:complete", function(evt, $el, xhr, status) {
-  console.log(arguments);
-  $el.html('<p class="text-danger">'+xhr.statusText+'</p>');
+  if(xhr.statusText !== 'OK')
+    $el.append('<p class="text-danger">'+xhr.statusText+'</p>');
+  else
+    $('button#submit').html('Done. Please wait...');
 });
 var showLoginPrompt = function (flash, type, cb) {
   if(typeof flash === 'function'){
