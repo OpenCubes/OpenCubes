@@ -143,7 +143,7 @@
           });
         });
       } else {
-        return mod.listVersion(function(data) {
+        return mod.listVersion(function(data, d) {
           var archive, file, files, id, output;
           version = version.replace("/", "#");
           files = data[version];
