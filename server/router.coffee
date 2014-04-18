@@ -53,7 +53,8 @@ module.exports = (app) ->
     req.logout()
     res.redirect "/"
     return
-
+  # Admin panel
+  app.server.get "/admin/mods", app.controllers.admin.mods
   
   # API
   app.server.post "/api/ajax/parse.md", app.controllers.api.parseMd

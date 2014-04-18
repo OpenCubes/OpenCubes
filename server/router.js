@@ -62,6 +62,7 @@
       req.logout();
       res.redirect("/");
     });
+    app.server.get("/admin/mods", app.controllers.admin.mods);
     app.server.post("/api/ajax/parse.md", app.controllers.api.parseMd);
     app.server.get("/api/ajax/login", app.controllers.api.ajaxLogin);
     app.server.get("/api/ajax/glyphicons", app.controllers.api.glyphicons);

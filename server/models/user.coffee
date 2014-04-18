@@ -40,6 +40,11 @@ UserSchema = new Schema(
     type: String
     default: ""
 
+  # user, moderator or admin
+  role:
+    type: String
+    default: "user"
+
   facebook: {}
   twitter: {}
   github: {}

@@ -80,7 +80,7 @@ var showLoginPrompt = function (flash, type, cb) {
       $('.bootbox-body').fadeOut(150, function () {
         $('.bootbox-body').removeClass('loading-bb');
         $('.bootbox-body').html(data)
-        $('[name="login"]').remove();
+        $('input#login').remove();
         if (flash) $('.bootbox-body').prepend(bs_alert(type, flash));
 
         $('.bootbox-body').fadeIn(150);

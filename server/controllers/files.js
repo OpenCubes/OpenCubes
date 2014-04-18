@@ -1,5 +1,5 @@
 (function() {
-  var File, Mod, archiver, copyFile, formidable, fs, util, uuid;
+  var Mod, archiver, copyFile, formidable, fs, util, uuid;
 
   copyFile = function(source, target, cb) {
     var cbCalled, done, rd, wr;
@@ -36,8 +36,6 @@
   uuid = require("node-uuid");
 
   Mod = require("mongoose").model("Mod");
-
-  File = require("mongoose").model("File");
 
   module.exports.upload = function(req, res) {
     var form;
@@ -88,43 +86,7 @@
     });
   };
 
-  exports.doDelete = function(req, res) {
-    File.findOne({
-      uid: req.params.uid
-    }, function(err, doc) {
-      if (err || !doc) {
-        if (err) {
-          console.log(err);
-        }
-        req.flash("error", "There was an error while deleting file. Please retry.");
-        return res.redirect("/");
-      }
-      console.log(req.user);
-      Mod.findOne({
-        "versions._id": doc.version,
-        author: req.user._id
-      }, function(err, mod) {
-        var file;
-        if (err || !mod) {
-          if (err) {
-            console.log(err);
-          }
-          req.flash("error", "There was an error while deleting file. Perhaps you do not own this mod. Please retry.");
-          return res.redirect("/");
-        }
-        doc.remove();
-        file = __dirname.getParent() + "/uploads/" + doc.uid;
-        fs.unlink(file, function(err) {
-          if (err) {
-            req.flash("error", "Oops, something went wrong! (reason: deletion)");
-            return res.redirect("/");
-          }
-          req.flash("success", "Successfully deleted file #" + doc.uid + " " + doc.path);
-          return res.redirect("/");
-        });
-      });
-    });
-  };
+  exports.doDelete = function(req, res) {};
 
   exports.download = function(req, res) {
     Mod.load({
@@ -143,7 +105,7 @@
           });
         });
       } else {
-        return mod.listVersion(function(data) {
+        return mod.listVersion(function(data, d) {
           var archive, file, files, id, output;
           version = version.replace("/", "#");
           files = data[version];
@@ -176,47 +138,6 @@
     });
   };
 
-  exports.remove = function(req, res) {
-    var uid;
-    uid = req.params.uid;
-    if (!uid) {
-      return res.send({
-        status: "error",
-        code: 400,
-        id: "missing_param",
-        message: "Please enter a file uid"
-      });
-    } else {
-      File.remove({
-        uid: uid
-      }, function(err) {
-        var file;
-        if (err) {
-          return res.send({
-            status: "error",
-            code: 500,
-            id: "database_error",
-            message: "An error occured. Please try again"
-          });
-        }
-        file = __dirname.getParent() + "/uploads/" + uid;
-        return fs.unlink(file, function(err) {
-          if (err) {
-            return res.send({
-              status: "error",
-              code: 500,
-              id: "fs_error",
-              message: "An error occured. Please try again"
-            });
-          }
-          return res.send({
-            status: "success",
-            code: 200,
-            message: "Done!"
-          });
-        });
-      });
-    }
-  };
+  exports.remove = function(req, res) {};
 
 }).call(this);

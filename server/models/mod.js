@@ -1,5 +1,5 @@
 (function() {
-  var Cart, ModSchema, Schema, fs, mongoose, slug, timestamps;
+  var Cart, ModSchema, Schema, Version, fs, mongoose, slug, timestamps;
 
   mongoose = require("mongoose");
 
@@ -10,6 +10,10 @@
   slug = require("mongoose-slug");
 
   timestamps = require("mongoose-times");
+
+  fs = require("fs");
+
+  Version = mongoose.model("Version");
 
   ModSchema = mongoose.Schema({
     name: String,
@@ -45,25 +49,25 @@
     ]
   });
 
-  ModSchema.pre('remove', function(doc) {
+  ModSchema.post('remove', function(doc) {
     console.log('`%s` has been removed', doc.name);
-    return mod.listVersion(function(data) {
-      var file, files, _results;
+    fs.unlink("../uploads/" + mod.logo, function(err) {
+      if (err) {
+        return console.log(err);
+      } else {
+        return console.log("File " + mod.logo + " has been deleted");
+      }
+    });
+    return Version.find({
+      mod: this._id
+    }, function(err, versions) {
+      var version, _i, _len, _results;
       _results = [];
-      for (files in data) {
-        _results.push((function() {
-          var _results1;
-          _results1 = [];
-          for (file in files) {
-            if (files.hasOwnProperty(file)) {
-              fs.unlinkSync(files[file]);
-              _results1.push(console.log("Deleted file " + files[file]));
-            } else {
-              _results1.push(void 0);
-            }
-          }
-          return _results1;
-        })());
+      for (_i = 0, _len = versions.length; _i < _len; _i++) {
+        version = versions[_i];
+        if (version) {
+          _results.push(version.remove());
+        }
       }
       return _results;
     });
@@ -83,7 +87,7 @@
     fillDeps: function(cb) {
       var q;
       console.log(this._id);
-      q = mongoose.model("Version").find({
+      q = Version.find({
         "slaves.mod": this._id
       });
       q.populate("mod", "name author");
@@ -125,7 +129,7 @@
     */
 
     listVersion: function(callback, processDeps) {
-      var Version, self;
+      var self;
       if (processDeps == null) {
         processDeps = false;
       }

@@ -28,7 +28,6 @@ fs = require("fs")
 archiver = require("archiver")
 uuid = require("node-uuid")
 Mod = require("mongoose").model("Mod")
-File = require("mongoose").model("File")
 
 module.exports.upload = (req, res) ->
   form = new formidable.IncomingForm()
@@ -76,36 +75,6 @@ module.exports.upload = (req, res) ->
   return
 
 exports.doDelete = (req, res) ->
-  File.findOne
-    uid: req.params.uid
-  , (err, doc) ->
-    if err or not doc
-      console.log err  if err
-      req.flash "error", "There was an error while deleting file. Please retry."
-      return res.redirect("/")
-    console.log req.user
-    Mod.findOne
-      "versions._id": doc.version
-      author: req.user._id
-    , (err, mod) ->
-      if err or not mod
-        console.log err  if err
-        req.flash "error", "There was an error while deleting file. Perhaps you do not own this mod. Please retry."
-        return res.redirect("/")
-      doc.remove()
-      file = __dirname.getParent() + "/uploads/" + doc.uid
-      fs.unlink file, (err) ->
-        if err
-          req.flash "error", "Oops, something went wrong! (reason: deletion)"
-          return res.redirect("/")
-        req.flash "success", "Successfully deleted file #" + doc.uid + " " + doc.path
-        res.redirect "/"
-
-      return
-
-    return
-
-  return
 
 exports.download = (req, res) ->
   Mod.load
@@ -150,34 +119,4 @@ exports.download = (req, res) ->
   return
 
 exports.remove = (req, res) ->
-  uid = req.params.uid
-  unless uid
-    return res.send
-      status: "error"
-      code: 400
-      id: "missing_param"
-      message: "Please enter a file uid"
-  else
-    File.remove({uid: uid}, (err) ->
-      if err
-        return res.send
-          status: "error"
-          code: 500
-          id: "database_error"
-          message: "An error occured. Please try again"
-      file = __dirname.getParent() + "/uploads/" + uid
-      fs.unlink file, (err) ->
-        if err
-          return res.send
-            status: "error"
-            code: 500
-            id: "fs_error"
-            message: "An error occured. Please try again"
-        
-        res.send
-          status: "success"
-          code: 200
-          message: "Done!"
-    )
 
-  return

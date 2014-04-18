@@ -1,0 +1,30 @@
+<% extend 'layout.ect' %>
+    <div class="col-md-offset-5 col-md-8 selector">
+        <br />
+        <br />
+        <% include 'mods/search-box.ect' %>
+        <hr />
+        <h4>
+          <a href="#" class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span> Edit </a> or
+          <a href="#" id="performDelete" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete </a> this mod
+        </h4>
+    </div>
+    <script>
+	$(document).ready(function(){
+        $('a#performDelete').on('click', function (evt) {
+				console.log('help');
+                if (confirm("Are you sure?")) {
+                    ajax("/admin/mods?id=" + $('#search').val(), function (data) {
+                        if (data == "ok")
+                            $(".selector").prepend(bs_alert("success", "Mod deleted"));
+                        else
+                            $(".selector").prepend(bs_alert("danger", "Please retry"));
+                    });
+                }
+        });
+	});
+    </script>
+
+    <% block 'navbar' : %>
+        <% include 'navs/main-nav.ect'%>
+            <% end %>
