@@ -28,7 +28,11 @@
     "markdown-symbols": "~0.1.0",
     "send": "~0.2.0",
     "sendmail": "~0.2.1",
-    "nodemailer": "~0.6.2"
+    "nodemailer": "~0.6.2",
+    "q": "~1.0.1",
+    "config": "./server/config.js",
+    "perms": "./server/api/permissions.js",
+    "validator": "~3.10.0"
   },
   "devDependencies": {
     "express-debug": "~1.0.3",

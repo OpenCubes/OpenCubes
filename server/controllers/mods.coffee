@@ -8,33 +8,15 @@ check = require("check-types")
 archiver = require("archiver")
 send = require("send");
 exports.view = (req, res) ->
-  setTimeout (->
-    Mod.load
-      slug: req.params.id
-      $cart_id: req.cookies.cart_id
-      $user: req.user
-    , (err, mod) ->
-      if err or not mod
-        res.reason = "Mod not found"
-        return utils.notfound(req, res, ->
-        )
-      mod.htmlbody = req.application.parser(mod.body)
-      res.render ((if req.query.ajax then "../views/mods/view-body.ect" else "view.ect")),
-        mod: mod
-        canEdit: (if req.user then if mod.author is req.user.id or req.user.role is "admin" then true else false)
-        title: mod.name + " - OpenCubes"
-      , ((if req.query.ajax then (err, html) ->
-        result = {}
-        result.body = html
-        res.send result
-        return
-       else undefined))
-      return
-
+  if req.user then user = req.user._id else user = ""
+  app.api.mods.view(user, req.params.id, req.cookies.cart_id,  req.user).then((mod) ->
+    res.render "view.ect",
+      mod: mod
+      canEdit: (if req.user then if mod.author is req.user.id or req.user.role is "admin" then true else false)
+      title: mod.name + " - OpenCubes"
     return
-  ), 0
-  return
-
+  ).fail (err) ->
+    res.send 500, err.message
 
 
 exports.edit = (req, res) ->
@@ -138,26 +120,26 @@ exports.index = (req, res) ->
   url_parts = url.parse(req.url, true)
   query = url_parts.search
   listing = new Date().getTime()
-  Mod.list options, (err, mods) ->
-    return res.render("500")  if err
-    Mod.count().exec (err, count) ->
-      console.log ("  Loading mods took " + (new Date().getTime() - listing + " ms")).cyan
-      res.render "../views/index.ect", utils.ectHelpers(req,
-        title: "Mods - OpenCubes"
-        mods: mods
-        page: page + 1
-        pages: Math.ceil(count / perPage)
-        pagination: paginator.create("search",
-          prelink: ""
-          current: page + 1
-          rowsPerPage: perPage
-          totalResult: count
-          postlink: query
-        ).render()
-      )
-      return
-
-    return
+  if req.user then user = req.user._id else user = ""
+  app.api.mods.list(user, options).then((mods, count) ->
+    count = mods.totalCount
+    console.log count
+    res.render "index.ect", utils.ectHelpers(req,
+      title: "Mods - OpenCubes"
+      mods: mods
+      page: page + 1
+      pages: Math.ceil(count / perPage)
+      pagination: paginator.create("search",
+        prelink: ""
+        current: page + 1
+        rowsPerPage: perPage
+        totalResult: count
+        postlink: query
+      ).render()
+    )
+  ).fail (err) ->
+    console.log err
+    res.send 500, err.message
 
   return
 

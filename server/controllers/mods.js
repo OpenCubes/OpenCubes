@@ -20,30 +20,21 @@
   send = require("send");
 
   exports.view = function(req, res) {
-    setTimeout((function() {
-      Mod.load({
-        slug: req.params.id,
-        $cart_id: req.cookies.cart_id,
-        $user: req.user
-      }, function(err, mod) {
-        if (err || !mod) {
-          res.reason = "Mod not found";
-          return utils.notfound(req, res, function() {});
-        }
-        mod.htmlbody = req.application.parser(mod.body);
-        return res.render((req.query.ajax ? "../views/mods/view-body.ect" : "view.ect"), {
-          mod: mod,
-          canEdit: (req.user ? mod.author === req.user.id || req.user.role === "admin" ? true : void 0 : false),
-          title: mod.name + " - OpenCubes"
-        }, (req.query.ajax ? function(err, html) {
-          var result;
-          result = {};
-          result.body = html;
-          res.send(result);
-        } : void 0));
+    var user;
+    if (req.user) {
+      user = req.user._id;
+    } else {
+      user = "";
+    }
+    return app.api.mods.view(user, req.params.id, req.cookies.cart_id, req.user).then(function(mod) {
+      res.render("view.ect", {
+        mod: mod,
+        canEdit: (req.user ? mod.author === req.user.id || req.user.role === "admin" ? true : void 0 : false),
+        title: mod.name + " - OpenCubes"
       });
-      return;
-    }), 0);
+    }).fail(function(err) {
+      return res.send(500, err.message);
+    });
   };
 
   exports.edit = function(req, res) {
@@ -149,7 +140,7 @@
   };
 
   exports.index = function(req, res) {
-    var cart, filter, listing, options, page, perPage, query, sort, url_parts;
+    var cart, filter, listing, options, page, perPage, query, sort, url_parts, user;
     page = (req.params.page > 0 ? req.param("page") : 1) - 1;
     sort = (req.param("sort")) || "date";
     filter = (req.param("filter")) || "all";
@@ -168,26 +159,30 @@
     url_parts = url.parse(req.url, true);
     query = url_parts.search;
     listing = new Date().getTime();
-    Mod.list(options, function(err, mods) {
-      if (err) {
-        return res.render("500");
-      }
-      Mod.count().exec(function(err, count) {
-        console.log(("  Loading mods took " + (new Date().getTime() - listing + " ms")).cyan);
-        res.render("../views/index.ect", utils.ectHelpers(req, {
-          title: "Mods - OpenCubes",
-          mods: mods,
-          page: page + 1,
-          pages: Math.ceil(count / perPage),
-          pagination: paginator.create("search", {
-            prelink: "",
-            current: page + 1,
-            rowsPerPage: perPage,
-            totalResult: count,
-            postlink: query
-          }).render()
-        }));
-      });
+    if (req.user) {
+      user = req.user._id;
+    } else {
+      user = "";
+    }
+    app.api.mods.list(user, options).then(function(mods, count) {
+      count = mods.totalCount;
+      console.log(count);
+      return res.render("index.ect", utils.ectHelpers(req, {
+        title: "Mods - OpenCubes",
+        mods: mods,
+        page: page + 1,
+        pages: Math.ceil(count / perPage),
+        pagination: paginator.create("search", {
+          prelink: "",
+          current: page + 1,
+          rowsPerPage: perPage,
+          totalResult: count,
+          postlink: query
+        }).render()
+      }));
+    }).fail(function(err) {
+      console.log(err);
+      return res.send(500, err.message);
     });
   };
 

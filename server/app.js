@@ -4,6 +4,7 @@
   app = {
     controllers: {},
     models: {},
+    api: {},
     init: function(cb) {
       var ECT, config, express, flash, fs, http, lessMiddleware, mongoose, passport, path, router, timer, utils;
       require("./utils");
@@ -12,7 +13,7 @@
       http = require("http");
       path = require("path");
       router = require("./router");
-      config = require("./config");
+      app.config = config = require("./config");
       fs = require("fs");
       ECT = require("ect");
       lessMiddleware = require("less-middleware");
@@ -20,37 +21,32 @@
       flash = require("express-flash");
       passport = require("passport");
       app.parser = require("./parser.js");
+      mongoose = require("mongoose");
       require("colors");
       console.log(("  Info - Trying to run server at " + config.ip.bold + " throught " + config.port.bold).yellow);
       console.log(("  Info - Loading dependencies took " + (new Date().getTime() - timer + "").bold + " ms").cyan);
-      mongoose = require("mongoose");
       mongoose.connect(config.db_uri, config.db_opt, function(err) {
-        var controllers_path, ectRenderer, httpServer, models_path, server, timer2;
+        var api_path, controllers_path, ectRenderer, httpServer, models_path, server, timer2;
         if (err) {
           return console.log("  Error - Can't connect to mongodb".red);
         }
-        /*
-        if config.env is "dev"
-          edt = require('express-debug')
-          edt(app, {
-            panels: ['locals', 'request', 'session', 'template', 'software_info', 'profile']
-            depth: 4
-            extra_panels: []
-            path: '/express-debug'
-          })
-        */
-
         timer2 = new Date().getTime();
         models_path = __dirname + "/models";
         fs.readdirSync(models_path).forEach(function(file) {
           if (~file.indexOf(".js")) {
-            require(models_path + "/" + file);
+            return require(models_path + "/" + file);
           }
         });
         controllers_path = __dirname + "/controllers";
         fs.readdirSync(controllers_path).forEach(function(file) {
           if (~file.indexOf(".js")) {
             app.controllers[file.slice(0, -3)] = require(controllers_path + "/" + file);
+          }
+        });
+        api_path = __dirname + "/api";
+        fs.readdirSync(api_path).forEach(function(file) {
+          if (~file.indexOf(".js")) {
+            app.api[file.slice(0, -3)] = require(api_path + "/" + file);
           }
         });
         console.log(("  Info - Bootstraping took " + (new Date().getTime() - timer2 + "").bold + " ms").cyan);
@@ -106,13 +102,38 @@
         router(app);
         httpServer = http.createServer(server);
         httpServer.listen(server.get("port"), server.get("ip"), function() {
+          var canThis;
           console.log(("  Info - Express server listening on port " + (httpServer.address().port + "").bold + " in " + (new Date().getTime() - timer + "").bold + " ms").green);
           cb();
+          console.dir(app.api);
+          canThis = app.api.permissions.canThis;
+          canThis("5341610b3c76f26825d3fb2f", "mod", "browse").then(function(r) {
+            return console.log("mod browse", r);
+          }).fail(function(r) {
+            return console.log("mod browse error", r);
+          });
+          canThis("5341610b3c76f26825d3fb2f", "mod", "edit").then(function(r) {
+            return console.log("mod edit", r);
+          }).fail(function(r) {
+            return console.log("mod edit error", r);
+          });
+          canThis("5341610b3c76f26825d3fb2f", "comments", "browse").then(function(r) {
+            return console.log("comments browse", r);
+          }).fail(function(r) {
+            return console.log("comments browse error", r);
+          });
+          canThis("5341610b3c76f26825d3fb2f", "user", "add").then(function(r) {
+            return console.log("user add", r);
+          }).fail(function(r) {
+            return console.log("user add err", r);
+          });
         });
       });
     }
   };
 
   module.exports = app;
+
+  global.app = app;
 
 }).call(this);

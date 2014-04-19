@@ -4,7 +4,6 @@ Cart = mongoose.model("Cart")
 slug = require("mongoose-slug")
 timestamps = require("mongoose-times")
 fs = require("fs")
-Version = mongoose.model("Version")
 ModSchema = mongoose.Schema(
   name: String
   version: String
@@ -39,7 +38,7 @@ ModSchema.post 'remove',  (doc) ->
   fs.unlink "../uploads/"+mod.logo, (err) ->
     if err then console.log err
     else console.log "File #{mod.logo} has been deleted"
-  Version.find {mod: @_id}, (err, versions) ->
+  mongoose.model("Version").find {mod: @_id}, (err, versions) ->
     version.remove() for version in versions when version
 
 ModSchema.path("name").required true, "Mod title cannot be blank"
@@ -52,7 +51,7 @@ fs = require "fs"
 ModSchema.methods =
   fillDeps: (cb) ->
     console.log @_id
-    q = Version.find {"slaves.mod": @_id}
+    q = mongoose.model("Version").find {"slaves.mod": @_id}
     q.populate "mod", "name author"
     q.exec cb
 
@@ -128,6 +127,7 @@ ModSchema.statics =
       query.lean()
     query.populate "comments.author", "username"
     query.populate "author", "username"
+    console.log data
     query.exec (err, mod) ->
       if cartId
         return Cart.findById(cartId, (err, cart)->

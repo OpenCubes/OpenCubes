@@ -1,5 +1,5 @@
 (function() {
-  var Cart, ModSchema, Schema, Version, fs, mongoose, slug, timestamps;
+  var Cart, ModSchema, Schema, fs, mongoose, slug, timestamps;
 
   mongoose = require("mongoose");
 
@@ -12,8 +12,6 @@
   timestamps = require("mongoose-times");
 
   fs = require("fs");
-
-  Version = mongoose.model("Version");
 
   ModSchema = mongoose.Schema({
     name: String,
@@ -58,7 +56,7 @@
         return console.log("File " + mod.logo + " has been deleted");
       }
     });
-    return Version.find({
+    return mongoose.model("Version").find({
       mod: this._id
     }, function(err, versions) {
       var version, _i, _len, _results;
@@ -87,7 +85,7 @@
     fillDeps: function(cb) {
       var q;
       console.log(this._id);
-      q = Version.find({
+      q = mongoose.model("Version").find({
         "slaves.mod": this._id
       });
       q.populate("mod", "name author");
@@ -129,7 +127,7 @@
     */
 
     listVersion: function(callback, processDeps) {
-      var self;
+      var Version, self;
       if (processDeps == null) {
         processDeps = false;
       }
@@ -199,6 +197,7 @@
       }
       query.populate("comments.author", "username");
       query.populate("author", "username");
+      console.log(data);
       query.exec(function(err, mod) {
         if (cartId) {
           return Cart.findById(cartId, function(err, cart) {
