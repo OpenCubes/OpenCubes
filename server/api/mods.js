@@ -50,7 +50,7 @@
   */
 
 
-  exports.view = (function(userid, slug, cart, user, callback) {
+  exports.view = (function(userid, slug, cart, user, parse, callback) {
     return canThis(userid, "mod", "browse").then(function(can) {
       var Mod;
       if (can === false) {
@@ -65,7 +65,9 @@
         if (err || !mod) {
           return callback(new Error("not_found"));
         }
-        mod.htmlbody = require("../parser")(mod.body);
+        if (parse === true) {
+          mod.htmlbody = require("../parser")(mod.body);
+        }
         return callback(mod);
       });
       return;

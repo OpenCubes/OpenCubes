@@ -34,7 +34,7 @@ Return a mod
 @param user the current user for edition ({})
 @permission mod:browse
 ###
-exports.view = ((userid, slug, cart, user, callback) ->
+exports.view = ((userid, slug, cart, user, parse ,callback) ->
   canThis(userid, "mod", "browse").then (can)->
     if can is false then return callback(new Error "unauthorized")
     # Validate options
@@ -47,7 +47,7 @@ exports.view = ((userid, slug, cart, user, callback) ->
     , (err, mod) ->
       if err or not mod
         return callback(new Error "not_found")
-      mod.htmlbody = require("../parser")(mod.body)
+      if parse is true then mod.htmlbody = require("../parser")(mod.body)
       callback mod
 
     return
@@ -110,4 +110,5 @@ exports.edit = ((userid, slug, field, value, callback) ->
     )
   
 ).toPromise @
+
 

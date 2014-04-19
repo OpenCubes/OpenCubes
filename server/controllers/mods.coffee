@@ -13,7 +13,7 @@ Route for viewing mod
 ###
 exports.view = (req, res) ->
   if req.user then user = req.user._id else user = ""
-  app.api.mods.view(user, req.params.id, req.cookies.cart_id,  req.user).then((mod) ->
+  app.api.mods.view(user, req.params.id, req.cookies.cart_id,  req.user, true).then((mod) ->
     res.render "view.ect",
       mod: mod
       canEdit: (if req.user then if mod.author is req.user.id or req.user.role is "admin" then true else false)
@@ -86,16 +86,17 @@ exports.doEdit = (req, res) ->
 exports.getLogo = (req, res) ->
   if !req.params.slug
     return res.send 403, "no slug"
-  Mod.findOne({slug: req.params.slug}, (err, mod) ->
-    if(err or !mod)
-      return res.send 500, "error"
+  app.api.mods.view(req.getUserId(), req.params.slug, undefined, undefined, false).then((mod) ->
     if(!mod.logo)
       return send(req, __dirname.getParent().getParent() + "/public/images/puzzle.png")
         .pipe(res)
 
     send(req, __dirname.getParent() + "/uploads/"+mod.logo)
       .pipe(res)
-  )
+  ).fail (err) ->
+      send(req, __dirname.getParent().getParent() + "/public/images/puzzle.png")
+        .pipe(res)
+  
 
 uuid = require("node-uuid")
 fs = require("fs")
@@ -110,17 +111,10 @@ exports.setLogo = (req, res) ->
     if err
       console.log err
       return res.send 500, "something went wrong while moving"
-    slug = req.params.id
-    Mod.load
-      slug: slug
-      , (err, mod) ->
-        if err or not mod
-          console.log(err)
-          return res.send 500, "error with db"
-        mod.logo = uid
-        console.log("done!")
-        mod.save()
-        return res.send 200, "done"
+    app.api.mods.edit(req.getUserId(), req.params.id, "logo", uid).then((status) ->
+      res.send 200, "Saved!"
+    ).fail (err) ->
+      res.send 400, err.message
 
 
 exports.star = (req, res) ->

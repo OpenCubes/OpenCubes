@@ -32,7 +32,7 @@
     } else {
       user = "";
     }
-    return app.api.mods.view(user, req.params.id, req.cookies.cart_id, req.user).then(function(mod) {
+    return app.api.mods.view(user, req.params.id, req.cookies.cart_id, req.user, true).then(function(mod) {
       res.render("view.ect", {
         mod: mod,
         canEdit: (req.user ? mod.author === req.user.id || req.user.role === "admin" ? true : void 0 : false),
@@ -118,16 +118,13 @@
     if (!req.params.slug) {
       return res.send(403, "no slug");
     }
-    return Mod.findOne({
-      slug: req.params.slug
-    }, function(err, mod) {
-      if (err || !mod) {
-        return res.send(500, "error");
-      }
+    return app.api.mods.view(req.getUserId(), req.params.slug, void 0, void 0, false).then(function(mod) {
       if (!mod.logo) {
         return send(req, __dirname.getParent().getParent() + "/public/images/puzzle.png").pipe(res);
       }
       return send(req, __dirname.getParent() + "/uploads/" + mod.logo).pipe(res);
+    }).fail(function(err) {
+      return send(req, __dirname.getParent().getParent() + "/public/images/puzzle.png").pipe(res);
     });
   };
 
@@ -145,23 +142,14 @@
     uid = uuid.v4() + ".png";
     newfile = __dirname.getParent() + "/uploads/" + uid;
     return fs.rename(file.path, newfile, function(err) {
-      var slug;
       if (err) {
         console.log(err);
         return res.send(500, "something went wrong while moving");
       }
-      slug = req.params.id;
-      return Mod.load({
-        slug: slug
-      }, function(err, mod) {
-        if (err || !mod) {
-          console.log(err);
-          return res.send(500, "error with db");
-        }
-        mod.logo = uid;
-        console.log("done!");
-        mod.save();
-        return res.send(200, "done");
+      return app.api.mods.edit(req.getUserId(), req.params.id, "logo", uid).then(function(status) {
+        return res.send(200, "Saved!");
+      }).fail(function(err) {
+        return res.send(400, err.message);
       });
     });
   };
