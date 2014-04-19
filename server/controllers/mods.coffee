@@ -7,6 +7,10 @@ URI = require("URIjs")
 check = require("check-types")
 archiver = require("archiver")
 send = require("send");
+
+###
+Route for viewing mod
+###
 exports.view = (req, res) ->
   if req.user then user = req.user._id else user = ""
   app.api.mods.view(user, req.params.id, req.cookies.cart_id,  req.user).then((mod) ->
@@ -18,36 +22,59 @@ exports.view = (req, res) ->
   ).fail (err) ->
     res.send 500, err.message
 
+# lists the mods
+exports.index = (req, res) ->
+  page = ((if req.params.page > 0 then req.param("page") else 1)) - 1
+  sort = (req.param("sort")) or "date"
+  filter = (req.param("filter")) or "all"
+  perPage = 10
+  options =
+    perPage: perPage
+    page: page
+    sort: sort
+    filter: filter
+    criteria: ((if filter isnt "all" then category: filter else {}))
+    cart: req.cookies.cart_id
+
+  cart = req.cookies.cart_id
+  # We get the params in the url -> Preserve the params in the links
+  url_parts = url.parse(req.url, true)
+  query = url_parts.search
+  listing = new Date().getTime()
+  if req.user then user = req.user._id else user = ""
+  app.api.mods.list(user, options).then((mods, count) ->
+    count = mods.totalCount
+    console.log count
+    res.render "index.ect", utils.ectHelpers(req,
+      title: "Mods - OpenCubes"
+      mods: mods
+      page: page + 1
+      pages: Math.ceil(count / perPage)
+      pagination: paginator.create("search",
+        prelink: ""
+        current: page + 1
+        rowsPerPage: perPage
+        totalResult: count
+        postlink: query
+      ).render()
+    )
+  ).fail (err) ->
+    console.log err
+    res.send 500, err.message
+
+  return
 
 exports.edit = (req, res) ->
-  Mod.load
-    slug: req.params.id
-    author: req.user._id
-  , (err, mod) ->
-    return res.send(403, "You are not the author")  if err or not mod
-    mod.fillDeps (err, deps)->
-      if err
-        console.log err
-      # Check the section exists
-      section = [
-        "general"
-        "description"
-        "files"
-        "dependencies"
-      ].fetch(req.params.section, "general")
-      mod.listVersion (v) ->
-        console.log v
-        res.render "edit/" + section + ".ect",
-          mod: mod
-          deps: deps
-          title: "Editing " + mod.name
-          url: "/mod/" + mod.slug + "/edit"
-          versions: v
-        return
-
-      return
-
-    return
+  console.log req.params
+  app.api.mods.load(req.getUserId(), req.params.id).then((container) ->
+    res.render "edit/" + (req.params.section or "general") + ".ect",
+      mod: container.mod
+      deps: container.deps
+      title: "Editing " + container.mod.name
+      url: "/mod/" + container.mod.slug + "/edit"
+      versions: container.versions
+  ).fail (err) ->
+    res.send err.message
 
 exports.doEdit = (req, res) ->
   args = req.body
@@ -102,46 +129,6 @@ exports.setLogo = (req, res) ->
         mod.save()
         return res.send 200, "done"
 
-exports.index = (req, res) ->
-  page = ((if req.params.page > 0 then req.param("page") else 1)) - 1
-  sort = (req.param("sort")) or "date"
-  filter = (req.param("filter")) or "all"
-  perPage = 10
-  options =
-    perPage: perPage
-    page: page
-    sort: sort
-    filter: filter
-    criteria: ((if filter isnt "all" then category: filter else {}))
-    cart: req.cookies.cart_id
-
-  cart = req.cookies.cart_id
-  # We get the params in the url -> Preserve the params in the links
-  url_parts = url.parse(req.url, true)
-  query = url_parts.search
-  listing = new Date().getTime()
-  if req.user then user = req.user._id else user = ""
-  app.api.mods.list(user, options).then((mods, count) ->
-    count = mods.totalCount
-    console.log count
-    res.render "index.ect", utils.ectHelpers(req,
-      title: "Mods - OpenCubes"
-      mods: mods
-      page: page + 1
-      pages: Math.ceil(count / perPage)
-      pagination: paginator.create("search",
-        prelink: ""
-        current: page + 1
-        rowsPerPage: perPage
-        totalResult: count
-        postlink: query
-      ).render()
-    )
-  ).fail (err) ->
-    console.log err
-    res.send 500, err.message
-
-  return
 
 exports.star = (req, res) ->
   slug = req.params.slug

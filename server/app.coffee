@@ -72,6 +72,9 @@ app =
         res.locals.theme = config.theme
         res.locals.parse = app.parser
         req.application = app
+        req.getUserId = () ->
+          if req.user then return req.user._id 
+          return ""
         next()
         return
 
@@ -112,30 +115,6 @@ app =
       httpServer.listen server.get("port"), server.get("ip"), ->
         console.log ("  Info - Express server listening on port " + (httpServer.address().port + "").bold + " in " + (new Date().getTime() - timer + "").bold + " ms").green
         cb()
-        console.dir app.api
-
-        canThis = app.api.permissions.canThis
-        canThis("5341610b3c76f26825d3fb2f", "mod", "browse").then((r)->
-          console.log "mod browse", r
-        ).fail((r)->
-          console.log "mod browse error", r
-        )
-        canThis("5341610b3c76f26825d3fb2f", "mod", "edit").then((r)->
-          console.log "mod edit", r
-        ).fail((r)->
-          console.log "mod edit error", r
-        )
-        canThis("5341610b3c76f26825d3fb2f", "comments", "browse").then((r)->
-          console.log "comments browse", r
-        ).fail((r)->
-          console.log "comments browse error", r
-        )
-        canThis("5341610b3c76f26825d3fb2f", "user", "add").then((r)->
-          console.log "user add", r
-        ).fail((r)->
-          console.log "user add err", r
-        )
-        return
 
       return
 
