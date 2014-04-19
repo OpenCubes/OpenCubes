@@ -94,7 +94,6 @@ Edit a mod
 
 exports.edit = ((userid, slug, field, value, callback) ->
   canThis(userid, "mod", "browse").then (can)->
-    if can is false then return callback(new Error "unauthorized")
     # Validate options
 
     Mod = mongoose.model "Mod"
@@ -108,6 +107,26 @@ exports.edit = ((userid, slug, field, value, callback) ->
       mod.save()
       return callback "ok"
     )
+  
+).toPromise @
+
+###
+Upload a mod
+@param userid the current logged user id 
+@param mod the data of the new mod
+@permission mod:add
+###
+
+exports.add = ((userid, mod, callback) ->
+  canThis(userid, "mod", "add").then (can)->
+    if can is false then return callback(new Error "unauthorized")
+    # Validate options
+
+    Mod = mongoose.model "Mod"
+    
+    mod = new Mod mod
+    mod.save()
+    callback "ok"
   
 ).toPromise @
 

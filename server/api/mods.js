@@ -126,9 +126,6 @@
   exports.edit = (function(userid, slug, field, value, callback) {
     return canThis(userid, "mod", "browse").then(function(can) {
       var Mod;
-      if (can === false) {
-        return callback(new Error("unauthorized"));
-      }
       Mod = mongoose.model("Mod");
       return Mod.findOne({
         slug: slug
@@ -146,6 +143,27 @@
         mod.save();
         return callback("ok");
       });
+    });
+  }).toPromise(this);
+
+  /*
+  Upload a mod
+  @param userid the current logged user id 
+  @param mod the data of the new mod
+  @permission mod:add
+  */
+
+
+  exports.add = (function(userid, mod, callback) {
+    return canThis(userid, "mod", "add").then(function(can) {
+      var Mod;
+      if (can === false) {
+        return callback(new Error("unauthorized"));
+      }
+      Mod = mongoose.model("Mod");
+      mod = new Mod(mod);
+      mod.save();
+      return callback("ok");
     });
   }).toPromise(this);
 

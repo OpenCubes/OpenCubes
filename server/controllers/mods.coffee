@@ -100,6 +100,7 @@ exports.getLogo = (req, res) ->
 
 uuid = require("node-uuid")
 fs = require("fs")
+
 exports.setLogo = (req, res) ->
   console.log(req.files)
   file = req.files.file
@@ -153,24 +154,17 @@ exports.upload = (req, res) ->
   return
 
 exports.doUpload = (req, res) ->
-  mod = new Mod(
+  mod =
     name: req.body.name
     summary: req.body.summary
     body: req.body.description
     author: req.user._id
     category: req.body.category or "misc"
-  )
-  mod.save (err, doc) ->
-    console.log doc
-    if err
-      res.render "../views/upload.ect",
-        hasError: true
-
-    else
-      res.redirect "/"
-    return
-
-  return
+  app.api.mods.add(req.getUserId(), mod).then((s)->
+    res.redirect "/"
+  ).fail (err) ->
+    res.render "upload.ect",
+      hasError: true
 
 Cart = mongoose.model "Cart"
 

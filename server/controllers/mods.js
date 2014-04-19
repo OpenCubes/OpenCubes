@@ -200,22 +200,19 @@
 
   exports.doUpload = function(req, res) {
     var mod;
-    mod = new Mod({
+    mod = {
       name: req.body.name,
       summary: req.body.summary,
       body: req.body.description,
       author: req.user._id,
       category: req.body.category || "misc"
-    });
-    mod.save(function(err, doc) {
-      console.log(doc);
-      if (err) {
-        res.render("../views/upload.ect", {
-          hasError: true
-        });
-      } else {
-        res.redirect("/");
-      }
+    };
+    return app.api.mods.add(req.getUserId(), mod).then(function(s) {
+      return res.redirect("/");
+    }).fail(function(err) {
+      return res.render("upload.ect", {
+        hasError: true
+      });
     });
   };
 
