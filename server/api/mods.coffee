@@ -60,19 +60,18 @@ exports.view = ((userid, slug, cart, user, callback) ->
 Return a mod fully loaded with deps and versions
 @param userid the current logged user id or ""
 @param slug the slug of the mod
-@permission mod:browse
+@permission mod:edit
 ###
 
 exports.load = ((userid, slug, callback) ->
   canThis(userid, "mod", "browse").then (can)->
-    if can is false then return callback(new Error "unauthorized")
     # Validate options
 
     Mod = mongoose.model "Mod"
     Mod.load
       slug: slug
-      author: userid
     , (err, mod) ->
+      if can is false and mod._id isnt userid then return callback(new Error "unauthorized")
       return callback(new Error "unauthorized")  if err or not mod
       mod.fillDeps (err, deps)->
         return callback(new Error "database_error")  if err or not deps
@@ -82,5 +81,33 @@ exports.load = ((userid, slug, callback) ->
             deps: deps
             versions: v
           callback container
+).toPromise @
+
+###
+Edit a mod
+@param userid the current logged user id 
+@param slug the slug of the mod
+@param field the field to be edited
+@param value the new value
+@permission mod:edit
+###
+
+exports.edit = ((userid, slug, field, value, callback) ->
+  canThis(userid, "mod", "browse").then (can)->
+    if can is false then return callback(new Error "unauthorized")
+    # Validate options
+
+    Mod = mongoose.model "Mod"
+    
+    Mod.findOne({slug: slug}, (err, mod) ->
+      if can is false and mod._id isnt userid then return callback(new Error "unauthorized")
+      if err or !mod
+        if err then console.log err
+        return callback(new Error "Please try again")
+      mod[field] = value
+      mod.save()
+      return callback "ok"
+    )
+  
 ).toPromise @
 

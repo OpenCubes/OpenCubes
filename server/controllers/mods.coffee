@@ -65,7 +65,6 @@ exports.index = (req, res) ->
   return
 
 exports.edit = (req, res) ->
-  console.log req.params
   app.api.mods.load(req.getUserId(), req.params.id).then((container) ->
     res.render "edit/" + (req.params.section or "general") + ".ect",
       mod: container.mod
@@ -78,16 +77,10 @@ exports.edit = (req, res) ->
 
 exports.doEdit = (req, res) ->
   args = req.body
-  Mod.findOne({slug: req.params.id, author: req.user._id}, (err, mod) ->
-    if err or !mod
-      if err then console.log err
-      return res.send 403, "Please try again"
-    if args.value and args.value isnt '' and args.name and args.name isnt ''
-      mod[args.name] = args.value
-      mod.save()
-      return res.send 200, "Done!"
-    return res.send 401, "Please fill the field"
-  )
+  app.api.mods.edit(req.getUserId(), req.params.id, args.name, args.value).then((status) ->
+    res.send 200, "Saved!"
+  ).fail (err) ->
+    res.send 400, err.message
 
 
 exports.getLogo = (req, res) ->

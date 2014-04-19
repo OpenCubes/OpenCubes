@@ -91,7 +91,6 @@
   };
 
   exports.edit = function(req, res) {
-    console.log(req.params);
     return app.api.mods.load(req.getUserId(), req.params.id).then(function(container) {
       return res.render("edit/" + (req.params.section || "general") + ".ect", {
         mod: container.mod,
@@ -108,22 +107,10 @@
   exports.doEdit = function(req, res) {
     var args;
     args = req.body;
-    return Mod.findOne({
-      slug: req.params.id,
-      author: req.user._id
-    }, function(err, mod) {
-      if (err || !mod) {
-        if (err) {
-          console.log(err);
-        }
-        return res.send(403, "Please try again");
-      }
-      if (args.value && args.value !== '' && args.name && args.name !== '') {
-        mod[args.name] = args.value;
-        mod.save();
-        return res.send(200, "Done!");
-      }
-      return res.send(401, "Please fill the field");
+    return app.api.mods.edit(req.getUserId(), req.params.id, args.name, args.value).then(function(status) {
+      return res.send(200, "Saved!");
+    }).fail(function(err) {
+      return res.send(400, err.message);
     });
   };
 

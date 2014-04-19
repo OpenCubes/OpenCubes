@@ -76,21 +76,20 @@
   Return a mod fully loaded with deps and versions
   @param userid the current logged user id or ""
   @param slug the slug of the mod
-  @permission mod:browse
+  @permission mod:edit
   */
 
 
   exports.load = (function(userid, slug, callback) {
     return canThis(userid, "mod", "browse").then(function(can) {
       var Mod;
-      if (can === false) {
-        return callback(new Error("unauthorized"));
-      }
       Mod = mongoose.model("Mod");
       return Mod.load({
-        slug: slug,
-        author: userid
+        slug: slug
       }, function(err, mod) {
+        if (can === false && mod._id !== userid) {
+          return callback(new Error("unauthorized"));
+        }
         if (err || !mod) {
           return callback(new Error("unauthorized"));
         }
@@ -108,6 +107,42 @@
             return callback(container);
           });
         });
+      });
+    });
+  }).toPromise(this);
+
+  /*
+  Edit a mod
+  @param userid the current logged user id 
+  @param slug the slug of the mod
+  @param field the field to be edited
+  @param value the new value
+  @permission mod:edit
+  */
+
+
+  exports.edit = (function(userid, slug, field, value, callback) {
+    return canThis(userid, "mod", "browse").then(function(can) {
+      var Mod;
+      if (can === false) {
+        return callback(new Error("unauthorized"));
+      }
+      Mod = mongoose.model("Mod");
+      return Mod.findOne({
+        slug: slug
+      }, function(err, mod) {
+        if (can === false && mod._id !== userid) {
+          return callback(new Error("unauthorized"));
+        }
+        if (err || !mod) {
+          if (err) {
+            console.log(err);
+          }
+          return callback(new Error("Please try again"));
+        }
+        mod[field] = value;
+        mod.save();
+        return callback("ok");
       });
     });
   }).toPromise(this);
