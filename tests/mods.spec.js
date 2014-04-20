@@ -1,6 +1,6 @@
 describe("mods", function () {
     var mongoose = require('mongoose');
-    var mockgoose = require('Mockgoose');
+    var mockgoose = require('mockgoose');
     var fs = require("fs");
     require("../server/utils");
     mockgoose(mongoose);
