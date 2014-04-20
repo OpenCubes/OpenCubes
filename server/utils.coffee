@@ -83,7 +83,6 @@ Object.defineProperty Function::, "toPromise",
       args.push arg for arg in arguments
       args.push () ->
         args = Array.prototype.slice.call arguments
-        console.log args
         if args[0] instanceof Error then return deferred.reject.apply($this, args)
         else return deferred.resolve.apply($this, args)
 

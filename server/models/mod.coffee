@@ -43,14 +43,18 @@ ModSchema.post 'remove',  (doc) ->
 
 ModSchema.path("name").required true, "Mod title cannot be blank"
 ModSchema.path("body").required true, "Mod body cannot be blank"
+ModSchema.path("author").required true, "Mod author cannot be blank"
+ModSchema.path("summary").required true, "Mod summary cannot be blank"
 ModSchema.plugin slug("name")
 ModSchema.plugin timestamps
+
+# Validation
+
 fs = require "fs"
 
 
 ModSchema.methods =
   fillDeps: (cb) ->
-    console.log @_id
     q = mongoose.model("Version").find {"slaves.mod": @_id}
     q.populate "mod", "name author"
     q.exec cb
@@ -65,7 +69,6 @@ ModSchema.methods =
 
 
   addFile: (uid, path, version, cb) ->
-    console.log arguments
     mongoose.model("Version").createFile uid, path, this, version, cb
     return
 
@@ -96,9 +99,7 @@ ModSchema.methods =
           output[version.name][file.path] = file.uid
       if processDeps
         return self.fillDeps (err, deps) ->
-          console.log "deps:", deps
           for version of output
-            console.log version
             for dep in deps
               for file in dep.files
                 output[version][file.path] = file.uid
@@ -127,7 +128,6 @@ ModSchema.statics =
       query.lean()
     query.populate "comments.author", "username"
     query.populate "author", "username"
-    console.log data
     query.exec (err, mod) ->
       if cartId
         return Cart.findById(cartId, (err, cart)->

@@ -125,8 +125,9 @@ exports.add = ((userid, mod, callback) ->
     Mod = mongoose.model "Mod"
     
     mod = new Mod mod
-    mod.save()
-    callback "ok"
+    mod.save((err, mod)->
+      callback err or mod
+    )
   
 ).toPromise @
 
