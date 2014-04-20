@@ -28,7 +28,12 @@ describe("mods", function () {
     var userid;
     it("should be able to add a mod", function (done) {
         user.save(function (err, user) {
-            if (err) throw err
+
+            if (err) {
+                console.log(err)
+                throw err
+            }
+
             userid = user._id;
             api.mods.add(userid, {
                 name: "Foo",
