@@ -216,4 +216,30 @@
     });
   }).toPromise(this);
 
+  /*
+  Search a mod
+  @param userid the current logged user id
+  @param query the query string
+  @permission mod:browse
+  */
+
+
+  exports.search = (function(userid, query, callback) {
+    return canThis(userid, "mod", "browse").then(function(can) {
+      var Mod, q, regex;
+      if (can === false) {
+        return callback(new Error("unauthorized"));
+      }
+      Mod = mongoose.model("Mod");
+      regex = new RegExp(query, 'i');
+      q = Mod.find({
+        name: regex
+      });
+      q.populate("author", "username");
+      return q.exec(function(err, mods) {
+        return callback(err || mods);
+      });
+    });
+  }).toPromise(this);
+
 }).call(this);

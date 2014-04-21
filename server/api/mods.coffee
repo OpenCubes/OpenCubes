@@ -167,5 +167,26 @@ exports.star = ((userid, slug, callback) ->
 
 ).toPromise @
 
+###
+Search a mod
+@param userid the current logged user id
+@param query the query string
+@permission mod:browse
+###
+
+exports.search = ((userid, query, callback) ->
+  canThis(userid, "mod", "browse").then (can)->
+    if can is false then return callback(new Error "unauthorized")
+    # Validate options
+    Mod = mongoose.model "Mod"
+    regex = new RegExp(query, 'i')
+    q = Mod.find({name: regex})
+    q.populate("author", "username")
+    q.exec (err, mods) ->
+      callback err or mods
+
+).toPromise @
+
+
 
 
