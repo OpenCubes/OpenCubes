@@ -71,7 +71,7 @@ exports.load = ((userid, slug, callback) ->
     Mod.load
       slug: slug
     , (err, mod) ->
-      if can is false and mod._id isnt userid then return callback(new Error "unauthorized")
+      if can is false and mod.author isnt userid then return callback(new Error "unauthorized")
       return callback(new Error "unauthorized")  if err or not mod
       mod.fillDeps (err, deps)->
         return callback(new Error "database_error")  if err or not deps
@@ -99,7 +99,7 @@ exports.edit = ((userid, slug, field, value, callback) ->
     Mod = mongoose.model "Mod"
     
     Mod.findOne({slug: slug}, (err, mod) ->
-      if can is false and mod._id isnt userid then return callback(new Error "unauthorized")
+      if can is false and mod.author isnt userid then return callback(new Error "unauthorized")
       if err or !mod
         if err then console.log err
         return callback(new Error "Please try again")
@@ -123,12 +123,49 @@ exports.add = ((userid, mod, callback) ->
     # Validate options
 
     Mod = mongoose.model "Mod"
-    
     mod = new Mod mod
     mod.save((err, mod)->
       callback err or mod
     )
   
 ).toPromise @
+
+###
+Star a mod
+@param userid the current logged user id
+@param mod the data of the mod
+@permission mod:star
+###
+
+exports.star = ((userid, slug, callback) ->
+  canThis(userid, "mod", "star").then (can)->
+    if can is false then return callback(new Error "unauthorized")
+    # Validate options
+
+    Mod = mongoose.model "Mod"
+    q = Mod.findOne
+      slug: slug
+      "stargazers.id": userid
+    ,
+      "stargazers.$": 1
+    q.exec (err, mod) ->
+      return callback err  if err
+      Mod.findOne
+        slug: slug
+      , (err, doc) ->
+        return callback err  if err
+        if !mod
+          doc.stargazers.push
+            id: userid
+            date: Date.now()
+          doc.vote_count = (doc.vote_count or 0) + 1
+        else
+          doc.vote_count--
+          doc.stargazers.id(mod.stargazers[0]._id).remove()
+        doc.save (err, mod) ->
+          callback(err or mod)
+
+).toPromise @
+
 
 

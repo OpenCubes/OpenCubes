@@ -186,17 +186,20 @@
     */
 
     load: function(data, cb) {
-      var cartId, lean, query, user;
+      var cartId, lean, populate, query, user;
       cartId = data.$cart_id;
       user = data.$user;
       lean = data.$lean;
-      data.$cart_id = data.$user = data.$lean = void 0;
+      populate = data.$populate;
+      data.$cart_id = data.$populate = data.$user = data.$lean = void 0;
       query = this.findOne(data);
       if (lean) {
         query.lean();
       }
-      query.populate("comments.author", "username");
-      query.populate("author", "username");
+      if (populate) {
+        query.populate("comments.author", "username");
+        query.populate("author", "username");
+      }
       query.exec(function(err, mod) {
         if (cartId) {
           return Cart.findById(cartId, function(err, cart) {

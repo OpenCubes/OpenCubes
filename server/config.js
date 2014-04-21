@@ -24,7 +24,7 @@
       user: {
         full_name: 'User',
         description: 'User.',
-        allowedActions: ['mod:browse add', 'comment:browse add', 'user:browse']
+        allowedActions: ['mod:browse add star', 'comment:browse add', 'user:browse']
       },
       guest: {
         full_name: 'Guest',

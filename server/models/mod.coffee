@@ -122,12 +122,14 @@ ModSchema.statics =
     cartId = data.$cart_id
     user = data.$user
     lean = data.$lean
-    data.$cart_id = data.$user = data.$lean = undefined
+    populate = data.$populate
+    data.$cart_id = data.$populate = data.$user = data.$lean = undefined
     query = @findOne(data)
     if lean
       query.lean()
-    query.populate "comments.author", "username"
-    query.populate "author", "username"
+    if populate
+      query.populate "comments.author", "username"
+      query.populate "author", "username"
     query.exec (err, mod) ->
       if cartId
         return Cart.findById(cartId, (err, cart)->
@@ -164,7 +166,7 @@ ModSchema.statics =
           if !err and cart
             mod.fillCart cart for mod in mods
             cb(err, mods)
-         )
+        )
        else
         cb(err, mods)
               

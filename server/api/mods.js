@@ -88,7 +88,7 @@
       return Mod.load({
         slug: slug
       }, function(err, mod) {
-        if (can === false && mod._id !== userid) {
+        if (can === false && mod.author !== userid) {
           return callback(new Error("unauthorized"));
         }
         if (err || !mod) {
@@ -129,7 +129,7 @@
       return Mod.findOne({
         slug: slug
       }, function(err, mod) {
-        if (can === false && mod._id !== userid) {
+        if (can === false && mod.author !== userid) {
           return callback(new Error("unauthorized"));
         }
         if (err || !mod) {
@@ -163,6 +163,55 @@
       mod = new Mod(mod);
       return mod.save(function(err, mod) {
         return callback(err || mod);
+      });
+    });
+  }).toPromise(this);
+
+  /*
+  Star a mod
+  @param userid the current logged user id
+  @param mod the data of the mod
+  @permission mod:star
+  */
+
+
+  exports.star = (function(userid, slug, callback) {
+    return canThis(userid, "mod", "star").then(function(can) {
+      var Mod, q;
+      if (can === false) {
+        return callback(new Error("unauthorized"));
+      }
+      Mod = mongoose.model("Mod");
+      q = Mod.findOne({
+        slug: slug,
+        "stargazers.id": userid
+      }, {
+        "stargazers.$": 1
+      });
+      return q.exec(function(err, mod) {
+        if (err) {
+          return callback(err);
+        }
+        return Mod.findOne({
+          slug: slug
+        }, function(err, doc) {
+          if (err) {
+            return callback(err);
+          }
+          if (!mod) {
+            doc.stargazers.push({
+              id: userid,
+              date: Date.now()
+            });
+            doc.vote_count = (doc.vote_count || 0) + 1;
+          } else {
+            doc.vote_count--;
+            doc.stargazers.id(mod.stargazers[0]._id).remove();
+          }
+          return doc.save(function(err, mod) {
+            return callback(err || mod);
+          });
+        });
       });
     });
   }).toPromise(this);

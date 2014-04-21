@@ -117,37 +117,19 @@ exports.setLogo = (req, res) ->
     ).fail (err) ->
       res.send 400, err.message
 
-
+###
+Star a mod
+###
 exports.star = (req, res) ->
   slug = req.params.slug
   return res.send(400, "Missing slug")  if not slug or slug is ""
   return res.send(401, "You are not logged in")  unless req.user
-  Mod.load
-    slug: slug
-    "stargazers.id": req.user.id
-  , (err, doc) ->
-    return res.send(500, "Unknown error on database...")  if err
-    if doc
-      doc.vote_count--
-      doc.stargazers[0].remove()
-      doc.save()
-      res.redirect "/mod/" + slug
-    else
-      Mod.load
-        slug: slug
-      , (err, doc) ->
-        return res.send(500, "Unknown error on database...")  if err
-        doc.stargazers.push
-          id: req.user._id
-          date: Date.now()
+  app.api.mods.star(req.getUserId(), req.params.slug).then((mod)->
+    res.redirect "/mod/" + mod.slug
+  ).fail (err)->
+    console.log err
+    res.send 500, "Error"
 
-        doc.vote_count = (doc.vote_count or 0) + 1
-        doc.save()
-        res.redirect "/mod/" + slug
-
-    return
-
-  return
 
 exports.upload = (req, res) ->
   res.render "../views/upload.ect"

@@ -153,6 +153,11 @@
     });
   };
 
+  /*
+  Star a mod
+  */
+
+
   exports.star = function(req, res) {
     var slug;
     slug = req.params.slug;
@@ -162,34 +167,11 @@
     if (!req.user) {
       return res.send(401, "You are not logged in");
     }
-    Mod.load({
-      slug: slug,
-      "stargazers.id": req.user.id
-    }, function(err, doc) {
-      if (err) {
-        return res.send(500, "Unknown error on database...");
-      }
-      if (doc) {
-        doc.vote_count--;
-        doc.stargazers[0].remove();
-        doc.save();
-        res.redirect("/mod/" + slug);
-      } else {
-        Mod.load({
-          slug: slug
-        }, function(err, doc) {
-          if (err) {
-            return res.send(500, "Unknown error on database...");
-          }
-          doc.stargazers.push({
-            id: req.user._id,
-            date: Date.now()
-          });
-          doc.vote_count = (doc.vote_count || 0) + 1;
-          doc.save();
-          return res.redirect("/mod/" + slug);
-        });
-      }
+    return app.api.mods.star(req.getUserId(), req.params.slug).then(function(mod) {
+      return res.redirect("/mod/" + mod.slug);
+    }).fail(function(err) {
+      console.log(err);
+      return res.send(500, "Error");
     });
   };
 

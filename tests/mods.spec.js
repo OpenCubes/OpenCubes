@@ -28,12 +28,10 @@ describe("mods", function () {
     var userid;
     it("should be able to add a mod", function (done) {
         user.save(function (err, user) {
-
             if (err) {
                 console.log(err)
                 throw err
             }
-
             userid = user._id;
             api.mods.add(userid, {
                 name: "Foo",
@@ -56,8 +54,32 @@ describe("mods", function () {
             done();
         }).fail(function (err) {
             expect(err).toEqual(undefined);
+            done();
         });
     });
+
+    it("should be able to star the mod", function (done) {
+        api.mods.star(userid, "foo").then(function (mod) {
+            expect(mod.vote_count).toBe(1);
+            done();
+        }).fail(function (err) {
+            expect(err).toEqual(undefined);
+            done();
+        });
+    });
+    /**
+    Doesn't work since mockgoose doesn't support nested refs update
+    it("should be able to unstar the mod", function (done) {
+        console.log("unstarring...")
+        api.mods.star(userid, "foo").then(function (mod) {
+            expect(mod.vote_count).toBe(0);
+            done();
+        }).fail(function (err) {
+            expect(err).toEqual(undefined);
+            done();
+        });
+    });
+    */
     it("shouldn't be able to push a mod with no name", function (done) {
         api.mods.add(userid, {
             name: "",
@@ -114,11 +136,5 @@ describe("mods", function () {
             done();
         });
     });
-});
 
-/*
-
-  describe("mods", function () {
-    it("should be able
 });
-*/
