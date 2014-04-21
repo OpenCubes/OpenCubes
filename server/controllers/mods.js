@@ -1,9 +1,5 @@
 (function() {
-  var Cart, Mod, URI, archiver, check, fs, mongoose, paginator, send, url, utils, uuid;
-
-  mongoose = require("mongoose");
-
-  Mod = mongoose.model("Mod");
+  var URI, archiver, check, fs, paginator, send, url, utils, uuid;
 
   utils = require("./utils");
 
@@ -197,21 +193,19 @@
     });
   };
 
-  Cart = mongoose.model("Cart");
-
   exports.cart = function(req, res) {
     if (!req.params.id) {
       res.reason = "Missing id";
       return utils.notfound(req, res, function() {});
     }
-    return Cart.findById(req.params.id).populate("mods").exec(function(err, cart) {
-      if (err || !cart) {
-        res.reason = "DB Problem";
-        return utils.notfound(req, res, function() {});
-      }
+    return app.api.cart.view(req.params.id).then(function(cart) {
       return res.render("users/cart.ect", {
         cart: cart
       });
+    }).fail(function(err) {
+      console.log(err);
+      res.reason = "DB Problem";
+      return utils.notfound(req, res, function() {});
     });
   };
 

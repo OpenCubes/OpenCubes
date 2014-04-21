@@ -1,5 +1,4 @@
-mongoose = require("mongoose")
-Mod = mongoose.model("Mod")
+
 utils = require("./utils")
 paginator = require("../paginator.js")
 url = require("url")
@@ -148,19 +147,19 @@ exports.doUpload = (req, res) ->
     res.render "upload.ect",
       hasError: true
 
-Cart = mongoose.model "Cart"
 
 exports.cart = (req, res) ->
   if(!req.params.id)
     res.reason = "Missing id"
-    return utils.notfound(req, res, ->
-    )
-  Cart.findById(req.params.id).populate("mods").exec((err, cart) ->
-    if(err || !cart)
-      res.reason = "DB Problem"
-      return utils.notfound(req, res, ->)
+    return utils.notfound(req, res, ->)
+  app.api.cart.view(req.params.id).then((cart) ->
     res.render("users/cart.ect", {cart: cart})
-  )
+  ).fail (err) ->
+    console.log err
+    res.reason = "DB Problem"
+    return utils.notfound(req, res, ->)
+
+
 
 exports.search = (req, res) ->
   res.render "mods/search.ect"

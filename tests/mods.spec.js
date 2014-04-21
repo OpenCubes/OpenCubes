@@ -26,6 +26,8 @@ describe("mods", function () {
     })
     user.password = "bar"
     var userid;
+    var modid;
+
     it("should be able to add a mod", function (done) {
         user.save(function (err, user) {
             if (err) {
@@ -48,10 +50,13 @@ describe("mods", function () {
             });
         });
     });
+
     it("should be able to fetch the mod ", function (done) {
         api.mods.load(userid, "foo").then(function (mod) {
-            expect(status).not.toBe(null);
+            modid = mod.mod._id
+            expect(mod).not.toBe(null);
             done();
+
         }).fail(function (err) {
             expect(err).toEqual(undefined);
             done();
@@ -62,6 +67,26 @@ describe("mods", function () {
         api.mods.star(userid, "foo").then(function (mod) {
             expect(mod.vote_count).toBe(1);
             done();
+        }).fail(function (err) {
+            expect(err).toEqual(undefined);
+            done();
+        });
+    });
+
+    it("should able to cart the mod", function (done) {
+        api.carts.create().then(function (cart) {
+            api.carts.addTo(cart._id, modid).then(function () {
+                api.carts.view(cart._id).then(function (cart) {
+                    expect(cart.mods[0]._id).toBe(modid);
+                    done();
+                }).fail(function (err) {
+                    expect(err).toEqual(undefined);
+                    done();
+                });
+            }).fail(function (err) {
+                expect(err).toEqual(undefined);
+                done();
+            });
         }).fail(function (err) {
             expect(err).toEqual(undefined);
             done();
