@@ -28,13 +28,15 @@
     "markdown-symbols": "~0.1.0",
     "send": "~0.2.0",
     "sendmail": "~0.2.1",
-    "nodemailer": "~0.6.2"
+    "nodemailer": "~0.6.2",
+    "q": "~1.0.1",
+    "validator": "~3.10.0"
   },
   "devDependencies": {
-    "express-debug": "~1.0.3",
     "grunt": "*",
     "grunt-contrib-jshint": "~0.8.0",
     "grunt-contrib-jasmine": "~0.6.1",
-    "grunt-shell": "~0.6.4"
+    "grunt-shell": "~0.6.4",
+    "mockgoose": "~1.8.1"
   }
 }

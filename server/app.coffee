@@ -1,6 +1,7 @@
 app =
   controllers: {}
   models: {}
+  api: {}
   init: (cb) ->
     require "./utils"
     timer = new Date().getTime()
@@ -8,7 +9,7 @@ app =
     http = require("http")
     path = require("path")
     router = require("./router")
-    config = require("./config")
+    app.config = config = require("./config")
     fs = require("fs")
     ECT = require("ect")
     lessMiddleware = require("less-middleware")
@@ -16,23 +17,12 @@ app =
     flash = require("express-flash")
     passport = require("passport")
     app.parser = require("./parser.js")
+    mongoose = require("mongoose")
     require "colors"
     console.log ("  Info - Trying to run server at " + config.ip.bold + " throught " + config.port.bold).yellow
     console.log ("  Info - Loading dependencies took " + (new Date().getTime() - timer + "").bold + " ms").cyan
-    mongoose = require("mongoose")
     mongoose.connect config.db_uri, config.db_opt, (err) ->
       return console.log(("  Error - Can't connect to mongodb").red)  if err
-      ###
-      if config.env is "dev"
-        edt = require('express-debug')
-        edt(app, {
-          panels: ['locals', 'request', 'session', 'template', 'software_info', 'profile']
-          depth: 4
-          extra_panels: []
-          path: '/express-debug'
-        })
-        
-      ###
       
       timer2 = new Date().getTime()
       
@@ -40,15 +30,19 @@ app =
       models_path = __dirname + "/models"
       fs.readdirSync(models_path).forEach (file) ->
         require models_path + "/" + file  if ~file.indexOf(".js")
-        return
 
-      
-      # Bootstrap models
+      # Bootstrap controllers
       controllers_path = __dirname + "/controllers"
       fs.readdirSync(controllers_path).forEach (file) ->
-        
-        #  console.log(file.slice(0,-3));
+
         app.controllers[file.slice(0, -3)] = require(controllers_path + "/" + file)  if ~file.indexOf(".js")
+        return
+
+      # Bootstrap api
+      api_path = __dirname + "/api"
+      fs.readdirSync(api_path).forEach (file) ->
+
+        app.api[file.slice(0, -3)] = require(api_path + "/" + file)  if ~file.indexOf(".js")
         return
 
       console.log ("  Info - Bootstraping took " + (new Date().getTime() - timer2 + "").bold + " ms").cyan
@@ -78,6 +72,9 @@ app =
         res.locals.theme = config.theme
         res.locals.parse = app.parser
         req.application = app
+        req.getUserId = () ->
+          if req.user then return req.user._id 
+          return ""
         next()
         return
 
@@ -118,10 +115,10 @@ app =
       httpServer.listen server.get("port"), server.get("ip"), ->
         console.log ("  Info - Express server listening on port " + (httpServer.address().port + "").bold + " in " + (new Date().getTime() - timer + "").bold + " ms").green
         cb()
-        return
 
       return
 
     return
 
 module.exports = app
+global.app = app

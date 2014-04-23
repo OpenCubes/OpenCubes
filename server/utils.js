@@ -1,4 +1,6 @@
 (function() {
+  var Q;
+
   String.prototype.getParent = function() {
     var index, replaced;
     replaced = this.replace(new RegExp("\\\\", "g"), "/");
@@ -59,5 +61,57 @@
       message: message
     };
   };
+
+  /*
+  
+  This is an awesome utility function that convert
+  a classic function using callbacks into a promise styled one
+  
+  Usage example:
+  
+      function foo(foo, bar, callback){
+          callback(foo + " " + bar);
+      }
+      pFoo = foo.toPromise(this);
+      pFoo("hello, ", "world!").then(console.log);
+  
+  outputs "hello, world!"
+  
+  pass an error to call the fail function
+  
+  @params self the object to be applied on the function as this
+  */
+
+
+  Q = require("q");
+
+  Object.defineProperty(Function.prototype, "toPromise", {
+    enumerable: false,
+    configurable: false,
+    writable: false,
+    value: function(self) {
+      var $this;
+      $this = this;
+      return function() {
+        var arg, args, deferred, _i, _len;
+        deferred = Q.defer();
+        args = [];
+        for (_i = 0, _len = arguments.length; _i < _len; _i++) {
+          arg = arguments[_i];
+          args.push(arg);
+        }
+        args.push(function() {
+          args = Array.prototype.slice.call(arguments);
+          if (args[0] instanceof Error) {
+            return deferred.reject.apply($this, args);
+          } else {
+            return deferred.resolve.apply($this, args);
+          }
+        });
+        $this.apply(self, args);
+        return deferred.promise;
+      };
+    }
+  });
 
 }).call(this);

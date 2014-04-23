@@ -11,6 +11,8 @@
 
   timestamps = require("mongoose-times");
 
+  fs = require("fs");
+
   ModSchema = mongoose.Schema({
     name: String,
     version: String,
@@ -45,25 +47,25 @@
     ]
   });
 
-  ModSchema.pre('remove', function(doc) {
+  ModSchema.post('remove', function(doc) {
     console.log('`%s` has been removed', doc.name);
-    return mod.listVersion(function(data) {
-      var file, files, _results;
+    fs.unlink("../uploads/" + mod.logo, function(err) {
+      if (err) {
+        return console.log(err);
+      } else {
+        return console.log("File " + mod.logo + " has been deleted");
+      }
+    });
+    return mongoose.model("Version").find({
+      mod: this._id
+    }, function(err, versions) {
+      var version, _i, _len, _results;
       _results = [];
-      for (files in data) {
-        _results.push((function() {
-          var _results1;
-          _results1 = [];
-          for (file in files) {
-            if (files.hasOwnProperty(file)) {
-              fs.unlinkSync(files[file]);
-              _results1.push(console.log("Deleted file " + files[file]));
-            } else {
-              _results1.push(void 0);
-            }
-          }
-          return _results1;
-        })());
+      for (_i = 0, _len = versions.length; _i < _len; _i++) {
+        version = versions[_i];
+        if (version) {
+          _results.push(version.remove());
+        }
       }
       return _results;
     });
@@ -72,6 +74,10 @@
   ModSchema.path("name").required(true, "Mod title cannot be blank");
 
   ModSchema.path("body").required(true, "Mod body cannot be blank");
+
+  ModSchema.path("author").required(true, "Mod author cannot be blank");
+
+  ModSchema.path("summary").required(true, "Mod summary cannot be blank");
 
   ModSchema.plugin(slug("name"));
 
@@ -82,12 +88,14 @@
   ModSchema.methods = {
     fillDeps: function(cb) {
       var q;
-      console.log(this._id);
       q = mongoose.model("Version").find({
         "slaves.mod": this._id
       });
       q.populate("mod", "name author");
-      return q.exec(cb);
+      return q.exec(function(err, docs) {
+        console.log("docs:", docs);
+        return cb(err, docs);
+      });
     },
     fillCart: function(cart) {
       var mod, _i, _len, _ref;
@@ -110,7 +118,6 @@
       }
     },
     addFile: function(uid, path, version, cb) {
-      console.log(arguments);
       mongoose.model("Version").createFile(uid, path, this, version, cb);
     },
     deleteFile: function(uid, cb) {},
@@ -154,9 +161,7 @@
         if (processDeps) {
           return self.fillDeps(function(err, deps) {
             var dep, _k, _l, _len2, _len3, _ref1;
-            console.log("deps:", deps);
             for (version in output) {
-              console.log(version);
               for (_k = 0, _len2 = deps.length; _k < _len2; _k++) {
                 dep = deps[_k];
                 _ref1 = dep.files;
@@ -184,17 +189,20 @@
     */
 
     load: function(data, cb) {
-      var cartId, lean, query, user;
+      var cartId, lean, populate, query, user;
       cartId = data.$cart_id;
       user = data.$user;
       lean = data.$lean;
-      data.$cart_id = data.$user = data.$lean = void 0;
+      populate = data.$populate;
+      data.$cart_id = data.$populate = data.$user = data.$lean = void 0;
       query = this.findOne(data);
       if (lean) {
         query.lean();
       }
-      query.populate("comments.author", "username");
-      query.populate("author", "username");
+      if (populate) {
+        query.populate("comments.author", "username");
+        query.populate("author", "username");
+      }
       query.exec(function(err, mod) {
         if (cartId) {
           return Cart.findById(cartId, function(err, cart) {

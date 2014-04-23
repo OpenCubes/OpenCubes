@@ -3,6 +3,7 @@ Schema = mongoose.Schema
 Cart = mongoose.model("Cart")
 slug = require("mongoose-slug")
 timestamps = require("mongoose-times")
+fs = require("fs")
 ModSchema = mongoose.Schema(
   name: String
   version: String
@@ -31,28 +32,34 @@ ModSchema = mongoose.Schema(
     date: Date
   ]
 )
-ModSchema.pre 'remove',  (doc) ->
+ModSchema.post 'remove',  (doc) ->
   console.log('`%s` has been removed', doc.name)
-  mod.listVersion (data) ->
-    for files of data
-      for file of files
-        if files.hasOwnProperty(file)
-          fs.unlinkSync files[file]
-          console.log "Deleted file " + files[file]
+  # Remove the logo
+  fs.unlink "../uploads/"+mod.logo, (err) ->
+    if err then console.log err
+    else console.log "File #{mod.logo} has been deleted"
+  mongoose.model("Version").find {mod: @_id}, (err, versions) ->
+    version.remove() for version in versions when version
 
 ModSchema.path("name").required true, "Mod title cannot be blank"
 ModSchema.path("body").required true, "Mod body cannot be blank"
+ModSchema.path("author").required true, "Mod author cannot be blank"
+ModSchema.path("summary").required true, "Mod summary cannot be blank"
 ModSchema.plugin slug("name")
 ModSchema.plugin timestamps
+
+# Validation
+
 fs = require "fs"
 
 
 ModSchema.methods =
   fillDeps: (cb) ->
-    console.log @_id
-    q = mongoose.model("Version").find {"slaves.mod": @_id}
+    q = mongoose.model("Version").find({"slaves.mod": @_id})
     q.populate "mod", "name author"
-    q.exec cb
+    q.exec (err, docs) ->
+      console.log "docs:", docs
+      cb err, docs
 
   fillCart: (cart)->
     @carted = true for mod in cart.mods when mod.toString() is @_id.toString()
@@ -64,7 +71,6 @@ ModSchema.methods =
 
 
   addFile: (uid, path, version, cb) ->
-    console.log arguments
     mongoose.model("Version").createFile uid, path, this, version, cb
     return
 
@@ -95,9 +101,7 @@ ModSchema.methods =
           output[version.name][file.path] = file.uid
       if processDeps
         return self.fillDeps (err, deps) ->
-          console.log "deps:", deps
           for version of output
-            console.log version
             for dep in deps
               for file in dep.files
                 output[version][file.path] = file.uid
@@ -120,12 +124,14 @@ ModSchema.statics =
     cartId = data.$cart_id
     user = data.$user
     lean = data.$lean
-    data.$cart_id = data.$user = data.$lean = undefined
+    populate = data.$populate
+    data.$cart_id = data.$populate = data.$user = data.$lean = undefined
     query = @findOne(data)
     if lean
       query.lean()
-    query.populate "comments.author", "username"
-    query.populate "author", "username"
+    if populate
+      query.populate "comments.author", "username"
+      query.populate "author", "username"
     query.exec (err, mod) ->
       if cartId
         return Cart.findById(cartId, (err, cart)->
@@ -162,7 +168,7 @@ ModSchema.statics =
           if !err and cart
             mod.fillCart cart for mod in mods
             cb(err, mods)
-         )
+        )
        else
         cb(err, mods)
               

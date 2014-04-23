@@ -1,6 +1,4 @@
 (function() {
-  var Cart, Mod, mongoose;
-
   exports.ajaxLogin = function(req, res) {
     res.render("forms/login.ect");
   };
@@ -18,12 +16,6 @@
     return res.send(req.application.parser(req.body.markdown || ""));
   };
 
-  mongoose = require("mongoose");
-
-  Mod = mongoose.model("Mod");
-
-  Cart = mongoose.model("Cart");
-
   exports.addToCart = function(req, res) {
     var cart, id;
     id = req.params.id;
@@ -36,17 +28,7 @@
         message: "Something is missing..."
       });
     }
-    return Cart.findById(cart, function(err, cart) {
-      if (err || !cart) {
-        return res.send({
-          status: "error",
-          id: "database_error",
-          code: 500,
-          message: "An error has occured with the database"
-        });
-      }
-      cart.mods.push(id);
-      cart.save();
+    return app.api.carts.addTo(cart, id).then(function(cart) {
       return res.send({
         status: "success",
         code: 201,
@@ -56,93 +38,74 @@
           cart: cart
         }
       });
-    });
+    }).fail(function(err) {});
   };
 
   exports.lsCart = function(req, res) {
     var id;
     id = req.params.cart;
-    return Cart.findById(id).populate("mods").exec(function(err, cart) {
+    return app.api.carts.view(id).then(function(cart) {
       return res.send(cart);
+    }).fail(function(err) {
+      console.log(err);
+      return res.send({
+        status: "error",
+        id: "database_error",
+        code: 500,
+        message: "An error has occured with the database"
+      });
     });
   };
 
   exports.createCart = function(req, res) {
-    var cart;
-    console.log("creeating cart");
-    cart = new Cart();
-    cart.save();
-    return res.send({
-      status: "success",
-      code: 201,
-      message: "Successfully created cart",
-      data: {
-        cart: cart
-      }
+    return app.api.carts.create().then(function(cart) {
+      return res.send({
+        status: "success",
+        code: 201,
+        message: "Successfully created cart",
+        data: {
+          cart: cart
+        }
+      });
+    }).fail(function(err) {
+      console.log(err);
+      return res.send({
+        status: "error",
+        id: "database_error",
+        code: 500,
+        message: "An error has occured with the database"
+      });
     });
   };
 
   exports.view = function(req, res) {
-    setTimeout((function() {
-      Mod.load({
-        slug: req.params.id,
-        $lean: true
-      }, function(err, mod) {
-        var Version;
-        if (err || !mod) {
-          if (err) {
-            console.log(err);
-          }
-          return res.send(status("error", "404", "db_error", "Can't find mod `" + req.params.id + "`"));
-        }
-        mod.htmlbody = req.application.parser(mod.body);
-        mod.urls = {
-          web: "/mod/" + mod.slug,
-          logo: "/assets/" + mod.slug + ".png"
-        };
-        Version = mongoose.model("Version");
-        return Version.find({
-          mod: mod._id
-        }, function(err, versions) {
-          var file, output, version, _i, _j, _len, _len1, _ref;
-          if (err) {
-            return res.send(mod);
-          }
-          if (!versions) {
-            res.send(mod);
-          }
-          output = {};
-          for (_i = 0, _len = versions.length; _i < _len; _i++) {
-            version = versions[_i];
-            output[version.name] = output[version.name] || {};
-            _ref = version.files;
-            for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-              file = _ref[_j];
-              output[version.name][file.path] = file.uid;
-            }
-          }
-          mod.versions = output;
-          return res.send(mod);
-        });
-      });
-    }), 0);
+    var user;
+    if (req.user) {
+      user = req.user._id;
+    } else {
+      user = "";
+    }
+    app.api.mods.view(user, req.params.id, req.cookies.cart_id, req.user, true).then(function(mod) {
+      mod.urls = {
+        web: "/mod/" + mod.slug,
+        logo: "/assets/" + mod.slug + ".png"
+      };
+      return res.send(mod);
+    }).fail(function(err) {
+      return res.send(500, err.message);
+    });
   };
 
   exports.search = function(req, res) {
-    var q, regex;
-    regex = new RegExp(req.params.string, 'i');
-    console.log(regex);
-    q = Mod.find({
-      name: regex
-    });
-    q.populate("author", "username");
-    return q.exec(function(err, mods) {
-      return res.send(mods);
+    app.api.mods.search(req.getUserId(), req.params.string).then(function(mods) {
+      return res.send(mods.slice(-40));
+    }).fail(function(err) {
+      return res.send(500, err.message);
     });
   };
 
   exports.list = function(req, res) {
-    var filter, options, page, perPage, sort;
+    var filter, options, page, perPage, sort, user;
     page = (req.params.page || 1) - 1;
     sort = (req.param("sort")) || "-date";
     filter = (req.param("filter")) || "all";
@@ -157,27 +120,32 @@
       } : {}),
       doLean: true
     };
-    Mod.list(options, function(err, mods) {
-      if (err) {
-        return res.send(status("error", 500, "db_error", "Issues with database. Please retry or contact us"));
+    if (req.user) {
+      user = req.user._id;
+    } else {
+      user = "";
+    }
+    app.api.mods.list(user, options).then(function(mods, count) {
+      var mod, _i, _len;
+      count = mods.totalCount;
+      for (_i = 0, _len = mods.length; _i < _len; _i++) {
+        mod = mods[_i];
+        mod.urls = {
+          api: "/api/mods/view/" + mod.slug + ".json",
+          web: "/mod/" + mod.slug,
+          logo: "/assets/" + mod.slug + ".png"
+        };
       }
-      Mod.count().exec(function(err, count) {
-        var mod, _i, _len;
-        for (_i = 0, _len = mods.length; _i < _len; _i++) {
-          mod = mods[_i];
-          mod.urls = {
-            api: "/api/mods/view/" + mod.slug + ".json",
-            web: "/mod/" + mod.slug,
-            logo: "/assets/" + mod.slug + ".png"
-          };
-        }
-        return res.send({
-          status: "success",
-          mods: mods,
-          page: page + 1,
-          pages: Math.ceil(count / perPage)
-        });
+      res.send({
+        status: "success",
+        mods: mods,
+        count: mods.count,
+        page: page + 1,
+        pages: Math.ceil(count / perPage)
       });
+    }).fail(function(err) {
+      console.log(err);
+      return res.send(500, err.message);
     });
   };
 

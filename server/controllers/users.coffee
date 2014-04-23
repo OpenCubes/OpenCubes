@@ -64,58 +64,30 @@ exports.session = login
 Create user
 ###
 exports.create = (req, res, next) ->
-  user = new User(req.body)
-  user.provider = "local"
-  user.save (err) ->
-    if err
-      console.log err
-      return res.render("users/signup.ect",
-        
-        #  error: utils.errors(err.errors),
-        user: user
-        title: "Sign up"
-      )
-    
-    # manually login the user once successfully signed up
+  app.api.users.registerLocal(req.getUserId(), req.body).then((user) ->
     req.logIn user, (err) ->
       return next(err)  if err
       res.redirect "/"
-
-    return
-
-  return
-
+  ).fail (err) ->
+    console.log err
+    return res.render("users/signup.ect",
+      user: user
+      title: "Sign up"
+    )
 
 ###
 Show profile
 ###
 exports.show = (req, res) ->
-  User.findOne(username: req.params.name).exec (err, user) ->
-    if err
-      return utils.notfound(req, res, ->
-      )
-    unless user
-      req.reason = "No user is called like that"
-      return utils.notfound(req, res, ->
-      )
+  app.api.users.view(req.getUserId(), req.params.name).then((user) ->
+    console.log user
     res.render "users/user.ect",
       title: user.name
       user: user
-
     return
+  ).fail (err) ->
+    console.log err
+    return res.send 500, "error"
 
-  return
 
 
-###
-Find user by id
-###
-exports.user = (req, res, next, id) ->
-  User.findOne(_id: id).exec (err, user) ->
-    return next(err)  if err
-    return next(new Error("Failed to load User " + id))  unless user
-    req.profile = user
-    next()
-    return
-
-  return

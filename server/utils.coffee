@@ -48,3 +48,43 @@ global.status = (status, code, id, message) ->
     id: id
     message: message
   }
+
+###
+
+This is an awesome utility function that convert
+a classic function using callbacks into a promise styled one
+
+Usage example:
+
+    function foo(foo, bar, callback){
+        callback(foo + " " + bar);
+    }
+    pFoo = foo.toPromise(this);
+    pFoo("hello, ", "world!").then(console.log);
+
+outputs "hello, world!"
+
+pass an error to call the fail function
+
+@params self the object to be applied on the function as this
+
+###
+
+Q = require "q"
+Object.defineProperty Function::, "toPromise",
+  enumerable: false
+  configurable: false
+  writable: false
+  value: (self) ->
+    $this = @
+    () ->
+      deferred = Q.defer()
+      args = []
+      args.push arg for arg in arguments
+      args.push () ->
+        args = Array.prototype.slice.call arguments
+        if args[0] instanceof Error then return deferred.reject.apply($this, args)
+        else return deferred.resolve.apply($this, args)
+
+      $this.apply(self, args)
+      return deferred.promise
