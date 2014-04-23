@@ -1,4 +1,4 @@
-OpenCubes [![Build Status](https://travis-ci.org/CraftYourModCorporation/OpenCubes.svg?branch=api)](https://travis-ci.org/CraftYourModCorporation/OpenCubes) ![Dependencies](https://david-dm.org/CraftYourModCorporation/OpenCubes.png)  
+OpenCubes [![Build Status](https://travis-ci.org/CraftYourModCorporation/OpenCubes.svg?branch=master)](https://travis-ci.org/CraftYourModCorporation/OpenCubes) ![Dependencies](https://david-dm.org/CraftYourModCorporation/OpenCubes.png)  
 =========
 
 The AppStore for Minecraft mods
