@@ -51,22 +51,13 @@ module.exports.upload = (req, res) ->
           req.flash "error", "Oops, something went wrong! (reason: deletion)"
           return res.redirect(req.url)
         slug = req.params.id
-        Mod.load
-          slug: slug
-        , (err, mod) ->
-          if err or not mod
-            req.flash "error", "Oops, something went wrong! (reason: database)"
-            return res.redirect(req.url)
-          mod.addFile uid, path, versionName, (err, doc) ->
-            if err or not mod
-              req.flash "error", "Oops, something went wrong! (reason: saving)"
-              return res.redirect(req.url)
-            req.flash "success", "Done!"
-            res.redirect req.url
-
-          return
-
-        return
+        app.api.mods.addFile(req.getUserId(), slug, uid, path, versionName).then((doc) ->
+          req.flash "success", "Yes! File uploaded!"
+          return res.redirect(req.url)
+        ).fail (err) ->
+          console.log err
+          req.flash "error", "Oops, something went wrong. Please retry."
+          return res.redirect(req.url)
 
       return
 
@@ -77,46 +68,44 @@ module.exports.upload = (req, res) ->
 exports.doDelete = (req, res) ->
 
 exports.download = (req, res) ->
-  Mod.load
-    slug: req.params.id
-  , (err, mod) ->
-    if err or not mod
-      res.reason = "Mod not found"
-      return res.send("Not found")
+  app.api.mods.load(req.getUserId(), req.params.id).fail((err) ->
+    res.reason = "Mod not found"
+    return res.send("Not found")
+  ).then (mod) ->
     version = req.query.v
     unless version
-      mod.listVersion (data) ->
-        res.render "mods/download.ect",
-          versions: data
-
+      res.render "mods/download.ect",
+        versions: mod.versions
+    else
+      console.log "MOD:", mod
+      version = version.replace("/", "#")
+      files = mod.versions[version]
+      id = uuid.v1()
+      output = fs.createWriteStream(__dirname.getParent() + "/temp/" + id)
+      archive = archiver("zip")
+      archive.on "error", (err) ->
+        console.log err
         return
 
-    else
-      mod.listVersion((data, d) ->
-        version = version.replace("/", "#")
-        files = data[version]
-        id = uuid.v1()
-        output = fs.createWriteStream(__dirname.getParent() + "/temp/" + id)
-        archive = archiver("zip")
-        archive.on "error", (err) ->
-          console.log err
-          return
+      res.set "Content-Disposition": "attachment; filename=\"" + mod.mod.name + " v" + version + ".zip\""
+      archive.pipe res
+      for file of files
+        if files.hasOwnProperty(file)
+          archive.append fs.createReadStream(__dirname.getParent() + "/uploads/" + files[file]),
+            name: file
 
-        res.set "Content-Disposition": "attachment; filename=\"" + mod.name + " v" + version + ".zip\""
-        archive.pipe res
+          console.log "Adding file " + files[file] + " to " + file
+      for dep of mod.deps
+        files = mod.deps[dep].files.toObject()
         for file of files
-          if files.hasOwnProperty(file)
-            archive.append fs.createReadStream(__dirname.getParent() + "/uploads/" + files[file]),
-              name: file
-
-            console.log "Adding file " + files[file] + " to " + file
-        archive.finalize (err, bytes) ->
-          throw err  if err
-          console.log bytes + " total bytes"
-
-      , true)
+          if files.hasOwnProperty(file) and file
+            archive.append fs.createReadStream(__dirname.getParent() + "/uploads/" + files[file].uid),
+              name: files[file].path
+            console.log "Adding file " + files[file].uid + " to " +  files[file].path
+      archive.finalize (err, bytes) ->
+        throw err  if err
+        console.log bytes + " total bytes"
 
   return
-
 exports.remove = (req, res) ->
 

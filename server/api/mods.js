@@ -265,4 +265,35 @@
     });
   }).toPromise(this);
 
+  /*
+  Add a file to a mod
+  @param userid the current logged user id
+  @param slug the slug of the mod
+  @param uid the uid (name) of the files loacted in uploads
+  @param path the target path
+  @param versionName the version of the mod
+  @permission mod:edit
+  */
+
+
+  exports.addFile = (function(userid, slug, uid, path, versionName, callback) {
+    return canThis(userid, "mod", "edit").then(function(can) {
+      var Mod;
+      Mod = mongoose.model("Mod");
+      return Mod.load({
+        slug: slug
+      }, function(err, mod) {
+        if (can === false && mod.author.equals(userid) !== true) {
+          return callback(new Error("unauthorized"));
+        }
+        if (err || !mod) {
+          callback(err);
+        }
+        return mod.addFile(uid, path, versionName, function(err, doc) {
+          return callback(err || doc);
+        });
+      });
+    });
+  }).toPromise(this);
+
 }).call(this);

@@ -198,6 +198,32 @@ exports.search = ((userid, query, callback) ->
 
 ).toPromise @
 
+###
+Add a file to a mod
+@param userid the current logged user id
+@param slug the slug of the mod
+@param uid the uid (name) of the files loacted in uploads
+@param path the target path
+@param versionName the version of the mod
+@permission mod:edit
+###
+
+exports.addFile = ((userid, slug, uid, path, versionName, callback) ->
+  canThis(userid, "mod", "edit").then (can)->
+    # Validate options
+    Mod = mongoose.model "Mod"
+    Mod.load
+      slug: slug
+    , (err, mod) ->
+      if can is false and mod.author.equals(userid) isnt true then return callback(new Error "unauthorized")
+      if err or not mod
+        callback err
+      mod.addFile uid, path, versionName, (err, doc) ->
+        callback err or doc
+
+).toPromise @
+
+
 
 
 
