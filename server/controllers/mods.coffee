@@ -65,6 +65,7 @@ exports.index = (req, res) ->
 
 exports.edit = (req, res) ->
   app.api.mods.load(req.getUserId(), req.params.id).then((container) ->
+    console.log container
     res.render "edit/" + (req.params.section or "general") + ".ect",
       mod: container.mod
       deps: container.deps

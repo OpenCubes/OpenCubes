@@ -47,8 +47,19 @@ exports.view = ((userid, slug, cart, user, parse ,callback) ->
     , (err, mod) ->
       if err or not mod
         return callback(new Error "not_found")
+      mod = mod.toObject()
       if parse is true then mod.htmlbody = require("../parser")(mod.body)
-      callback mod
+      Version = mongoose.model "Version"
+      Version.find {mod: mod._id}, (err, versions) ->
+        if err or not mod then return callback err or mod
+        output = {}
+        for version in versions
+          output[version.name] = output[version.name] or {}
+          for file in version.files
+            output[version.name][file.path] = file.uid
+        console.log output
+        mod.versions = output
+        return callback mod
 
     return
 

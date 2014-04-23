@@ -87,6 +87,7 @@
 
   exports.edit = function(req, res) {
     return app.api.mods.load(req.getUserId(), req.params.id).then(function(container) {
+      console.log(container);
       return res.render("edit/" + (req.params.section || "general") + ".ect", {
         mod: container.mod,
         deps: container.deps,

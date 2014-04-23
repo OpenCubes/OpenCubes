@@ -92,7 +92,10 @@
         "slaves.mod": this._id
       });
       q.populate("mod", "name author");
-      return q.exec(cb);
+      return q.exec(function(err, docs) {
+        console.log("docs:", docs);
+        return cb(err, docs);
+      });
     },
     fillCart: function(cart) {
       var mod, _i, _len, _ref;

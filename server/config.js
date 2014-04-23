@@ -29,7 +29,7 @@
       guest: {
         full_name: 'Guest',
         description: 'Guest.',
-        allowedActions: ['mod:browse', 'comment:browse', 'user:browse']
+        allowedActions: ['mod:browse', 'comment:browse', 'user:browse add']
       }
     },
   };

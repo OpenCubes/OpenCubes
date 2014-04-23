@@ -61,13 +61,36 @@
         $cart_id: cart,
         $user: user
       }, function(err, mod) {
+        var Version;
         if (err || !mod) {
           return callback(new Error("not_found"));
         }
+        mod = mod.toObject();
         if (parse === true) {
           mod.htmlbody = require("../parser")(mod.body);
         }
-        return callback(mod);
+        Version = mongoose.model("Version");
+        return Version.find({
+          mod: mod._id
+        }, function(err, versions) {
+          var file, output, version, _i, _j, _len, _len1, _ref;
+          if (err || !mod) {
+            return callback(err || mod);
+          }
+          output = {};
+          for (_i = 0, _len = versions.length; _i < _len; _i++) {
+            version = versions[_i];
+            output[version.name] = output[version.name] || {};
+            _ref = version.files;
+            for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+              file = _ref[_j];
+              output[version.name][file.path] = file.uid;
+            }
+          }
+          console.log(output);
+          mod.versions = output;
+          return callback(mod);
+        });
       });
       return;
     });

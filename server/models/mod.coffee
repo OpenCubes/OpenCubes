@@ -55,9 +55,11 @@ fs = require "fs"
 
 ModSchema.methods =
   fillDeps: (cb) ->
-    q = mongoose.model("Version").find {"slaves.mod": @_id}
+    q = mongoose.model("Version").find({"slaves.mod": @_id})
     q.populate "mod", "name author"
-    q.exec cb
+    q.exec (err, docs) ->
+      console.log "docs:", docs
+      cb err, docs
 
   fillCart: (cart)->
     @carted = true for mod in cart.mods when mod.toString() is @_id.toString()
