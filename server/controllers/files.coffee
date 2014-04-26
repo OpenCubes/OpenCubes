@@ -28,6 +28,7 @@ fs = require("fs")
 archiver = require("archiver")
 uuid = require("node-uuid")
 Mod = require("mongoose").model("Mod")
+errors = require "../error"
 
 module.exports.upload = (req, res) ->
   form = new formidable.IncomingForm()
@@ -55,7 +56,6 @@ module.exports.upload = (req, res) ->
           req.flash "success", "Yes! File uploaded!"
           return res.redirect(req.url)
         ).fail (err) ->
-          console.log err
           req.flash "error", "Oops, something went wrong. Please retry."
           return res.redirect(req.url)
 
@@ -103,7 +103,7 @@ exports.download = (req, res) ->
               name: files[file].path
             console.log "Adding file " + files[file].uid + " to " +  files[file].path
       archive.finalize (err, bytes) ->
-        throw err  if err
+        errors.handleHttp err, req, res, "json" if err
         console.log bytes + " total bytes"
 
   return

@@ -1,5 +1,5 @@
 (function() {
-  var URI, archiver, check, fs, paginator, send, url, utils, uuid;
+  var URI, archiver, check, error, errors, fs, paginator, send, url, utils, uuid;
 
   utils = require("./utils");
 
@@ -14,6 +14,8 @@
   archiver = require("archiver");
 
   send = require("send");
+
+  errors = error = require("../error");
 
   /*
   Route for viewing mod
@@ -34,7 +36,7 @@
         title: mod.name + " - OpenCubes"
       });
     }).fail(function(err) {
-      return res.send(500, err.message);
+      return errors.handleHttp(err, req, res, "text");
     });
   };
 
@@ -80,8 +82,7 @@
         }).render()
       }));
     }).fail(function(err) {
-      console.log(err);
-      return res.send(500, err.message);
+      return errors.handleHttp(err, req, res, "text");
     });
   };
 
@@ -96,7 +97,7 @@
         versions: container.versions
       });
     }).fail(function(err) {
-      return res.send(err.message);
+      return errors.handleHttp(err, req, res, "text");
     });
   };
 
@@ -106,7 +107,7 @@
     return app.api.mods.edit(req.getUserId(), req.params.id, args.name, args.value).then(function(status) {
       return res.send(200, "Saved!");
     }).fail(function(err) {
-      return res.send(400, err.message);
+      return errors.handleHttp(err, req, res, "text");
     });
   };
 
@@ -145,7 +146,7 @@
       return app.api.mods.edit(req.getUserId(), req.params.id, "logo", uid).then(function(status) {
         return res.send(200, "Saved!");
       }).fail(function(err) {
-        return res.send(400, err.message);
+        return errors.handleHttp(err, req, res, "text");
       });
     });
   };
@@ -167,8 +168,7 @@
     return app.api.mods.star(req.getUserId(), req.params.slug).then(function(mod) {
       return res.redirect("/mod/" + mod.slug);
     }).fail(function(err) {
-      console.log(err);
-      return res.send(500, "Error");
+      return errors.handleHttp(err, req, res, "text");
     });
   };
 
@@ -204,9 +204,7 @@
         cart: cart
       });
     }).fail(function(err) {
-      console.log(err);
-      res.reason = "DB Problem";
-      return utils.notfound(req, res, function() {});
+      return errors.handleHttp(err, req, res, "text");
     });
   };
 

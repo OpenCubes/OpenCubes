@@ -1,4 +1,8 @@
 (function() {
+  var errors;
+
+  errors = require("../error");
+
   exports.ajaxLogin = function(req, res) {
     res.render("forms/login.ect");
   };
@@ -38,7 +42,9 @@
           cart: cart
         }
       });
-    }).fail(function(err) {});
+    }).fail(function(err) {
+      return errors.handleHttp(err, req, res, "json");
+    });
   };
 
   exports.lsCart = function(req, res) {
@@ -68,13 +74,7 @@
         }
       });
     }).fail(function(err) {
-      console.log(err);
-      return res.send({
-        status: "error",
-        id: "database_error",
-        code: 500,
-        message: "An error has occured with the database"
-      });
+      return errors.handleHttp(err, req, res, "json");
     });
   };
 
@@ -100,7 +100,7 @@
     app.api.mods.search(req.getUserId(), req.params.string).then(function(mods) {
       return res.send(mods.slice(-40));
     }).fail(function(err) {
-      return res.send(500, err.message);
+      return errors.handleHttp(err, req, res, "json");
     });
   };
 
@@ -144,8 +144,7 @@
         pages: Math.ceil(count / perPage)
       });
     }).fail(function(err) {
-      console.log(err);
-      return res.send(500, err.message);
+      return errors.handleHttp(err, req, res, "json");
     });
   };
 

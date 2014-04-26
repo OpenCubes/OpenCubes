@@ -1,5 +1,5 @@
 (function() {
-  var canThis, mongoose, perms, validator;
+  var canThis, error, errors, mongoose, perms, validator;
 
   perms = require("./permissions");
 
@@ -8,6 +8,8 @@
   canThis = perms.canThis;
 
   mongoose = require("mongoose");
+
+  errors = error = require("../error");
 
   /*
   Returns an user
@@ -21,7 +23,7 @@
     return canThis(userid, "user", "browse").then(function(can) {
       var User;
       if (can === false) {
-        return callback(new Error("unauthorized"));
+        return callback(error.throwError("", "UNAUTHORIZED"));
       }
       User = mongoose.model("User");
       User.findOne({
@@ -44,7 +46,7 @@
     return canThis(userid, "user", "browse").then(function(can) {
       var User, user;
       if (can === false) {
-        return callback(new Error("unauthorized"));
+        return callback(error.throwError("", "UNAUTHORIZED"));
       }
       User = mongoose.model("User");
       user = new User({

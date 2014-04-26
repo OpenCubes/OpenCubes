@@ -1,5 +1,5 @@
 (function() {
-  var Mod, archiver, copyFile, formidable, fs, util, uuid;
+  var Mod, archiver, copyFile, errors, formidable, fs, util, uuid;
 
   copyFile = function(source, target, cb) {
     var cbCalled, done, rd, wr;
@@ -37,6 +37,8 @@
 
   Mod = require("mongoose").model("Mod");
 
+  errors = require("../error");
+
   module.exports.upload = function(req, res) {
     var form;
     form = new formidable.IncomingForm();
@@ -69,7 +71,6 @@
             req.flash("success", "Yes! File uploaded!");
             return res.redirect(req.url);
           }).fail(function(err) {
-            console.log(err);
             req.flash("error", "Oops, something went wrong. Please retry.");
             return res.redirect(req.url);
           });
@@ -126,7 +127,7 @@
         }
         return archive.finalize(function(err, bytes) {
           if (err) {
-            throw err;
+            errors.handleHttp(err, req, res, "json");
           }
           return console.log(bytes + " total bytes");
         });

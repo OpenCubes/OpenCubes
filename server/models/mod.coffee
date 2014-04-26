@@ -58,7 +58,6 @@ ModSchema.methods =
     q = mongoose.model("Version").find({"slaves.mod": @_id})
     q.populate "mod", "name author"
     q.exec (err, docs) ->
-      console.log "docs:", docs
       cb err, docs
 
   fillCart: (cart)->

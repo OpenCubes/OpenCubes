@@ -1,5 +1,5 @@
 (function() {
-  var canThis, mongoose, perms, validator;
+  var canThis, error, errors, mongoose, perms, validator;
 
   perms = require("./permissions");
 
@@ -8,6 +8,8 @@
   canThis = perms.canThis;
 
   mongoose = require("mongoose");
+
+  errors = error = require("../error");
 
   /*
   Lists the mods and pass them to the then with a `totalCount` property that counts the mods
@@ -21,19 +23,19 @@
     return canThis(userid, "mod", "browse").then(function(can) {
       var Mod;
       if (can === false) {
-        return callback(new Error("unauthorized"));
+        callback(error.throwError("Forbidden", "UNAUTHORIZED"));
       }
       if (options.perPage > 50) {
-        return callback(new Error("invalid_args"));
+        callback(error.throwError("Too much mods per page", "INVALID_PARAMS"));
       }
       Mod = mongoose.model("Mod");
       Mod.list(options, function(err, mods) {
         if (err) {
-          return callback(err);
+          return callback(error.throwError(err, "DATABASE_ERROR"));
         }
         return Mod.count().exec(function(err, count) {
           mods.totalCount = count;
-          return callback(mods);
+          return errors.handleResult(err, mods, callback);
         });
       });
     });
@@ -53,7 +55,7 @@
     return canThis(userid, "mod", "browse").then(function(can) {
       var Mod;
       if (can === false) {
-        return callback(new Error("unauthorized"));
+        callback(error.throwError("Forbidden", "UNAUTHORIZED"));
       }
       Mod = mongoose.model("Mod");
       Mod.load({
@@ -62,8 +64,11 @@
         $user: user
       }, function(err, mod) {
         var Version;
-        if (err || !mod) {
-          return callback(new Error("not_found"));
+        if (!mod) {
+          return callback(error.throwError("Not found", "NOT_FOUND"));
+        }
+        if (err) {
+          return callback(error.throwError(err, "INVALID_PARAMS"));
         }
         mod = mod.toObject();
         if (parse === true) {
@@ -75,7 +80,7 @@
         }, function(err, versions) {
           var file, output, version, _i, _j, _len, _len1, _ref;
           if (err || !mod) {
-            return callback(err || mod);
+            return handleResult(err, mod, callback);
           }
           output = {};
           for (_i = 0, _len = versions.length; _i < _len; _i++) {
@@ -87,7 +92,6 @@
               output[version.name][file.path] = file.uid;
             }
           }
-          console.log(output);
           mod.versions = output;
           return callback(mod);
         });
@@ -112,14 +116,14 @@
         slug: slug
       }, function(err, mod) {
         if (can === false && mod.author !== userid) {
-          return callback(new Error("unauthorized"));
+          callback(error.throwError("Forbidden", "UNAUTHORIZED"));
         }
         if (err || !mod) {
-          return callback(new Error("unauthorized"));
+          return handleResult(err, mod, callback);
         }
         return mod.fillDeps(function(err, deps) {
           if (err || !deps) {
-            return callback(new Error("database_error"));
+            handleResult;
           }
           return mod.listVersion(function(v) {
             var container;
@@ -153,17 +157,15 @@
         slug: slug
       }, function(err, mod) {
         if (can === false && mod.author !== userid) {
-          return callback(new Error("unauthorized"));
+          callback(error.throwError("Forbidden", "UNAUTHORIZED"));
         }
         if (err || !mod) {
-          if (err) {
-            console.log(err);
-          }
-          return callback(new Error("Please try again"));
+          return handleResult(err, mod, callback);
         }
         mod[field] = value;
-        mod.save();
-        return callback("ok");
+        return mod.save(function(err, mod) {
+          return errors.handleResult(err, mods, callback);
+        });
       });
     });
   }).toPromise(this);
@@ -180,12 +182,12 @@
     return canThis(userid, "mod", "add").then(function(can) {
       var Mod;
       if (can === false) {
-        return callback(new Error("unauthorized"));
+        callback(error.throwError("Forbidden", "UNAUTHORIZED"));
       }
       Mod = mongoose.model("Mod");
       mod = new Mod(mod);
       return mod.save(function(err, mod) {
-        return callback(err || mod);
+        return errors.handleResult(err, mod, callback);
       });
     });
   }).toPromise(this);
@@ -202,7 +204,7 @@
     return canThis(userid, "mod", "star").then(function(can) {
       var Mod, q;
       if (can === false) {
-        return callback(new Error("unauthorized"));
+        callback(error.throwError("Forbidden", "UNAUTHORIZED"));
       }
       Mod = mongoose.model("Mod");
       q = Mod.findOne({
@@ -232,7 +234,7 @@
             doc.stargazers.id(mod.stargazers[0]._id).remove();
           }
           return doc.save(function(err, mod) {
-            return callback(err || mod);
+            return errors.handleResult(err, mod, callback);
           });
         });
       });
@@ -251,7 +253,7 @@
     return canThis(userid, "mod", "browse").then(function(can) {
       var Mod, q, regex;
       if (can === false) {
-        return callback(new Error("unauthorized"));
+        callback(error.throwError("Forbidden", "UNAUTHORIZED"));
       }
       Mod = mongoose.model("Mod");
       regex = new RegExp(query, 'i');
@@ -260,7 +262,7 @@
       });
       q.populate("author", "username");
       return q.exec(function(err, mods) {
-        return callback(err || mods);
+        return errors.handleResult(err, mods, callback);
       });
     });
   }).toPromise(this);
@@ -284,13 +286,13 @@
         slug: slug
       }, function(err, mod) {
         if (can === false && mod.author.equals(userid) !== true) {
-          return callback(new Error("unauthorized"));
+          callback(error.throwError("Forbidden", "UNAUTHORIZED"));
         }
         if (err || !mod) {
           callback(err);
         }
         return mod.addFile(uid, path, versionName, function(err, doc) {
-          return callback(err || doc);
+          return errors.handleResult(err, doc, callback);
         });
       });
     });

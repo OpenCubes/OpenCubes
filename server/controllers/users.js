@@ -4,13 +4,15 @@ Module dependencies.
 
 
 (function() {
-  var User, login, mongoose, utils;
+  var User, error, errors, login, mongoose, utils;
 
   mongoose = require("mongoose");
 
   User = mongoose.model("User");
 
   utils = require("./utils");
+
+  error = errors = require("../error");
 
   login = function(req, res) {
     var redirectTo;
@@ -105,8 +107,7 @@ Module dependencies.
         user: user
       });
     }).fail(function(err) {
-      console.log(err);
-      return res.send(500, "error");
+      return errors.handleHttp(err, req, res, "text");
     });
   };
 

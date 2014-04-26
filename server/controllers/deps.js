@@ -1,5 +1,5 @@
 (function() {
-  var Mod, Version, mongoose;
+  var Mod, Version, error, errors, mongoose;
 
   mongoose = require("mongoose");
 
@@ -7,12 +7,13 @@
 
   Version = mongoose.model("Version");
 
+  errors = error = require("../error");
+
   exports.add = function(req, res) {
     return app.api.deps.add(req.getUserId(), req.params.slug, req.body.dep, req.body.version).then(function(version) {
       return res.send("success", 200, "done", "Dependency added");
     }).fail(function(err) {
-      console.log(err);
-      return res.send(status("error", 404, "not_found", "Can't found mod or dep"));
+      return errors.handleHttp(err, req, res, "json");
     });
   };
 

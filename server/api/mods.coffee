@@ -2,6 +2,8 @@ perms = require "./permissions"
 validator = require "validator"
 canThis = perms.canThis
 mongoose = require "mongoose"
+errors = error = require "../error"
+
 
 ###
 Lists the mods and pass them to the then with a `totalCount` property that counts the mods
@@ -11,16 +13,17 @@ Lists the mods and pass them to the then with a `totalCount` property that count
 ###
 exports.list = ((userid, options, callback) ->
   canThis(userid, "mod", "browse").then (can)->
-    if can is false then return callback(new Error "unauthorized")
+    if can is false
+      callback(error.throwError("Forbidden", "UNAUTHORIZED"))
     # Validate options
     if options.perPage > 50
-      return callback(new Error "invalid_args")
+      callback(error.throwError("Too much mods per page", "INVALID_PARAMS"))
     Mod = mongoose.model "Mod"
     Mod.list options, (err, mods) ->
-      return callback err if err
+      return callback error.throwError(err, "DATABASE_ERROR") if err
       Mod.count().exec (err, count) ->
         mods.totalCount = count
-        return callback mods
+        errors.handleResult err, mods, callback
 
     return
 ).toPromise @
@@ -36,7 +39,8 @@ Return a mod
 ###
 exports.view = ((userid, slug, cart, user, parse ,callback) ->
   canThis(userid, "mod", "browse").then (can)->
-    if can is false then return callback(new Error "unauthorized")
+    if can is false
+      callback(error.throwError("Forbidden", "UNAUTHORIZED"))
     # Validate options
 
     Mod = mongoose.model "Mod"
@@ -45,19 +49,21 @@ exports.view = ((userid, slug, cart, user, parse ,callback) ->
       $cart_id: cart
       $user: user
     , (err, mod) ->
-      if err or not mod
-        return callback(new Error "not_found")
+      if not mod
+        return callback(error.throwError("Not found", "NOT_FOUND"))
+      if err
+        return callback(error.throwError(err, "INVALID_PARAMS"))
       mod = mod.toObject()
       if parse is true then mod.htmlbody = require("../parser")(mod.body)
       Version = mongoose.model "Version"
       Version.find {mod: mod._id}, (err, versions) ->
-        if err or not mod then return callback err or mod
+        if err or not mod
+          return handleResult(err, mod, callback)
         output = {}
         for version in versions
           output[version.name] = output[version.name] or {}
           for file in version.files
             output[version.name][file.path] = file.uid
-        console.log output
         mod.versions = output
         return callback mod
 
@@ -82,10 +88,13 @@ exports.load = ((userid, slug, callback) ->
     Mod.load
       slug: slug
     , (err, mod) ->
-      if can is false and mod.author isnt userid then return callback(new Error "unauthorized")
-      return callback(new Error "unauthorized")  if err or not mod
+      if can is false and mod.author isnt userid
+        callback(error.throwError("Forbidden", "UNAUTHORIZED"))
+      if err or not mod
+        return handleResult(err, mod, callback)
       mod.fillDeps (err, deps)->
-        return callback(new Error "database_error")  if err or not deps
+        if err or not deps
+          handleResult
         mod.listVersion (v) ->
           container =
             mod: mod
@@ -109,15 +118,15 @@ exports.edit = ((userid, slug, field, value, callback) ->
 
     Mod = mongoose.model "Mod"
     
-    Mod.findOne({slug: slug}, (err, mod) ->
-      if can is false and mod.author isnt userid then return callback(new Error "unauthorized")
-      if err or !mod
-        if err then console.log err
-        return callback(new Error "Please try again")
+    Mod.findOne {slug: slug}, (err, mod) ->
+      if can is false and mod.author isnt userid
+        callback(error.throwError("Forbidden", "UNAUTHORIZED"))
+      if err or not mod
+        return handleResult(err, mod, callback)
       mod[field] = value
-      mod.save()
-      return callback "ok"
-    )
+      mod.save (err, mod) ->
+        errors.handleResult err, mods, callback
+
   
 ).toPromise @
 
@@ -130,13 +139,14 @@ Upload a mod
 
 exports.add = ((userid, mod, callback) ->
   canThis(userid, "mod", "add").then (can)->
-    if can is false then return callback(new Error "unauthorized")
+    if can is false
+      callback(error.throwError("Forbidden", "UNAUTHORIZED"))
     # Validate options
 
     Mod = mongoose.model "Mod"
     mod = new Mod mod
     mod.save((err, mod)->
-      callback err or mod
+      errors.handleResult err, mod, callback
     )
   
 ).toPromise @
@@ -150,7 +160,8 @@ Star a mod
 
 exports.star = ((userid, slug, callback) ->
   canThis(userid, "mod", "star").then (can)->
-    if can is false then return callback(new Error "unauthorized")
+    if can is false
+      callback(error.throwError("Forbidden", "UNAUTHORIZED"))
     # Validate options
 
     Mod = mongoose.model "Mod"
@@ -174,7 +185,7 @@ exports.star = ((userid, slug, callback) ->
           doc.vote_count--
           doc.stargazers.id(mod.stargazers[0]._id).remove()
         doc.save (err, mod) ->
-          callback(err or mod)
+          errors.handleResult err, mod, callback
 
 ).toPromise @
 
@@ -187,14 +198,15 @@ Search a mod
 
 exports.search = ((userid, query, callback) ->
   canThis(userid, "mod", "browse").then (can)->
-    if can is false then return callback(new Error "unauthorized")
+    if can is false
+      callback(error.throwError("Forbidden", "UNAUTHORIZED"))
     # Validate options
     Mod = mongoose.model "Mod"
     regex = new RegExp(query, 'i')
     q = Mod.find({name: regex})
     q.populate("author", "username")
     q.exec (err, mods) ->
-      callback err or mods
+      errors.handleResult err, mods, callback
 
 ).toPromise @
 
@@ -215,11 +227,12 @@ exports.addFile = ((userid, slug, uid, path, versionName, callback) ->
     Mod.load
       slug: slug
     , (err, mod) ->
-      if can is false and mod.author.equals(userid) isnt true then return callback(new Error "unauthorized")
+      if can is false and mod.author.equals(userid) isnt true
+        callback(error.throwError("Forbidden", "UNAUTHORIZED"))
       if err or not mod
         callback err
       mod.addFile uid, path, versionName, (err, doc) ->
-        callback err or doc
+        errors.handleResult err, doc, callback
 
 ).toPromise @
 

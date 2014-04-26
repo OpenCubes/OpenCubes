@@ -93,7 +93,6 @@
       });
       q.populate("mod", "name author");
       return q.exec(function(err, docs) {
-        console.log("docs:", docs);
         return cb(err, docs);
       });
     },

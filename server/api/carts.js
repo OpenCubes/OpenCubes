@@ -1,5 +1,5 @@
 (function() {
-  var canThis, mongoose, perms, validator;
+  var canThis, error, errors, mongoose, perms, validator;
 
   perms = require("./permissions");
 
@@ -9,11 +9,13 @@
 
   mongoose = require("mongoose");
 
+  errors = error = require("../error");
+
   exports.view = (function(cartid, callback) {
     var Cart;
     Cart = mongoose.model("Cart");
     return Cart.findById(cartid).populate("mods").exec(function(err, cart) {
-      return callback(err || cart);
+      return errors.handleResult(err, cart, callback);
     });
   }).toPromise(this);
 
@@ -22,11 +24,11 @@
     Cart = mongoose.model("Cart");
     return Cart.findById(cart, function(err, cart) {
       if (err) {
-        return callback(err);
+        return callback(error.throwError(err, "DATABASE_ERROR"));
       }
       cart.mods.push(mod);
       return cart.save(function(err, cart) {
-        return callback(err || cart);
+        return errors.handleResult(err, cart, callback);
       });
     });
   }).toPromise(this);
@@ -36,7 +38,7 @@
     Cart = mongoose.model("Cart");
     cart = new Cart();
     return cart.save(function(err, cart) {
-      return callback(err || cart);
+      return errors.handleResult(err, cart, callback);
     });
   }).toPromise(this);
 

@@ -4,6 +4,7 @@ perms = require "./permissions"
 validator = require "validator"
 canThis = perms.canThis
 mongoose = require "mongoose"
+errors = error = require "../error"
 
 ###
 Add a dependency to a version
@@ -19,15 +20,16 @@ exports.add = ((userid, slug, dep, version, callback) ->
     Mod = mongoose.model "Mod"
     Version = mongoose.model "Version"
     Mod.findOne {slug: slug}, (err, mod) ->
-      if can is false and mod.author.equals(userid) isnt true then return callback(new Error "unauthorized")
+      if can is false and mod.author.equals(userid) isnt true
+        return callback error.throwError("Unathorized", "UNAUTHORIZED")
       Mod.findOne {slug: dep}, (err, dep) ->
-        if err or not dep then return callback err or new Error "not_found"
+        if err then return callback error.throwError(err, "DATABASE_ERROR")
+        if not dep then return callback error.throwError("Can't found dependency", "NOT_FOUND")
         Version.findOne {mod: dep._id, name: version}, (err, version)->
           version.slaves.push
             mod: mod._id
           version.save (err, version) ->
-            console.log err or version
-            return callback err or version
+            errors.handleResult err, version, callback
 
     return
 ).toPromise @

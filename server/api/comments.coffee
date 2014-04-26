@@ -2,7 +2,7 @@ perms = require "./permissions"
 validator = require "validator"
 canThis = perms.canThis
 mongoose = require "mongoose"
-
+errors = require "../error"
 ###
 Add a comment to a mod
 @param userid the current logged user
@@ -13,21 +13,19 @@ Add a comment to a mod
 ###
 exports.add = ((userid, slug, name, body, callback) ->
   canThis(userid, "comment", "add").then (can)->
-    if can is false then return callback(new Error "unauthorized")
+    if can is false then return callback error.throwError(err, "UNAUTHORIZED")
     # Validate options
     Mod = mongoose.model "Mod"
 
     Mod.findOne slug: slug, (err, mod) ->
-
-      if(err or !mod)
-        return callback err
+      return callback error.throwError(err, "DATABASE_ERROR") if err
       mod.comments.push
         title: validator.escape(name)
         body: validator.escape(body)
         date: Date.now()
         author: userid
       mod.save (err, mod) ->
-        callback err or mod
+        errors.handleResult err, mod, callback
 
     return
 ).toPromise @

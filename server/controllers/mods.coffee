@@ -6,6 +6,7 @@ URI = require("URIjs")
 check = require("check-types")
 archiver = require("archiver")
 send = require("send");
+errors = error = require "../error"
 
 ###
 Route for viewing mod
@@ -19,7 +20,7 @@ exports.view = (req, res) ->
       title: mod.name + " - OpenCubes"
     return
   ).fail (err) ->
-    res.send 500, err.message
+    errors.handleHttp err, req, res, "text"
 
 # lists the mods
 exports.index = (req, res) ->
@@ -58,8 +59,7 @@ exports.index = (req, res) ->
       ).render()
     )
   ).fail (err) ->
-    console.log err
-    res.send 500, err.message
+    errors.handleHttp err, req, res, "text"
 
   return
 
@@ -73,14 +73,14 @@ exports.edit = (req, res) ->
       url: "/mod/" + container.mod.slug + "/edit"
       versions: container.versions
   ).fail (err) ->
-    res.send err.message
+    errors.handleHttp err, req, res, "text"
 
 exports.doEdit = (req, res) ->
   args = req.body
   app.api.mods.edit(req.getUserId(), req.params.id, args.name, args.value).then((status) ->
     res.send 200, "Saved!"
   ).fail (err) ->
-    res.send 400, err.message
+    errors.handleHttp err, req, res, "text"
 
 
 exports.getLogo = (req, res) ->
@@ -115,7 +115,7 @@ exports.setLogo = (req, res) ->
     app.api.mods.edit(req.getUserId(), req.params.id, "logo", uid).then((status) ->
       res.send 200, "Saved!"
     ).fail (err) ->
-      res.send 400, err.message
+      errors.handleHttp err, req, res, "text"
 
 ###
 Star a mod
@@ -127,8 +127,7 @@ exports.star = (req, res) ->
   app.api.mods.star(req.getUserId(), req.params.slug).then((mod)->
     res.redirect "/mod/" + mod.slug
   ).fail (err)->
-    console.log err
-    res.send 500, "Error"
+    errors.handleHttp err, req, res, "text"
 
 
 exports.upload = (req, res) ->
@@ -156,9 +155,7 @@ exports.cart = (req, res) ->
   app.api.cart.view(req.params.id).then((cart) ->
     res.render("users/cart.ect", {cart: cart})
   ).fail (err) ->
-    console.log err
-    res.reason = "DB Problem"
-    return utils.notfound(req, res, ->)
+    errors.handleHttp err, req, res, "text"
 
 
 

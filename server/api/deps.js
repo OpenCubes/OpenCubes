@@ -1,5 +1,5 @@
 (function() {
-  var canThis, mongoose, perms, validator;
+  var canThis, error, errors, mongoose, perms, validator;
 
   perms = require("./permissions");
 
@@ -8,6 +8,8 @@
   canThis = perms.canThis;
 
   mongoose = require("mongoose");
+
+  errors = error = require("../error");
 
   /*
   Add a dependency to a version
@@ -28,13 +30,16 @@
         slug: slug
       }, function(err, mod) {
         if (can === false && mod.author.equals(userid) !== true) {
-          return callback(new Error("unauthorized"));
+          return callback(error.throwError("Unathorized", "UNAUTHORIZED"));
         }
         return Mod.findOne({
           slug: dep
         }, function(err, dep) {
-          if (err || !dep) {
-            return callback(err || new Error("not_found"));
+          if (err) {
+            return callback(error.throwError(err, "DATABASE_ERROR"));
+          }
+          if (!dep) {
+            return callback(error.throwError("Can't found dependency", "NOT_FOUND"));
           }
           return Version.findOne({
             mod: dep._id,
@@ -44,8 +49,7 @@
               mod: mod._id
             });
             return version.save(function(err, version) {
-              console.log(err || version);
-              return callback(err || version);
+              return errors.handleResult(err, version, callback);
             });
           });
         });

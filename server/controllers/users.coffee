@@ -4,6 +4,7 @@ Module dependencies.
 mongoose = require("mongoose")
 User = mongoose.model("User")
 utils = require("./utils")
+error = errors = require "../error"
 
 #  , utils = require('../../lib/utils');
 login = (req, res) ->
@@ -86,8 +87,7 @@ exports.show = (req, res) ->
       user: user
     return
   ).fail (err) ->
-    console.log err
-    return res.send 500, "error"
+    errors.handleHttp err, req, res, "text"
 
 
 

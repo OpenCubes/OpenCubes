@@ -1,3 +1,5 @@
+errors = require("../error")
+
 exports.ajaxLogin = (req, res) ->
   res.render "forms/login.ect"
   return
@@ -31,6 +33,7 @@ exports.addToCart = (req, res) ->
         id: id
         cart: cart
   ).fail (err)->
+    errors.handleHttp err, req, res, "json"
 
 
 exports.lsCart = (req, res)->
@@ -55,12 +58,7 @@ exports.createCart = (req, res)->
       data:
         cart: cart
   ).fail (err) ->
-    console.log err
-    return res.send
-      status: "error"
-      id: "database_error"
-      code: 500
-      message: "An error has occured with the database"
+    errors.handleHttp err, req, res, "json"
 
 exports.view = (req, res) ->
   if req.user then user = req.user._id else user = ""
@@ -77,7 +75,7 @@ exports.search = (req, res) ->
   app.api.mods.search(req.getUserId(), req.params.string).then((mods)->
     return res.send(mods.slice(-40))
   ).fail (err) ->
-    res.send 500, err.message
+    errors.handleHttp err, req, res, "json"
   return
 
 exports.list = (req, res) ->
@@ -111,7 +109,6 @@ exports.list = (req, res) ->
 
     return
   ).fail (err) ->
-    console.log err
-    res.send 500, err.message
+    errors.handleHttp err, req, res, "json"
 
   return

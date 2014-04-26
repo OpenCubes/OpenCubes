@@ -2,6 +2,7 @@ perms = require "./permissions"
 validator = require "validator"
 canThis = perms.canThis
 mongoose = require "mongoose"
+errors = error = require "../error"
 
 ###
 Returns an user
@@ -11,7 +12,7 @@ Returns an user
 ###
 exports.view = ((userid, name, callback) ->
   canThis(userid, "user", "browse").then (can)->
-    if can is false then return callback(new Error "unauthorized")
+    if can is false then return callback (error.throwError "", "UNAUTHORIZED")
     # Validate options
     User = mongoose.model "User"
     User.findOne({username: name}).exec (err, user) ->
@@ -28,7 +29,7 @@ Creates an user
 ###
 exports.registerLocal = ((userid, data, callback) ->
   canThis(userid, "user", "browse").then (can)->
-    if can is false then return callback(new Error "unauthorized")
+    if can is false then return callback(error.throwError "", "UNAUTHORIZED")
     User = mongoose.model "User"
     user = new User(
       username: data.username

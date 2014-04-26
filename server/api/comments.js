@@ -1,5 +1,5 @@
 (function() {
-  var canThis, mongoose, perms, validator;
+  var canThis, errors, mongoose, perms, validator;
 
   perms = require("./permissions");
 
@@ -8,6 +8,8 @@
   canThis = perms.canThis;
 
   mongoose = require("mongoose");
+
+  errors = require("../error");
 
   /*
   Add a comment to a mod
@@ -23,14 +25,14 @@
     return canThis(userid, "comment", "add").then(function(can) {
       var Mod;
       if (can === false) {
-        return callback(new Error("unauthorized"));
+        return callback(error.throwError(err, "UNAUTHORIZED"));
       }
       Mod = mongoose.model("Mod");
       Mod.findOne({
         slug: slug
       }, function(err, mod) {
-        if (err || !mod) {
-          return callback(err);
+        if (err) {
+          return callback(error.throwError(err, "DATABASE_ERROR"));
         }
         mod.comments.push({
           title: validator.escape(name),
@@ -39,7 +41,7 @@
           author: userid
         });
         return mod.save(function(err, mod) {
-          return callback(err || mod);
+          return errors.handleResult(err, mod, callback);
         });
       });
     });
