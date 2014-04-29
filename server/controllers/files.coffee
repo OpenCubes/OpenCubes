@@ -34,30 +34,31 @@ module.exports.upload = (req, res) ->
   form = new formidable.IncomingForm()
   form.uploadDir = __dirname.getParent() + "/temp/"
   form.parse req, (err, fields, files) ->
+    console.log(err) if err
     uid = uuid.v4()
     newfile = __dirname.getParent() + "/uploads/" + uid
     console.log "field:", fields
     versionName = fields.version
     path = fields.path
     if not path or not versionName or path is "" or versionName is ""
+      console.log "missing"
       req.flash "error", "There is something missing..."
       return res.redirect(req.url)
     copyFile files.file.path, newfile, (err) ->
       if err
-        console.log err
-        req.flash "error", "Oops, something went wrong! (reason: copy)"
-        return res.redirect(req.url)
+       console.log(err)
+       return res.send 500, {error: "error"}
       fs.unlink files.file.path, (err) ->
         if err
-          req.flash "error", "Oops, something went wrong! (reason: deletion)"
-          return res.redirect(req.url)
+          console.log(err)
+          return res.send 500, {error: "error"}
         slug = req.params.id
+        console.log req.params
         app.api.mods.addFile(req.getUserId(), slug, uid, path, versionName).then((doc) ->
-          req.flash "success", "Yes! File uploaded!"
           return res.redirect(req.url)
         ).fail (err) ->
-          req.flash "error", "Oops, something went wrong. Please retry."
-          return res.redirect(req.url)
+          console.log(err)
+          return res.send 500, {error: "error"}
 
       return
 

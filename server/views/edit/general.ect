@@ -41,7 +41,36 @@
     </div><script>
         $.slug = '<%- @mod.slug %>';
         $.fn.editable.defaults.mode = 'inline';
-        $(document).ready(function() {
+        var pInitInput = $.fn.editableform.Constructor.prototype.initInput;
+        
+        $.extend($.fn.editableform.Constructor.prototype, {
+            initTemplate: function() {
+                this.$form = $($.fn.editableform.template); 
+                //this.$form.find('.control-group').addClass('form-group');
+                //this.$form.find('.editable-error-block').addClass('help-block');
+            },
+            initInput: function() {  
+                pInitInput.apply(this);
+    
+                //for bs3 set default class `input-sm` to standard inputs
+                var emptyInputClass = this.input.options.inputclass === null || this.input.options.inputclass === false;
+                
+                //bs3 add `form-control` class to standard inputs
+                var stdtypes = 'text,select,textarea,password,email,url,tel,number,range,time,typeaheadjs'.split(','); 
+                if(~$.inArray(this.input.type, stdtypes)) {
+                    console.log($(this.input.$input.parent()))
+                    this.input.$input.parent().addClass('ui input');
+                }             
+            }
+        });    
+        $.fn.editableform.buttons = 
+            '<button type="submit" class="tiny icon ui green button editable-submit">'+
+              '<i class="checkmark icon"></i>'+
+            '</button>'+
+            '<button type="button" class="tiny icon ui red button editable-cancel">'+
+              '<i class="remove icon"></i>'+
+            '</button>';         
+              $(document).ready(function() {
             $('#category-picker').editable({
             value: '<%- @mod.category %>',    
             source: [
@@ -64,6 +93,6 @@
     <% block 'head' : %>
     
         <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+        <script src="/js/jquery-editable-custom.min.js"></script>
   
     <% end %>

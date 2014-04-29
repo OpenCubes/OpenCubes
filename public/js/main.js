@@ -2,92 +2,81 @@ $(document).ready(function () {
   InstantClick.init();
 });
 $(document).on('click', 'a.need-login', function (event) {
-  if($.isLoggedIn)
+  if ($.isLoggedIn)
     return;
   event.preventDefault();
   var $el = $(this);
-  showLoginPrompt(function(){
+  showLoginPrompt(function () {
     $el.removeClass('need-login');
-    if(!$el.hasClass('no-redirect'))
-    window.open($el.attr('href'), '_parent');
+    if (!$el.hasClass('no-redirect'))
+      window.open($el.attr('href'), '_parent');
   });
 });
-$(document).on('click', 'a.bs-tab',function (e) {
+$(document).on('click', 'a.bs-tab', function (e) {
   e.preventDefault();
   $(this).tab('show');
 });
-$(document).on("eldarion-ajax:begin", function(evt, $el) {
-    $('button#submit').html('Please wait...').attr("disabled", true);
+$(document).on("eldarion-ajax:begin", function (evt, $el) {
+  $el.addClass("loading");
 });
-$(document).on("eldarion-ajax:success", function(evt, $el, data) {
-    window.location.reload();
+$(document).on("eldarion-ajax:success", function (evt, $el, data) {
+  $.reloadSection($el.attr("data-target"));
 });
-$(document).on("eldarion-ajax:complete", function(evt, $el, xhr, status) {
-  if(xhr.statusText !== 'OK')
-    $el.append('<p class="text-danger">'+xhr.statusText+'</p>');
-  else
-    $('button#submit').html('Done. Please wait...');
-});
-var showLoginPrompt = function (flash, type, cb) {
-  if(typeof flash === 'function'){
-    cb = flash;
-    flash = undefined;
+$.reloadSection = function (id) {
+  var q = window.location.pathname + (window.location.search || "") + " " + id;
+  console.log(q)
+  $(id).load(q, function () {});
+}
+$(document).on("eldarion-ajax:complete", function (evt, $el, xhr, status) {
+  console.log(xhr)
+  if (xhr.statusText !== 'OK') {
+    if (JSON.parse(xhr.responseText).error === "unauthenticated") {
+      $el.prepend('<div class="ui error message">' +
+        '<p>You must signin to comment</p></div>');
+      $el.removeClass("loading");
+      $el.addClass("error")
+      return;
+    }
+    $el.prepend('<div class="ui error message">' +
+      '<p>' + (JSON.parse(xhr.responseText).message || xhr.statusText) + '</p></div>');
+    $el.removeClass("loading");
+    $el.addClass("error");
   }
-  cb = cb || function(){
-    window.location.reload();
-  }
-  bootbox.dialog({
-    message: '<img class="col-md-4 col-md-offset-4" src="/images/load/spinner-256.gif" />',
-    title: "Please login",
-    buttons: {
-      'login': {
-        label: 'Login now',
-        className: 'btn-primary',
-        callback: function () {
-          var username = $('#username').val();
-          var password = $('#password').val();
-          $.ajax({
-            url: '/login',
-            type: 'post',
-            dataType: 'json',
-            data: {
-              password: password,
-              username: username
-            },
-            headers: {
-              Accept: "application/json; charset=utf-8",
-            },
-            success: function (data) {
-              if (data.error === 'invalid_credentials') return showLoginPrompt('Invalid username or password. Please retry', 'danger');
-              if (data.error) return showLoginPrompt('Unknown error. Please retry', 'danger');
-              cb();
-
-            },
-          });
-        }
-      },
-      'cancel': {
-        label: 'or Cancel',
-        className: 'btn-link'
+});
+var showLoginPrompt = function (cb) {
+  $('.ui.modal').modal('setting', {
+    closable: false,
+    onDeny: function () {
+      return true;
+    },
+    onApprove: function () {
+      $('#login-form').addClass("loading")
+      var username = $('#username').val();
+      var password = $('#password').val();
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", "/login", false);
+      xhr.setRequestHeader('Accept', "application/json; charset=utf-8");
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.send("password=" + password + "&username=" + username);
+      console.log(xhr);
+      var data = JSON.parse(xhr.responseText);
+      console.log(data);
+      $('ui.error').remove();
+      if (data.error === 'invalid_credentials') {
+        $('#login-form').removeClass("loading").addClass("error");
+        $('#login-form').prepend('<div class="ui error message"><p>Invalid username or password.</p></div>');
+        return false;
       }
+      if (data.error) {
+        $('#login-form').removeClass("loading").addClass("error");
+        $('#login-form').prepend('<div class="ui error message"><p>Unknown error. Please retry</p></di');
+        return false;
+      }
+      $.reloadSection('.main.menu');
+      return true;
     }
-  });
-  $('.bootbox-body').addClass('row');
-  $('.bootbox-body').addClass('loading-bb');
-  $.ajax({
-    url: '/api/ajax/login',
-    success: function (data) {
-      $('.bootbox-body').fadeOut(150, function () {
-        $('.bootbox-body').removeClass('loading-bb');
-        $('.bootbox-body').html(data)
-        $('input#login').remove();
-        if (flash) $('.bootbox-body').prepend(bs_alert(type, flash));
+  }).modal('show');
 
-        $('.bootbox-body').fadeIn(150);
-
-      })
-    }
-  })
 
 }
 var ajax = function (url, type, data, callback) {

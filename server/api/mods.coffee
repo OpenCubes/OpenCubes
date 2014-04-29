@@ -48,6 +48,7 @@ exports.view = ((userid, slug, cart, user, parse ,callback) ->
       slug: slug
       $cart_id: cart
       $user: user
+      $populate: true
     , (err, mod) ->
       if not mod
         return callback(error.throwError("Not found", "NOT_FOUND"))
@@ -125,7 +126,7 @@ exports.edit = ((userid, slug, field, value, callback) ->
         return handleResult(err, mod, callback)
       mod[field] = value
       mod.save (err, mod) ->
-        errors.handleResult err, mods, callback
+        errors.handleResult err, mod, callback
 
   
 ).toPromise @

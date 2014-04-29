@@ -201,17 +201,17 @@
 	SearchPaginator.prototype.render = function() {
 		var i, len, className, prelink;
 		var result = this.getPaginationData();
-		var html = '<ul class="pagination">';
+		var html = '<div class="ui pagination menu">';
 
 		if(result.pageCount < 2) {
-			html += '</ul>';
+			html += '</div>';
 			return html;
 		}
 
 		prelink = this.preparePreLink(result.prelink);
 
 		if(result.previous) {
-			html += '<li><a href="' + prelink + result.previous + result.postlink + '" class="paginator-previous">' + this.options.translator('PREVIOUS') + '</a></li>';
+			html += '<a href="' + prelink + result.previous + result.postlink + '" class="icon item"> <i class="left arrow icon"></i></a>';
 		}
 
 		if(result.range.length) {
@@ -226,13 +226,13 @@
 				//} else if(i == len - 1) {
 					//className += ' paginator-page-last';
 				//}
-				html += '<li class="'+((result.range[i] == result.current) ? 'active' : '')+'" ><a href="' + prelink + result.range[i]  + result.postlink + '">' + result.range[i] + '</a></li>';
+				html += '<a class="item'+((result.range[i] == result.current) ? 'active' : '')+'" href="' + prelink + result.range[i]  + result.postlink + '">' + result.range[i] + '</a>';
 			}
 		}
 		if(result.next) {
-			html += '<li><a href="' + prelink + result.next + result.postlink  + '" class="paginator-next">' + this.options.translator('NEXT') + '</a></li>';
+			html += '<a href="' + prelink + result.next + result.postlink + '" class="icon item"> <i class="right arrow icon"></i></a>';
 		}
-		html += '</ul></div>';
+		html += '</div>';
 		return html;
 	};
 	var ItemPaginator = function(options) {
@@ -269,7 +269,7 @@
 		if(result.first) {
 			html += '<li><a href="' + prelink + result.first + '" class="paginator-first">' + this.options.translator('FIRST') + '</a></li>';
 		} else {
-			html += '<li class="disabled"><span>' + this.options.translator('FIRST') + '</span></li>';
+			html += '<div class="disabled item"><i class="left arrow icon"></i></div>';
 		}
 
 		if(result.previous) {

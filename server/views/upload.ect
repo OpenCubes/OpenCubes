@@ -1,26 +1,22 @@
 <% extend 'layout.ect' %>
-    <form class="form-horizontal col-md-12" method="post">
-        <fieldset class="col-md-12">
-            <!-- Form Name -->
-            <legend>Upload a new mod</legend>
-            <!-- Text input-->
-            <% if @hasError : %>
-                <div class="panel panel-danger">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Incorrect username of password</h3>
-                    </div>
+    <form class="ui form" method="post">
+            <h2 class="ui header">
+            <i class="upload disk icon"></i>
+                <div class="content">
+                Submit a new mod
+                <div class="sub header">Add a new mod to our website. Downloads or logo should be setted later</div>
                 </div>
-            <% end %>
-                <div class="form-group">
-                    <label class="col-md-2 control-label" for="name">Name</label>
-                    <div class="col-md-10">
-                        <input id="name" name="name" placeholder="Name your mod" class="form-control input-md"
+            </h2>
+                <div class="field">
+                    <label for="name">Name</label>
+                    <div>
+                        <input id="name" name="name" placeholder="Name your mod"
                         required="" type="text">
                     </div>
                 </div>
-                <div class="form-group">
-                  <label class="col-md-2 control-label" for="category">Category</label>
-                  <div class="col-md-10">
+                <div class="field">
+                  <label for="category">Category</label>
+                  <div>
                     <select id="category" name="category" class="form-control">
                       <option value="api">API</option>
                       <option value="cheats">Cheats</option>
@@ -36,23 +32,22 @@
                   </div>
                 </div>
                 <!-- Textarea -->
-                <div class="form-group">
-                    <label class="col-md-2 control-label" for="summary">Summary</label>
-                    <div class="col-md-10">
-                        <textarea class="form-control" id="summary" name="summary"></textarea>
+                <div class="field">
+                    <label for="summary">Summary</label>
+                    <div>
+                        <textarea id="summary" name="summary" rows="3" style="min-height: 0; height: initial"></textarea>
                     </div>
                 </div>
                 <!-- Textarea -->
-                <div class="form-group">
-                    <label class="col-md-2 control-label" for="description">Description</label>
-                    <div class="col-md-10">
-                        <textarea class="form-control markdown-enabled" id="description" name="description" rows="20"></textarea>
+                <div class="field">
+                    <label for="description">Description</label>
+                    <div>
+                        <textarea class="markdown-enabled" id="description" name="description" rows="20"></textarea>
                     </div>
                 </div>
-                <!-- Multiple Checkboxes -->
-                <div class="form-group">
-                    <label class="col-md-2 control-label" for="published"></label>
-                    <div class="col-md-10">
+                <div class="field">
+                    <label for="published"></label>
+                    <div>
                         <div class="checkbox">
                             <label for="published-0">
                                 <input name="published" id="published-0" value="true" type="checkbox">Do not publish this mod immediatly</label>
@@ -63,18 +58,23 @@
                 <div class="form-group">
                     <label class="col-md-2 control-label" for="submit"></label>
                     <div class="col-md-12">
-                        <input type="submit" id="submit" name="submit" class="btn btn-success btn-block"
-                        value="Submit" />
+                        <input type="submit" id="submit" name="submit" class="ui green button" value="Submit" />
                     </div>
                 </div>
-        </fieldset>
     </form>
+    <script>
+    $( document ).ready(function() {
+
+        var editor = new Editor({element: $('textarea#description').get(0)});
+        console.log($('textarea#description').get(0).getAttribute("rows"))
+        editor.render();
+        });
+    </script>
     <% block 'navbar' : %>
         <% include 'navs/main-nav.ect'%>
     <% end %>
     <% block 'head' : %>
         <script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.1/marked.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.1.1/js/bootstrap-markdown.js"></script>
-        <script src="/js/editor.js"></script>
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-markdown/2.1.1/css/bootstrap-markdown.min.css">
+        <link rel="stylesheet" href="http://lab.lepture.com/editor/editor.css" />
+        <script type="text/javascript" src="http://lab.lepture.com/editor/editor.js"></script>
     <% end %>

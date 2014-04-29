@@ -1,37 +1,24 @@
-<div class="navbar-header">
-    <button type="button" data-toggle="collapse" data-target=".navbar-collapse"
-    class="navbar-toggle">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-    </button>
-    <a href="/" class="navbar-brand">OpenCubes</a>
-</div>
-<div class="nav navbar-nav">
-    <li>
-        <a href="/" data-icon="home">Home</a>
-    </li>
-    <li>
-        <a href="/search" data-icon="search" data-no-instant>Search</a>
-    </li>
-    <li>
-        <a href="/upload" data-icon="upload" data-no-instant <%- if !@user then 'class="need-login"' %>>Submit a mod</a>
-    </li>
-</div>
-<div class="nav navbar-nav pull-right visible-md visible-lg visible-sm">
-    <%if !@user: %>
-        <li>
-            <a href="/signup" data-icon="user" data-no-instant>Register</a>
-        </li>
-        <li>
-            <a class="need-login no-redirect" id="login" href="/login" data-no-instant>Login</a>
-        </li>
-    <% else :%>
-        <li>
-            <a href="/user" data-icon="user"><%- @user.username %></a>
-        </li>
-        <li>
-            <a id="logout" href="/logout" data-no-instant>Logout</a>
-        </li>
-    <% end %>
+
+
+<div class="ui fixed transparent main menu">
+  <div class="container">
+      <a class="item" href="/">
+        <i class="home icon"></i> Home
+      </a>
+      <a href="/search" class="item" data-no-instant>
+        <i class="search icon"></i> Search
+        </a>
+      <a href="/upload" class="item <%- if !@user then ' need-login' %>" data-no-instant>
+        <i class="upload icon"></i> Submit a mod
+      </a>
+      <div class="right menu">
+      <%if !@user: %>
+          <a href="/signup" class="item" data-no-instant ><i class="user icon"></i> Register</a></a>
+          <a class="need-login no-redirect item" id="login" href="/login" data-no-instant>Login</a>
+      <% else :%>
+          <a class="item" href="/user"><i class="user icon"></i><%- @user.username %></a>
+          <a class="item" id="logout" href="/logout" data-no-instant>Logout</a>
+      <% end %>
+      </div>
+    </div>
 </div>

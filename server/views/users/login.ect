@@ -6,11 +6,27 @@
 <% include './utils/flash.ect' %>
 <div class="col-md-6 col-md-offset-3">
 <div class="panel panel-primary" id="signin-panel">
-        <div class="panel-heading">
-            Sign in
-        </div>
-        <div class="panel-body">
-    <% include 'forms/login.ect' %>
+  <form class="ui form segment" method="post">
+  <div class="field">
+    <label>Username</label>
+    <div class="ui left labeled icon input">
+      <input type="text" placeholder="Username" name="username">
+      <i class="user icon"></i>
+      <div class="ui corner label">
+        <i class="icon asterisk"></i>
       </div>
     </div>
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <div class="ui left labeled icon input">
+      <input type="password" name="password">
+      <i class="lock icon"></i>
+      <div class="ui corner label">
+        <i class="icon asterisk"></i>
+      </div>
+    </div>
+  </div>
+  <input type="submit" class="ui blue submit button" value="Login" />
+</form>
 </div>

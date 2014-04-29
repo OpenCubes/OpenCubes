@@ -1,60 +1,81 @@
 <div class="meta">
-    <div class="media">
-        <a class="pull-left" href="#">
-                <img class="media-object"  src="/assets/<%- @mod.slug %>.png" alt="logo" height="128" width="128" />
-              </a>
-        <div class="media-body">
-            <h3 class="media-heading"><%- @mod.name %></h3>
-            <%- @mod.summary %>
-                <br />
+    <div class="ui relaxed grid">
+        <a class="two wide column" href="#">
+            <img class="media-object"  src="/assets/<%- @mod.slug %>.png" alt="logo" height="96" width="96" />
+        </a>
+        <div class="thirteen wide column">
+            <h2 class="ui header"><%- @mod.name %></h3>
+            <div class="sub header"><%- @mod.summary %></div>
+            <br />
         </div>
     </div>
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#description" data-toggle="tab">Description</a>
-        </li>
-        <li><a href="#comments" data-toggle="tab">Comments</a>
-        </li>
-    </ul>
-
-    <div class="tab-content">
-        <div class="tab-pane active" id="description">
-
-            <div class="main-desc">
-                <%- @mod.htmlbody %>
-            </div>
+    <div class="ui tiered top attached pointing menu">
+        <a class="active item" data-tab="description">
+        <i class="align left icon"></i> Description
+        </a>
+        <a class="item" data-tab="comments">
+        <i class="comment outline icon"></i> Comments
+        </a>
+    </div>
+    <div class="ui active bottom attached tab segment" data-tab="description" id="description">
+        <div class="main-desc">
+            <%- @mod.htmlbody %>
         </div>
-        <div class="tab-pane" id="comments">
-            <% for comment in @mod.comments : %>
-                <div class="media">
-                    <div class="media-body">
-                        <h4 class="media-heading"><%- comment.title %></h4>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="comments" id="comments">
+    <div id="comments-area">
+        <% for comment in @mod.comments : %>
+        <div class="ui comments">
+            <div class="comment">
+                <a class="avatar">
+                <img src="//lorempixel.com/128/128/">
+                </a>
+                <div class="content">
+                    <a class="author"><b><%- comment.title %></b> by <%-comment.author.username%></a>
+                    <div class="metadata">
+                        <div class="date"> <abbr class="timeago" title="<%-comment.date.toISOString()%>"></abbr></div>
+                    </div>
+                    <div class="text">
                         <%- comment.body %>
-                            <br /><small>Posted by
-                            <a href="#">
-                                <%-comment.author.username%>
-                            </a> <abbr class="timeago" title="<%-comment.date.toISOString()%>"></abbr>
-                            </small>
+                    </div>
+                    <div class="actions">
+                        <a class="edit active">Edit</a>
+                        <a class="delete">Delete</a>
                     </div>
                 </div>
-                <hr />
-                <%end%><br />
-                    <form class="form col-md-6 ajax" role="form" action="/api/ajax/comments/<%-@mod.slug %>/add" method="post">
-                        <div class="form-group">
-                            <label class="sr-only" for="exampleInputEmail2">Title</label>
-                            <input type="text" name="name" class="form-control" id="exampleInputEmail2" placeholder="Enter title" />
-                        </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="exampleInputPassword2">Password</label>
-                            <textarea name="body" class="form-control" id="exampleInputPassword2" placeholder="Content"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-default">Comment</button>
-                    </form>
+            </div>
         </div>
+        <%end%>
+        <form method="post" action="/api/ajax/comments/<%-@mod.slug %>/add" class="ui ajax form segment" data-target="#comments-area" enctype="no">
+            <div class="field">
+                <label>Title</label>
+                <div class="ui input">
+                    <input type="text" placeholder="Enter a title..." name="name">
+                    <div class="ui corner label">
+                        <i class="icon asterisk"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label>Body</label>
+                <div class="ui input">
+                    <textarea name="body"></textarea>
+                    <div class="ui corner label">
+                        <i class="icon asterisk"></i>
+                    </div>
+                </div>
+            </div>
+            <input type="submit" class="ui blue submit button" value="Post comment">
+        </div>
+    </div>
     </div>
 </div>
 </div>
-<script>
+</div>
+<script data-instant-track>
     jQuery(document).ready(function () {
         jQuery("abbr.timeago").timeago();
+        $('.menu .item').tab({history:false});
+        
     });
 </script>

@@ -25,14 +25,20 @@
     return canThis(userid, "comment", "add").then(function(can) {
       var Mod;
       if (can === false) {
-        return callback(error.throwError(err, "UNAUTHORIZED"));
+        return callback(errors.throwError(err, "UNAUTHORIZED"));
       }
       Mod = mongoose.model("Mod");
       Mod.findOne({
         slug: slug
       }, function(err, mod) {
         if (err) {
-          return callback(error.throwError(err, "DATABASE_ERROR"));
+          return callback(errors.throwError(err, "DATABASE_ERROR"));
+        }
+        if (!name || name.length < 5) {
+          return callback(errors.throwError("Name must be at least 5 characters long", "INVALID_PARAMS"));
+        }
+        if (!body || body.length < 15) {
+          return callback(errors.throwError("Body must be at least 15 characters long", "INVALID_PARAMS"));
         }
         mod.comments.push({
           title: validator.escape(name),

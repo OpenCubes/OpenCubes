@@ -1,24 +1,24 @@
 <% modHelper = (mod) -> %>
-<li class="mix mix_all">
-    <div class="media">
-    <div class="pull-right btn-group-vertical">
-        <a class="download btn btn-primary" data-icon="download" target="_blank" href="/pack/?id=<%- mod.id%>">Download now</a>
-			<% if mod.carted is true : %>
-        <div class="cart btn btn-primary" data-id="<%- mod.id%>" onclick="dropCart('<%- mod.id%>')"><span class="glyphicon glyphicon-ok"></span> Remove</div>
-        <% else :%>
-        <div class="cart btn btn-primary" data-id="<%- mod.id%>"  onclick="pushToCart('<%- mod.id%>')">
-            <span class="cart-btn cart-a cart-<%-mod.id %>" data-icon="cartfill">Add to cart</span>
-        </div>
-        <% end %>
+<div class="ui very relaxed divided list">
+  <div class="item ui grid">
+    <div class="right floated ui small basic labeled vertical buttons">
+      <div class="ui button"><span class="cart-btn cart-a cart-<%-mod.id %>"><i class="download icon"></i> Download now</span></div>
+      <div class="ui button"><span class="cart-btn cart-a cart-<%-mod.id %>"><i class="cart icon"></i> Add to cart</span></div>
     </div>
-    <a class="pull-left" href="/mod/<%- mod.slug%>">
-    <img class="media-object" width="64" height="64" src="/assets/<%- mod.slug %>.png" alt="Logo">
-    </a>
-    <div class="media-body">
-        <h4 class="media-heading"><a href="/mod/<%- mod.slug%>"><%- mod.name%></a> <small class="author"> <a href="/user/<%- mod.author.username%>">by <%- mod.author.username%></small></a></h4>
-		<%- mod.summary%>
+    <img width="64" height="64" class="left floated ui" src="/assets/<%- mod.slug %>.png" alt="Logo">
+    <div class="ten wide column content" style="margin-top: 0px;">
+      <a class="header mod-title" href="/mod/<%- mod.slug %>/" data-no-instant><%- mod.name %></a> <small> by <%- mod.author.username %></small>
+      <div class="description">
+        <%- mod.summary%><br />
+        <small>updated <abbr class="timeago" title="<%-mod.lastUpdated.toISOString()%>"></abbr> | created 
+        <abbr class="timeago" title="<%-mod.created.toISOString()%>"></abbr> |
+        <%-mod.vote_count or 0%> stars
+        </small>
+      </div>
     </div>
-</li>
+  </div>
+ </div>
+
 <% end %>
 <% extend 'layout.ect' %>
 <% include 'utils/flash.ect' %>
@@ -32,6 +32,12 @@
 <% else : %>
 	<p>No mods yet in this category.</p>
 <% end %>
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery("abbr.timeago").timeago();
+    });
+</script>
 <% block 'navbar' : %>
 <% include 'navs/main-nav.ect'%>
 <% end %>

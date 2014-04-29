@@ -13,12 +13,16 @@ Add a comment to a mod
 ###
 exports.add = ((userid, slug, name, body, callback) ->
   canThis(userid, "comment", "add").then (can)->
-    if can is false then return callback error.throwError(err, "UNAUTHORIZED")
+    if can is false then return callback errors.throwError(err, "UNAUTHORIZED")
     # Validate options
     Mod = mongoose.model "Mod"
 
     Mod.findOne slug: slug, (err, mod) ->
-      return callback error.throwError(err, "DATABASE_ERROR") if err
+      return callback errors.throwError(err, "DATABASE_ERROR") if err
+      if not name or name.length < 5
+        return callback errors.throwError "Name must be at least 5 characters long", "INVALID_PARAMS"
+      if not body or body.length < 15
+        return callback errors.throwError "Body must be at least 15 characters long", "INVALID_PARAMS"
       mod.comments.push
         title: validator.escape(name)
         body: validator.escape(body)

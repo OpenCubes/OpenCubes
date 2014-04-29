@@ -31,7 +31,14 @@ exports.throwError = throwError = (message, id) ->
 
 exports.handleHttp = (err, req, res, format="text") ->
   console.log("   Error - #{err.message} (#{err.type}) on #{req.url}".red)
-  res.send err.data.code, "#{err.data.type}: #{err.message}"
+  if format is "text"
+    res.send err.data.code, "#{err.data.type}: #{err.message}"
+  if format is "json"
+    res.send err.data.code,
+      type: err.data.type
+      message: err.message
+      id: err.type
+      status: "error"
 
 exports.handleResult = (err, doc, callback) ->
   if callback

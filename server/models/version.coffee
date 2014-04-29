@@ -28,8 +28,7 @@ Schema.statics = createFile: (uid, path, modId, v, cb) ->
         version.files.push
           path: path
           uid: uid
-        version.save()
-        cb()
+        version.save(cb)
       else
         self.create
           mod: modId

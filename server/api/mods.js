@@ -61,7 +61,8 @@
       Mod.load({
         slug: slug,
         $cart_id: cart,
-        $user: user
+        $user: user,
+        $populate: true
       }, function(err, mod) {
         var Version;
         if (!mod) {
@@ -164,7 +165,7 @@
         }
         mod[field] = value;
         return mod.save(function(err, mod) {
-          return errors.handleResult(err, mods, callback);
+          return errors.handleResult(err, mod, callback);
         });
       });
     });

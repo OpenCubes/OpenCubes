@@ -46,7 +46,17 @@
       format = "text";
     }
     console.log(("   Error - " + err.message + " (" + err.type + ") on " + req.url).red);
-    return res.send(err.data.code, "" + err.data.type + ": " + err.message);
+    if (format === "text") {
+      res.send(err.data.code, "" + err.data.type + ": " + err.message);
+    }
+    if (format === "json") {
+      return res.send(err.data.code, {
+        type: err.data.type,
+        message: err.message,
+        id: err.type,
+        status: "error"
+      });
+    }
   };
 
   exports.handleResult = function(err, doc, callback) {

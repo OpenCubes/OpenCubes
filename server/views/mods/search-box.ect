@@ -15,8 +15,8 @@ $('#search').selectize({
     create: false,
     render: {
         option: function(item, escape) {
-            console.log('item:', item);
-             return "<div class=\"media\">\n  <a class=\"pull-left\" href=\"#\">\n    <img class=\"media-object\" src=\"/assets/" + item.slug + ".png\" alt=\"Logo\" width=\"32\" height=\"32\">\n  </a>\n  <div class=\"media-body\">\n    <h5 class=\"media-heading\">" + item.name + "</h5>\n    " + item.summary + "\n    <br /><small>\n    <b>Author: </b> " + item.author.username + "\n   | <b>Category: </b> " + item.category + "\n   | <b>Stars: </b> " + (item.vote_count || 0) + "\n    </small>\n  </div>\n</div>\n";
+            var mod = item;
+            return "<div class=\"ui list\">\n  <div class=\"item\">\n    <img class=\"ui avatar image\" src=\"/assets/" + item.slug + ".png\">\n    <div class=\"content\">\n      <div class=\"header\">" + item.name + "</div>\n      " + item.summary + "\n    </div>\n</div></div>";
         }
     },
     score: function(search) {
@@ -34,7 +34,6 @@ $('#search').selectize({
                 callback();
             },
             success: function(res) {
-              console.log('res:', res)
               callback(res);
             }
         });

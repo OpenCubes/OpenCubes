@@ -45,34 +45,43 @@
     form.uploadDir = __dirname.getParent() + "/temp/";
     form.parse(req, function(err, fields, files) {
       var newfile, path, uid, versionName;
+      if (err) {
+        console.log(err);
+      }
       uid = uuid.v4();
       newfile = __dirname.getParent() + "/uploads/" + uid;
       console.log("field:", fields);
       versionName = fields.version;
       path = fields.path;
       if (!path || !versionName || path === "" || versionName === "") {
+        console.log("missing");
         req.flash("error", "There is something missing...");
         return res.redirect(req.url);
       }
       copyFile(files.file.path, newfile, function(err) {
         if (err) {
           console.log(err);
-          req.flash("error", "Oops, something went wrong! (reason: copy)");
-          return res.redirect(req.url);
+          return res.send(500, {
+            error: "error"
+          });
         }
         fs.unlink(files.file.path, function(err) {
           var slug;
           if (err) {
-            req.flash("error", "Oops, something went wrong! (reason: deletion)");
-            return res.redirect(req.url);
+            console.log(err);
+            return res.send(500, {
+              error: "error"
+            });
           }
           slug = req.params.id;
+          console.log(req.params);
           return app.api.mods.addFile(req.getUserId(), slug, uid, path, versionName).then(function(doc) {
-            req.flash("success", "Yes! File uploaded!");
             return res.redirect(req.url);
           }).fail(function(err) {
-            req.flash("error", "Oops, something went wrong. Please retry.");
-            return res.redirect(req.url);
+            console.log(err);
+            return res.send(500, {
+              error: "error"
+            });
           });
         });
       });
