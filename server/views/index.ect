@@ -2,8 +2,12 @@
 <div class="ui very relaxed divided list">
   <div class="item ui grid">
     <div class="right floated ui small basic labeled vertical buttons">
-      <div class="ui button"><span class="cart-btn cart-a cart-<%-mod.id %>"><i class="download icon"></i> Download now</span></div>
-      <div class="ui button"><span class="cart-btn cart-a cart-<%-mod.id %>"><i class="cart icon"></i> Add to cart</span></div>
+      <div class="ui button"><i class="download icon"></i> Download now</div>
+      <% if mod.carted is true : %>
+        <div class="cart ui button btn" data-id="<%- mod.id%>" onclick="drop('<%- mod.id%>')"><span class="cart-btn cart-a cart-<%-mod.id %>"><i class="checkmark icon"></i> Remove</span></div>
+      <% else : %>
+        <div class="cart ui button btn" data-id="<%- mod.id%>" onclick="pushToCart('<%- mod.id%>')"><span class="cart-btn cart-a cart-<%-mod.id %>"><i class="cart icon"></i> Add to cart</span></div>
+      <% end %>
     </div>
     <img width="64" height="64" class="left floated ui" src="/assets/<%- mod.slug %>.png" alt="Logo">
     <div class="ten wide column content" style="margin-top: 0px;">

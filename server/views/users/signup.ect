@@ -1,9 +1,8 @@
 
 <% extend 'layout.ect' %>
-<form class="form-horizontal" method="post">
-    <fieldset>
+<form class="ui form" method="post">
         <!-- Text input-->
-        <div class="form-group">
+        <div class="field">
             <label class="col-md-4 control-label" for="username">Username</label>
             <div class="col-md-4">
                 <input id="username" name="username" placeholder="Pick a username" class="form-control input-md"
@@ -11,7 +10,7 @@
             </div>
         </div>
         <!-- Text input-->
-        <div class="form-group">
+        <div class="field">
             <label class="col-md-4 control-label" for="email">Your email</label>
             <div class="col-md-4">
                 <input id="email" name="email" placeholder="foo@bar.com" class="form-control input-md"
@@ -19,7 +18,7 @@
             </div>
         </div>
         <!-- Password input-->
-        <div class="form-group">
+        <div class="field">
             <label class="col-md-4 control-label" for="password">Password</label>
             <div class="col-md-4">
                 <input id="password" name="password" placeholder="Choose a STRONG password"
@@ -28,15 +27,14 @@
             </div>
         </div>
         <!-- Button -->
-        <div class="form-group">
+        <div class="field">
             <label class="col-md-4 control-label" for="submit"></label>
             <div class="col-md-4">
-                <button id="submit" name="submit" class="btn btn-success ">Signup for OpenCubes now!</button>
+                <button id="submit" name="submit" class="ui blue large button">Signup for OpenCubes now!</button>
                 <br /><small>By clicking "Signup for OpenCubes now!", you agree to our Terms of Service
-                    and pprivacy policy.</small>
+                    and privacy policy.</small>
             </div>
         </div>
-    </fieldset>
 </form>
 <% block 'navbar' : %>
 <% include 'navs/main-nav.ect'%>

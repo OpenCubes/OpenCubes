@@ -139,7 +139,7 @@ pushToCart = function (id) {
     $a.animate({
       'top': '+=20px'
     }, 250, function () {
-      $el.html('<span class="cart-btn cart-b cart-' + id + '"><span class="glyphicon glyphicon-ok"></span> Remove</span>');
+      $el.html('<span class="cart-btn cart-b cart-' + id + '"><i class="checkmark icon"></i> Remove</span>');
       $el.attr('onclick', 'dropCartItem(\'' + id + '\')')
       var $b = $('.cart-b.cart-' + id);
       $b.animate({
