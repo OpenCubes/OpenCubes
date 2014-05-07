@@ -6,7 +6,7 @@
       user: "server",
       pass: "2f61cb7837b83df50a7fffb58e802b87679cdaff"
     },
-    port: process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 5000,
+    port: process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 1234,
     ip: process.env.OPENSHIFT_NODEJS_IP || process.env.IP || "",
     theme: "flatly",
     env: "dev",

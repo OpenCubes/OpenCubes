@@ -12,7 +12,7 @@ app =
     app.config = config = require("./config")
     fs = require("fs")
     ECT = require("ect")
-    lessMiddleware = require("less-middleware")
+    # lessMiddleware = require("less-middleware")
     utils = require("./controllers/utils.js")
     flash = require("express-flash")
     passport = require("passport")
@@ -84,6 +84,7 @@ app =
         root: __dirname + "/views"
       )
       server.engine ".ect", ectRenderer.render
+      ###
       server.use lessMiddleware(
         src: __dirname + "/less"
         dest: __dirname.getParent() + "/public/css"
@@ -98,6 +99,7 @@ app =
         # through changes
         force: config.env is "dev"
       )
+      ###
       server.use express.static(path.join(__dirname.getParent(), "public"))
       server.use uploadDir: __dirname.getParent() + "/temp"
       server.use server.router

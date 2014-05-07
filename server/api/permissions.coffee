@@ -1,5 +1,5 @@
-User = require("mongoose").model("User")
 
+mongoose = require("mongoose")
 ###
 This utility function determine whether an user can do this or this
 using the permissions. e. g. "mod" "delete"
@@ -10,6 +10,7 @@ using the permissions. e. g. "mod" "delete"
 @param owner the optional owner id of the object to be "actionned"
 ###
 exports.canThis = ((userId, object, action, ownerId, callback) ->
+  User = mongoose.model("User")
   if typeof ownerId is "function"
     callback = ownerId
     ownerId = undefined

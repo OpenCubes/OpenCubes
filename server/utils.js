@@ -93,7 +93,7 @@
       var $this;
       $this = this;
       return function() {
-        var arg, args, deferred, _i, _len;
+        var arg, args, deferred, e, _i, _len;
         deferred = Q.defer();
         args = [];
         for (_i = 0, _len = arguments.length; _i < _len; _i++) {
@@ -108,7 +108,13 @@
             return deferred.resolve.apply($this, args);
           }
         });
-        $this.apply(self, args);
+        try {
+          $this.apply(self, args);
+        } catch (_error) {
+          e = _error;
+          console.log(e);
+          deferred.resolve(e);
+        }
         return deferred.promise;
       };
     }

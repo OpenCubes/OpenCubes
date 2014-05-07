@@ -98,7 +98,7 @@
 
   exports.search = function(req, res) {
     app.api.mods.search(req.getUserId(), req.params.string).then(function(mods) {
-      return res.send(mods.slice(-40));
+      return res.send((mods || []).slice(-40));
     }).fail(function(err) {
       return errors.handleHttp(err, req, res, "json");
     });

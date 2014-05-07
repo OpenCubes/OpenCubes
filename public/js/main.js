@@ -148,3 +148,40 @@ pushToCart = function (id) {
     });
   });
 }
+$(document).on('submit', 'form#upload-mod', function (e) {
+  e.preventDefault();
+  console.log("uploading");
+  var $el = $(this);
+  $el.addClass("loading");
+  $.ajax({
+    method: 'post',
+    data: $el.serialize(),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    error: function (data) {
+      data = data.responseJSON;
+      $(document).scrollTop(0);
+      $el.removeClass("loading").addClass("error");
+      var str = '<div class="ui error message"> <div class="header">There have been some errors</div><ul class="list">'
+      for (var err in data.errors) {
+        switch (err) {
+        case 'name':
+          $in = $('input[id=name]');
+          $in.parent().parent().addClass('error');
+          $in.after('<div class="ui red pointing above ui label">' + data.errors.name.message + '</div>');
+          break;
+        
+        case 'summary':
+          $in = $('[id=summary]');
+          $in.parent().parent().addClass('error');
+          $in.after('<div class="ui red pointing above ui label">' + data.errors.summary.message + '</div>');
+          break;
+        }
+        str += '<li>'+data.errors[err].message+'</li>';
+      }
+      str += '</ul></div>';
+      $('h2', $el).after(str);
+    }
+  });
+});

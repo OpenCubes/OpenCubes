@@ -18,3 +18,5 @@ public/css/main.css
 /server/config.js
 /nodemon.json
 /OpenCubes.njsproj
+/.settings/
+/public/css/main.css.map

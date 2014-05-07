@@ -1,14 +1,16 @@
-var validator = require("./server/api/validator");
-console.log(validator.validate({
-  foo: "<b>Foo</b>"
-}, {
-  foo: {
-    name: "<b>Foo</b>",
-    rules: []
-  },
-  mail: {
-    name: "Email",
-    required: false,
-    rules: [validator.rules.regex("[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\\.[a-zA-Z]{2,4}")]
+var format = {
+  foo: "string",
+  bar: "string"
+};
+var data = {
+  foo: "bar",
+  bar: []
+}
+var validate = function (data, format) {
+  for(var d in data) {
+    if(typeof data[d] !== format[d]) 
+      return false;
   }
-}));
+  return true;
+}
+console.log(validate(data, format));

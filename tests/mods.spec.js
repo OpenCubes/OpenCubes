@@ -1,6 +1,7 @@
 describe("mods", function () {
     var mongoose = require('mongoose');
     var mockgoose = require('mockgoose');
+    var chance = require("chance")();
     var fs = require("fs");
     require("../server/utils");
     mockgoose(mongoose);
@@ -36,12 +37,13 @@ describe("mods", function () {
             }
             userid = user._id;
             api.mods.add(userid, {
-                name: "Foo",
-                summary: "Bar",
-                body: "Hello, world",
+                name: "Foo Bar",
+                summary: chance.sentence({words: 7}),
+                body: chance.sentence({words: 100}),
                 author: userid
             }).then(function (status) {
                 expect(status).not.toBe(undefined);
+                console.log('add');
                 done();
             }).fail(function (err) {
                 console.log(err);
@@ -52,7 +54,7 @@ describe("mods", function () {
     });
 
     it("should be able to fetch the mod ", function (done) {
-        api.mods.load(userid, "foo").then(function (mod) {
+        api.mods.load(userid, "foo-bar").then(function (mod) {
             modid = mod.mod._id
             expect(mod).not.toBe(null);
             done();
@@ -64,7 +66,7 @@ describe("mods", function () {
     });
 
     it("should be able to star the mod", function (done) {
-        api.mods.star(userid, "foo").then(function (mod) {
+        api.mods.star(userid, "foo-bar").then(function (mod) {
             expect(mod.vote_count).toBe(1);
             done();
         }).fail(function (err) {

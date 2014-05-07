@@ -161,32 +161,38 @@ Star a mod
 
 exports.star = ((userid, slug, callback) ->
   canThis(userid, "mod", "star").then (can)->
-    if can is false
-      callback(error.throwError("Forbidden", "UNAUTHORIZED"))
-    # Validate options
-
-    Mod = mongoose.model "Mod"
-    q = Mod.findOne
-      slug: slug
-      "stargazers.id": userid
-    ,
-      "stargazers.$": 1
-    q.exec (err, mod) ->
-      return callback err  if err
-      Mod.findOne
+    try
+      if can is false
+        callback(error.throwError("Forbidden", "UNAUTHORIZED"))
+      # Validate options
+      Mod = mongoose.model "Mod"
+      q = Mod.findOne
         slug: slug
-      , (err, doc) ->
+        "stargazers.id": userid
+      ,
+        "stargazers.$": 1
+      q.exec (err, mod) ->
         return callback err  if err
-        if !mod
-          doc.stargazers.push
-            id: userid
-            date: Date.now()
-          doc.vote_count = (doc.vote_count or 0) + 1
-        else
-          doc.vote_count--
-          doc.stargazers.id(mod.stargazers[0]._id).remove()
-        doc.save (err, mod) ->
-          errors.handleResult err, mod, callback
+        Mod.findOne
+          slug: slug
+        , (err, doc) ->
+          return callback err  if err
+          console.log "hu3.5"
+          if !mod
+            try
+              doc.stargazers.push
+                id: userid
+                date: Date.now()
+              doc.vote_count = (doc.vote_count or 0) + 1
+            catch err
+              console.log err
+          else
+            doc.vote_count--
+            doc.stargazers.id(mod.stargazers[0]._id).remove()
+          doc.save (err, mod) ->
+            errors.handleResult err, mod, callback
+    catch err
+      console.log err
 
 ).toPromise @
 

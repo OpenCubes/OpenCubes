@@ -1,5 +1,5 @@
 (function() {
-  var Cart, ModSchema, Schema, fs, mongoose, slug, timestamps;
+  var Cart, ModSchema, Schema, escapeHtml, fs, mongoose, perms, slug, timestamps, _;
 
   mongoose = require("mongoose");
 
@@ -12,6 +12,10 @@
   timestamps = require("mongoose-times");
 
   fs = require("fs");
+
+  _ = require("lodash");
+
+  perms = require("../api/permissions");
 
   ModSchema = mongoose.Schema({
     name: String,
@@ -49,7 +53,7 @@
 
   ModSchema.post('remove', function(doc) {
     console.log('`%s` has been removed', doc.name);
-    fs.unlink("../uploads/" + mod.logo, function(err) {
+    fs.unlink("../uploads/" + doc.logo, function(err) {
       if (err) {
         return console.log(err);
       } else {
@@ -57,7 +61,7 @@
       }
     });
     return mongoose.model("Version").find({
-      mod: this._id
+      mod: doc._id
     }, function(err, versions) {
       var version, _i, _len, _results;
       _results = [];
@@ -82,6 +86,51 @@
   ModSchema.plugin(slug("name"));
 
   ModSchema.plugin(timestamps);
+
+  ModSchema.path("name").validate(function(value) {
+    if (!value || value === "") {
+      return false;
+    }
+    if (value.length < 5 || value.length > 20) {
+      return false;
+    }
+    return true;
+  }, "Name should be between 5 and 20 characters long");
+
+  ModSchema.path("summary").validate(function(value) {
+    if (!value || value === "") {
+      return false;
+    }
+    if (value.length < 15 || value.length > 200) {
+      return false;
+    }
+    return true;
+  }, "Name should be between 15 and 200 characters long");
+
+  ModSchema.path("body").validate(function(value) {
+    if (!value || value === "") {
+      return false;
+    }
+    if (value.length < 50 || value.length > 2e5) {
+      return false;
+    }
+    return true;
+  }, "Body should be between 50 and 200,000 characters long");
+
+  escapeHtml = function(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  };
+
+  ModSchema.pre("save", function(next) {
+    var doc;
+    console.log("PRE");
+    doc = this;
+    doc.name = escapeHtml(doc.name);
+    doc.summary = escapeHtml(doc.summary);
+    doc.body = escapeHtml(doc.body);
+    console.log(doc);
+    return next();
+  });
 
   fs = require("fs");
 

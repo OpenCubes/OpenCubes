@@ -4,6 +4,8 @@ Cart = mongoose.model("Cart")
 slug = require("mongoose-slug")
 timestamps = require("mongoose-times")
 fs = require("fs")
+_ = require "lodash"
+perms = require "../api/permissions"
 ModSchema = mongoose.Schema(
   name: String
   version: String
@@ -33,12 +35,13 @@ ModSchema = mongoose.Schema(
   ]
 )
 ModSchema.post 'remove',  (doc) ->
+  
   console.log('`%s` has been removed', doc.name)
   # Remove the logo
-  fs.unlink "../uploads/"+mod.logo, (err) ->
+  fs.unlink "../uploads/"+doc.logo, (err) ->
     if err then console.log err
     else console.log "File #{mod.logo} has been deleted"
-  mongoose.model("Version").find {mod: @_id}, (err, versions) ->
+  mongoose.model("Version").find {mod: doc._id}, (err, versions) ->
     version.remove() for version in versions when version
 
 ModSchema.path("name").required true, "Mod title cannot be blank"
@@ -47,6 +50,40 @@ ModSchema.path("author").required true, "Mod author cannot be blank"
 ModSchema.path("summary").required true, "Mod summary cannot be blank"
 ModSchema.plugin slug("name")
 ModSchema.plugin timestamps
+ModSchema.path("name").validate (value) ->
+  if not value or value is ""
+    return false
+  if value.length < 5 or value.length > 20
+    return false
+  return true
+, "Name should be between 5 and 20 characters long"
+ModSchema.path("summary").validate (value) ->
+  if not value or value is ""
+    return false
+  if value.length < 15 or value.length > 200
+    return false
+  return true
+, "Name should be between 15 and 200 characters long"
+ModSchema.path("body").validate (value) ->
+  if not value or value is ""
+    return false
+  if value.length < 50 or value.length > 2e5
+    return false
+  return true
+, "Body should be between 50 and 200,000 characters long"
+
+escapeHtml = (str) ->
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace />/g, "&gt;"
+  
+ModSchema.pre "save", (next) ->
+  console.log "PRE"
+  doc = @
+  doc.name = escapeHtml(doc.name)
+  doc.summary = escapeHtml(doc.summary)
+  doc.body = escapeHtml(doc.body)
+  console.log(doc)
+  return next()
+
 
 # Validation
 

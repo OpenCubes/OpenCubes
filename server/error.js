@@ -7,6 +7,11 @@
       id: "INVALID_PARAMS",
       message: "A parameter is missing or invalid. Please retry"
     },
+    INVALID_DATA: {
+      code: 400,
+      id: "INVALID_DATA",
+      message: "A data is missing or invalid. Please fix it and retry."
+    },
     NOT_FOUND: {
       id: "NOT_FOUND",
       code: 404,
@@ -54,7 +59,8 @@
         type: err.data.type,
         message: err.message,
         id: err.type,
-        status: "error"
+        status: "error",
+        errors: err.errors
       });
     }
   };

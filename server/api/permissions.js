@@ -1,7 +1,7 @@
 (function() {
-  var User, config, process;
+  var config, mongoose, process;
 
-  User = require("mongoose").model("User");
+  mongoose = require("mongoose");
 
   /*
   This utility function determine whether an user can do this or this
@@ -15,6 +15,8 @@
 
 
   exports.canThis = (function(userId, object, action, ownerId, callback) {
+    var User;
+    User = mongoose.model("User");
     if (typeof ownerId === "function") {
       callback = ownerId;
       ownerId = void 0;

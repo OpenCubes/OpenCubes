@@ -6,7 +6,7 @@
     models: {},
     api: {},
     init: function(cb) {
-      var ECT, config, express, flash, fs, http, lessMiddleware, mongoose, passport, path, router, timer, utils;
+      var ECT, config, express, flash, fs, http, mongoose, passport, path, router, timer, utils;
       require("./utils");
       timer = new Date().getTime();
       express = require("express");
@@ -16,7 +16,6 @@
       app.config = config = require("./config");
       fs = require("fs");
       ECT = require("ect");
-      lessMiddleware = require("less-middleware");
       utils = require("./controllers/utils.js");
       flash = require("express-flash");
       passport = require("passport");
@@ -86,12 +85,23 @@
           root: __dirname + "/views"
         });
         server.engine(".ect", ectRenderer.render);
-        server.use(lessMiddleware({
-          src: __dirname + "/less",
-          dest: __dirname.getParent() + "/public/css",
-          prefix: "/css",
-          force: config.env === "dev"
-        }));
+        /*
+        server.use lessMiddleware(
+          src: __dirname + "/less"
+          dest: __dirname.getParent() + "/public/css"
+          
+          # if you're using a different src/dest directory, you
+          # MUST include the prefex, which matches the dest
+          # public directory
+          prefix: "/css"
+          
+          # force true recompiles on every request... not the
+          # best for production, but fine in debug while working
+          # through changes
+          force: config.env is "dev"
+        )
+        */
+
         server.use(express["static"](path.join(__dirname.getParent(), "public")));
         server.use({
           uploadDir: __dirname.getParent() + "/temp"

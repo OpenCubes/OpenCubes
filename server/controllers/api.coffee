@@ -73,7 +73,7 @@ exports.view = (req, res) ->
 
 exports.search = (req, res) ->
   app.api.mods.search(req.getUserId(), req.params.string).then((mods)->
-    return res.send(mods.slice(-40))
+    return res.send((mods or []).slice(-40))
   ).fail (err) ->
     errors.handleHttp err, req, res, "json"
   return

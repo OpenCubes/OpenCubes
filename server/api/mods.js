@@ -203,42 +203,53 @@
 
   exports.star = (function(userid, slug, callback) {
     return canThis(userid, "mod", "star").then(function(can) {
-      var Mod, q;
-      if (can === false) {
-        callback(error.throwError("Forbidden", "UNAUTHORIZED"));
-      }
-      Mod = mongoose.model("Mod");
-      q = Mod.findOne({
-        slug: slug,
-        "stargazers.id": userid
-      }, {
-        "stargazers.$": 1
-      });
-      return q.exec(function(err, mod) {
-        if (err) {
-          return callback(err);
+      var Mod, err, q;
+      try {
+        if (can === false) {
+          callback(error.throwError("Forbidden", "UNAUTHORIZED"));
         }
-        return Mod.findOne({
-          slug: slug
-        }, function(err, doc) {
+        Mod = mongoose.model("Mod");
+        q = Mod.findOne({
+          slug: slug,
+          "stargazers.id": userid
+        }, {
+          "stargazers.$": 1
+        });
+        return q.exec(function(err, mod) {
           if (err) {
             return callback(err);
           }
-          if (!mod) {
-            doc.stargazers.push({
-              id: userid,
-              date: Date.now()
+          return Mod.findOne({
+            slug: slug
+          }, function(err, doc) {
+            if (err) {
+              return callback(err);
+            }
+            console.log("hu3.5");
+            if (!mod) {
+              try {
+                doc.stargazers.push({
+                  id: userid,
+                  date: Date.now()
+                });
+                doc.vote_count = (doc.vote_count || 0) + 1;
+              } catch (_error) {
+                err = _error;
+                console.log(err);
+              }
+            } else {
+              doc.vote_count--;
+              doc.stargazers.id(mod.stargazers[0]._id).remove();
+            }
+            return doc.save(function(err, mod) {
+              return errors.handleResult(err, mod, callback);
             });
-            doc.vote_count = (doc.vote_count || 0) + 1;
-          } else {
-            doc.vote_count--;
-            doc.stargazers.id(mod.stargazers[0]._id).remove();
-          }
-          return doc.save(function(err, mod) {
-            return errors.handleResult(err, mod, callback);
           });
         });
-      });
+      } catch (_error) {
+        err = _error;
+        return console.log(err);
+      }
     });
   }).toPromise(this);
 
