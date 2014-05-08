@@ -1,4 +1,4 @@
-var parse = require('../server/parser');
+var parse = require('../lib/parser');
 var format = function(str) {
     return str.replace(/(\r\n|\n|\r)/g, "");
 }

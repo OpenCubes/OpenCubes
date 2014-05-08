@@ -15,7 +15,7 @@ npm-debug.log
 node_modules
 public/css/main.css
 /.idea/
-/server/config.js
+/lib/config.js
 /nodemon.json
 /OpenCubes.njsproj
 /.settings/

@@ -3,17 +3,17 @@ describe("mods", function () {
     var mockgoose = require('mockgoose');
     var chance = require("chance")();
     var fs = require("fs");
-    require("../server/utils");
+    require("../lib/utils");
     mockgoose(mongoose);
 
     api = {};
-    models_path = __dirname.getParent() + "/server/models";
+    models_path = __dirname.getParent() + "/lib/models";
     fs.readdirSync(models_path).forEach(function (file) {
         if (~file.indexOf(".js")) {
             return require(models_path + "/" + file);
         }
     });
-    api_path = __dirname.getParent() + "/server/api";
+    api_path = __dirname.getParent() + "/lib/api";
     fs.readdirSync(api_path).forEach(function (file) {
         if (~file.indexOf(".js")) {
             api[file.slice(0, -3)] = require(api_path + "/" + file);

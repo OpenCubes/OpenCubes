@@ -1,5 +1,5 @@
 console.log('Starting server...');
-var app = require('./server/app.js');
+var app = require('./lib/app.js');
 app.init(function(){
 
 });

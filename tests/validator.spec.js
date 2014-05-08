@@ -1,4 +1,4 @@
-var validator = require("../server/api/validator");
+var validator = require("../lib/api/validator");
 
 describe("validator", function () {
   it("should be able to check the length", function (done) {
