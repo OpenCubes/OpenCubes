@@ -19,14 +19,22 @@ module.exports = function (grunt) {
                 src: ['**'],
                 dest: 'lib/views/'
             }
+        },
+        less: {
+            development: {
+                files: {
+                    "public/css/main.css": "src/less/main.less"
+                }
+            }
         }
     });
     grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-less');
     // grunt.loadNpmTasks('grunt-contrib-jasmine');
+    grunt.loadNpmTasks('grunt-contrib-less');
 
-
-    grunt.registerTask('build', ['coffee', 'copy']);
+    grunt.registerTask('build', ['coffee', 'copy', 'less']);
 
 
 
