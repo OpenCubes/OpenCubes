@@ -14,7 +14,7 @@
 
 	// Options of Compilers.
 	"options": {
-		// "key": "val",
+		 "literate": "false"
 		// "key2": "val2"
 		// ...
 	},

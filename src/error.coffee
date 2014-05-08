@@ -35,6 +35,7 @@ exports.throwError = throwError = (message, id) ->
 
 exports.handleHttp = (err, req, res, format="text") ->
   console.log("   Error - #{err.message} (#{err.type}) on #{req.url}".red)
+  console.log(err.stack)
   if format is "text"
     res.send err.data.code, "#{err.data.type}: #{err.message}"
   if format is "json"

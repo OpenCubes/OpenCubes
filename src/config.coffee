@@ -1,28 +1,14 @@
 module.exports =
-  securitySalt: "thisisnotaverygoodsalt"
-  db_uri: ""
+  securitySalt: "&*5/5+hd-5qkjzn;?66@-{]=}"
+  db_uri: "mongodb://oceanic.mongohq.com:10060/local-dev"
   db_opt:
+    user: "server"
+    pass: "2f61cb7837b83df50a7fffb58e802b87679cdaff"
 
-    # database username
-    user: "username"
-
-    # db password
-    pass: "password"
-
-
-  # target port
-  port: process.env.PORT or 5000
-
-  # target ip (optionnal)
-  ip: process.env.IP or ""
-
-  # theme - deprecated
+  port: process.env.OPENSHIFT_NODEJS_PORT or process.env.PORT or 1234
+  ip: process.env.OPENSHIFT_NODEJS_IP or process.env.IP or ""
   theme: "flatly"
-
-  # env
   env: "dev"
-
-  # user group and perms
   user_groups:
     admin:
       full_name: "Administrators"
@@ -34,7 +20,7 @@ module.exports =
       description: "Moderators."
       allowedActions: [
         "mod:*"
-        "comments:*"
+        "comment:*"
         "user:delete browse add banish edit"
       ]
 
@@ -42,7 +28,16 @@ module.exports =
       full_name: "User"
       description: "User."
       allowedActions: [
-        "mod:browse"
-        "comments:browse add"
+        "mod:browse add star"
+        "comment:browse add"
         "user:browse"
+      ]
+
+    guest:
+      full_name: "Guest"
+      description: "Guest."
+      allowedActions: [
+        "mod:browse"
+        "comment:browse"
+        "user:browse add"
       ]
