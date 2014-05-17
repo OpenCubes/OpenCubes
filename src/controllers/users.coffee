@@ -26,7 +26,6 @@ exports.authCallback = login
 Show login form
 ###
 exports.login = (req, res) ->
-  console.log req.query
   res.render "users/login.ect",
     title: "Login"
     target: req.query.target or ""
@@ -81,7 +80,6 @@ Show profile
 ###
 exports.show = (req, res) ->
   app.api.users.view(req.getUserId(), req.params.name).then((user) ->
-    console.log user
     res.render "users/user.ect",
       title: user.name
       user: user

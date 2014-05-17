@@ -23,7 +23,6 @@ Schema.statics = createFile: (uid, path, modId, v, cb) ->
   if typeof v is "string"
     self.findOne {name: v, mod: modId}, (err, version) ->
       if err then cb err
-      console.log version
       if version
         version.files.push
           path: path

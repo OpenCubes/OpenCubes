@@ -12,10 +12,10 @@
 		<span class="glyphicon glyphicon-star-empty"></span> Star this mod <span class="badge"> <%- @mod.vote_count or 0 %> </span>
       </a>
     <% end %>
-    <a href="<%- @mod.slug %>/download" class="item" data-no-instant>
-		<span class="download icon"></span> Download this mod 
+    <a href="/mods/<%- @mod.slug %>/download" class="item" data-no-instant>
+		<span class="download icon"></span> Download this mod
 	</a>
-	
+
     <% if @mod.carted is true : %>
       <div class="cart item data-id="<%- @mod.id%>" onclick="dropCart('<%- @mod.id%>')"><span class="ok icon"></span> Remove</div>
       <% else :%>
@@ -23,12 +23,12 @@
         <span class="cart-btn cart-a cart-<%- @mod.id %>" data-icon="cartfill">Add to cart</span>
       </div>
   <% end %>
-    <a href="/mod/<%- @mod.slug %>/edit" data-no-instant class="item <%- if !@canEdit then 'need-login' %>" >
+    <a href="/mods/<%- @mod.slug %>/edit" data-no-instant class="item <%- if !@canEdit then 'need-login' %>" >
 	   <span class="glyphicon glyphicon-edit"></span>
         <% if @canEdit: %>
         Edit this mod
         <% else: %>
-        Signin to edit 
-        <%end%> 
+        Signin to edit
+        <%end%>
     </a>
 </div>

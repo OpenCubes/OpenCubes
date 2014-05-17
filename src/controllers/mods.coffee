@@ -44,7 +44,6 @@ exports.index = (req, res) ->
   if req.user then user = req.user._id else user = ""
   app.api.mods.list(user, options).then((mods, count) ->
     count = mods.totalCount
-    console.log count
     res.render "index.ect", utils.ectHelpers(req,
       title: "Mods - OpenCubes"
       mods: mods
@@ -65,12 +64,11 @@ exports.index = (req, res) ->
 
 exports.edit = (req, res) ->
   app.api.mods.load(req.getUserId(), req.params.id).then((container) ->
-    console.log container
     res.render "edit/" + (req.params.section or "general") + ".ect",
       mod: container.mod
       deps: container.deps
       title: "Editing " + container.mod.name
-      url: "/mod/" + container.mod.slug + "/edit"
+      url: "/mods/" + container.mod.slug + "/edit"
       versions: container.versions
   ).fail (err) ->
     errors.handleHttp err, req, res, "text"
@@ -102,7 +100,6 @@ uuid = require("node-uuid")
 fs = require("fs")
 
 exports.setLogo = (req, res) ->
-  console.log(req.files)
   file = req.files.file
   if(!file)
     res.send 401, "missing file"
@@ -125,7 +122,7 @@ exports.star = (req, res) ->
   return res.send(400, "Missing slug")  if not slug or slug is ""
   return res.send(401, "You are not logged in")  unless req.user
   app.api.mods.star(req.getUserId(), req.params.slug).then((mod)->
-    res.redirect "/mod/" + mod.slug
+    res.redirect "/mods/" + mod.slug
   ).fail (err)->
     errors.handleHttp err, req, res, "text"
 
@@ -141,11 +138,15 @@ exports.doUpload = (req, res) ->
     body: req.body.description
     author: req.user._id
     category: req.body.category or "misc"
-  app.api.mods.add(req.getUserId(), mod).then((s)->
-    res.redirect "/"
+  app.api.mods.add(req.getUserId(), mod).then((mod)->
+    if req.get("X-Triggered-By") is "Script"
+      res.send 200,
+        status: "success"
+        redirectTo: "/mods/#{mod.slug}"
+    else
+      res.redirect "/"
   ).fail (err) ->
-    res.render "upload.ect",
-      hasError: true
+    errors.handleHttp err, req, res, "json"
 
 
 exports.cart = (req, res) ->
@@ -162,5 +163,3 @@ exports.cart = (req, res) ->
 exports.search = (req, res) ->
   res.render "mods/search.ect"
   return
-
-

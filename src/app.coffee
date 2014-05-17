@@ -75,6 +75,10 @@ app =
         req.getUserId = () ->
           if req.user then return req.user._id
           return ""
+        req.getIp = () ->
+          ip = (req.headers['x-forwarded-for'] or '').split(',')[0] or req.connection.remoteAddress
+          ip
+
         next()
         return
 

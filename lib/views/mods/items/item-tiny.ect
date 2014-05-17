@@ -1,0 +1,17 @@
+
+<%@tinyModItem = (mod, options={stars: false, author: true, labels: true}) -> %>
+<div class="item ui grid">
+  <img width="24" height="24" class="left floated ui" src="/assets/<%- mod.slug %>.png" alt="Logo">
+    <div class="content" style="margin-top: 0px;">
+      <a class="header mod-title" href="/mods/<%- mod.slug %>/" data-no-instant>
+        <%- mod.name %>
+      </a>
+      <small>
+        <% if options.author is true : %>by <%- mod.author.username %>
+        <%end%>
+        <% if options.labels : %> posted<%end%>
+        <abbr class="timeago" title="<%-mod.created.toISOString()%>">
+          </abbr> | <%- mod.vote_count or 0 %> stars</small>
+        </div>
+      </div>
+      <% end %>

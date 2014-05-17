@@ -1,0 +1,25 @@
+<% extend 'layout.ect' %>
+<div><h3><%- @user.username %></h3></div>
+
+<div class="ui two column divided grid">
+  <div class="column">
+    <h4><%- @user.username %>'s most popular mods</h4>
+      <div class="ui relaxed list">
+<% include 'mods/items/item-tiny.ect' %>
+		<% for mod in @user.popularMods : %>
+		<%- @tinyModItem(mod, {stars: true, author: false, labels: false}) %>
+    	<% end %>
+
+ </div>
+
+  </div>
+     <div class="column">
+    <h4><%- @user.username %>'s latest mods</h4>
+      <div class="ui relaxed list">
+        <% for mod in @user.lastestMods : %>
+        <%- @tinyModItem(mod, {stars: true, author: false, labels: false}) %>
+          <% end %>
+           </div>
+ </div>
+</div>
+<% end %> <% block 'navbar': %> <% include 'navs/main-nav.ect' %> <% end %>

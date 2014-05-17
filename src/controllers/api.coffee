@@ -6,7 +6,6 @@ exports.ajaxLogin = (req, res) ->
 
 exports.glyphicons = (req, res) ->
   data = require("../../public/api/glyphicons.json")
-  console.log data
   res.render "utils/glyphicons.ect",
     list: data
 
@@ -64,7 +63,7 @@ exports.view = (req, res) ->
   if req.user then user = req.user._id else user = ""
   app.api.mods.view(user, req.params.id, req.cookies.cart_id,  req.user, true).then((mod) ->
     mod.urls =
-      web: "/mod/"+mod.slug
+      web: "/mods/"+mod.slug
       logo: "/assets/"+mod.slug+".png"
     return res.send mod
   ).fail (err) ->
@@ -97,7 +96,7 @@ exports.list = (req, res) ->
     for mod in mods
       mod.urls =
         api: "/api/mods/view/"+mod.slug+".json"
-        web: "/mod/"+mod.slug
+        web: "/mods/"+mod.slug
         logo: "/assets/"+mod.slug+".png"
     res.send
       status: "success"

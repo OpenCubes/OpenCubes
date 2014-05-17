@@ -1,4 +1,10 @@
 *
 !.gitignore
-!temp
-!uploads
+!temp/
+!uploads/
+!views/*
+!views/**
+!views/
+!less/
+!less/*
+!less/**

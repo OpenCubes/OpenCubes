@@ -1,0 +1,22 @@
+<% @smallModItem = (mod, options={stars: false}) -> %>
+  <div class="item ui grid">
+    <div class="right floated ui tiny basic labeled buttons">
+      <div class="ui button"><i class="download icon"></i> Download</div>
+      <% if mod.carted is true : %>
+        <div class="cart ui button btn" data-id="<%- mod.id%>" onclick="drop('<%- mod.id%>')"><span class="cart-btn cart-a cart-<%-mod.id %>"><i class="checkmark icon"></i> Remove</span></div>
+      <% else : %>
+        <div class="cart ui button btn" data-id="<%- mod.id%>" onclick="pushToCart('<%- mod.id%>')"><span class="cart-btn cart-a cart-<%-mod.id %>"><i class="cart icon"></i> Add mod</span></div>
+      <% end %>
+    </div>
+    <img width="32" height="32" class="left floated ui" src="/assets/<%- mod.slug %>.png" alt="Logo">
+    <div class="content" style="margin-top: 0px;">
+      <a class="header mod-title" href="/mods/<%- mod.slug %>/" data-no-instant><%- mod.name %></a> <small> by <%- mod.author.username %></small>
+      <div class="description">
+        <small>updated <abbr class="timeago" title="<%-mod.lastUpdated.toISOString()%>"></abbr> | created
+        <abbr class="timeago" title="<%-mod.created.toISOString()%>"></abbr> |
+        <%-mod.vote_count or 0%> stars
+        </small>
+      </div>
+    </div>
+  </div>
+  <% end %>

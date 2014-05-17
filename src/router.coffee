@@ -5,19 +5,19 @@ module.exports = (app) ->
   app.server.get "/(page/:page)?", app.controllers.mods.index
 
   app.server.get "/search", app.controllers.mods.search
-  app.server.get "/mod/:id", app.controllers.mods.view
+  app.server.get "/mods/:id", app.controllers.mods.view
 
   app.server.get "/assets/:slug.png", app.controllers.mods.getLogo
 
-  app.server.get "/mod/:id/edit/(:section)?", auth.requiresLogin, app.controllers.mods.edit
+  app.server.get "/mods/:id/edit/(:section)?", auth.requiresLogin, app.controllers.mods.edit
 
-  app.server.post "/mod/:id/edit/files", auth.requiresLogin, app.controllers.files.upload
-  app.server.post "/mod/:id/edit/(:section)?/post", auth.requiresLogin, app.controllers.mods.doEdit
+  app.server.post "/mods/:id/edit/files", auth.requiresLogin, app.controllers.files.upload
+  app.server.post "/mods/:id/edit/(:section)?/post", auth.requiresLogin, app.controllers.mods.doEdit
 
-  app.server.post "/mod/:slug/edit/dependencies", auth.requiresLogin, app.bodyParser, app.controllers.deps.add
-  app.server.post "/mod/:id/edit/logo/upload", app.bodyParser, app.controllers.mods.setLogo
+  app.server.post "/mods/:slug/edit/dependencies", auth.requiresLogin, app.bodyParser, app.controllers.deps.add
+  app.server.post "/mods/:id/edit/logo/upload", app.bodyParser, app.controllers.mods.setLogo
 
-  app.server.get "/mod/:id/download", app.controllers.files.download
+  app.server.get "/mods/:id/download", app.controllers.files.download
   app.server.get "/file/:uid/delete", auth.requiresLogin, app.controllers.files.remove
 
   app.server.get "/star/:slug", auth.requiresLogin, app.controllers.mods.star
@@ -46,7 +46,7 @@ module.exports = (app) ->
 
   app.server.get "/cart/:id", app.controllers.mods.cart
   app.server.get "/signup", app.controllers.users.signup
-  app.server.get "/user/:name", app.controllers.users.show
+  app.server.get "/users/:name", app.controllers.users.show
   app.server.post "/signup", app.controllers.users.create
   app.server.post "/upload", auth.requiresLogin, app.controllers.mods.doUpload
   app.server.get "/logout", (req, res) ->

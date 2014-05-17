@@ -15,7 +15,6 @@ exports.getHelp = (req, res) ->
   return
 
 exports.raw = (req, res) ->
-  console.log req.params.section
   section = (req.params.section or "welcome")
   file = __dirname.getParent() + "/views/help/" + section + ".md"
 

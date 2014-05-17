@@ -1,3 +1,4 @@
-[submodule "server/less/lesshat"]
-	path = src/less/lesshat
-	url = https://github.com/csshat/lesshat.git
+
+[submodule "lib/less/lesshat"]
+	path = lib/less/lesshat
+	url = https://github.com/madebysource/lesshat.git

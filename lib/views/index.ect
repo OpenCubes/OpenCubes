@@ -1,0 +1,23 @@
+
+
+<% extend 'layout.ect' %>
+<% include 'utils/flash.ect' %>
+<% if @mods?.length : %>
+<div class="ui very relaxed list">
+<% include 'mods/items/item-med.ect' %>
+		<% for mod in @mods : %>
+		<%- @mediumModItem(mod) %>
+    	<% end %>
+ </div>
+<%- @pagination %>
+<% else : %>
+	<p>No mods yet in this category.</p>
+<% end %>
+
+
+<% block 'navbar' : %>
+<% include 'navs/main-nav.ect'%>
+<% end %>
+<% block 'sidebar' : %>
+<% include 'navs/main-sb.ect'%>
+<% end %>

@@ -50,7 +50,7 @@ exports.view = ((userid, slug, cart, user, parse ,callback) ->
       $user: user
       $populate: true
     , (err, mod) ->
-      if not mod
+      if not mod or mod.length is 0
         return callback(error.throwError("Not found", "NOT_FOUND"))
       if err
         return callback(error.throwError(err, "INVALID_PARAMS"))
@@ -177,7 +177,6 @@ exports.star = ((userid, slug, callback) ->
           slug: slug
         , (err, doc) ->
           return callback err  if err
-          console.log "hu3.5"
           if !mod
             try
               doc.stargazers.push
@@ -242,8 +241,3 @@ exports.addFile = ((userid, slug, uid, path, versionName, callback) ->
         errors.handleResult err, doc, callback
 
 ).toPromise @
-
-
-
-
-

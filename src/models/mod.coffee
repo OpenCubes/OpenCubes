@@ -16,8 +16,8 @@ ModSchema = mongoose.Schema(
   body: String
   logo: String
   dl_id: String
-  creation_date: Date
-  lmodified_date: Date
+  created: Date
+  lastUpdated: Date
   category: String
   vote_count: Number
   stargazers: [
@@ -59,10 +59,10 @@ ModSchema.path("name").validate (value) ->
 ModSchema.path("summary").validate (value) ->
   if not value or value is ""
     return false
-  if value.length < 15 or value.length > 200
+  if value.length < 7 or value.length > 200
     return false
   return true
-, "Name should be between 15 and 200 characters long"
+, "Name should be between 7 and 200 characters long"
 ModSchema.path("body").validate (value) ->
   if not value or value is ""
     return false
@@ -75,12 +75,10 @@ escapeHtml = (str) ->
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace />/g, "&gt;"
 
 ModSchema.pre "save", (next) ->
-  console.log "PRE"
   doc = @
   doc.name = escapeHtml(doc.name)
   doc.summary = escapeHtml(doc.summary)
   doc.body = escapeHtml(doc.body)
-  console.log(doc)
   return next()
 
 
@@ -168,7 +166,7 @@ ModSchema.statics =
       query.populate "comments.author", "username"
       query.populate "author", "username"
     query.exec (err, mod) ->
-      if cartId
+      if cartId and mod
         return Cart.findById(cartId, (err, cart)->
           if !err and cart
             mod.fillCart cart

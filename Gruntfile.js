@@ -35,6 +35,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-less');
 
     grunt.registerTask('build', ['coffee', 'copy', 'less']);
+    grunt.registerTask('templates', ['copy']);
 
 
 

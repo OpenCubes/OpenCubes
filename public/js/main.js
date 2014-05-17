@@ -157,7 +157,12 @@ $(document).on('submit', 'form#upload-mod', function (e) {
     method: 'post',
     data: $el.serialize(),
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-Triggered-By': 'Script'
+    },
+    success: function(data) {
+      console.log(data);
+      window.location.href = data.redirectTo;
     },
     error: function (data) {
       data = data.responseJSON;
@@ -171,7 +176,7 @@ $(document).on('submit', 'form#upload-mod', function (e) {
           $in.parent().parent().addClass('error');
           $in.after('<div class="ui red pointing above ui label">' + data.errors.name.message + '</div>');
           break;
-        
+
         case 'summary':
           $in = $('[id=summary]');
           $in.parent().parent().addClass('error');
