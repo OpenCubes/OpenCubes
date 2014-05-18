@@ -3,7 +3,8 @@ validator = require "validator"
 canThis = perms.canThis
 mongoose = require "mongoose"
 errors = error = require "../error"
-
+_  = require("lodash")
+parse = require "../parser"
 
 ###
 Lists the mods and pass them to the then with a `totalCount` property that counts the mods
@@ -30,50 +31,74 @@ exports.list = ((userid, options, callback) ->
 
 
 ###
-Return a mod
+Return a mod description, title and quick informations
 @param userid the current logged user id or ""
 @param slug the slug of the mod
-@param cart the current cart id or null
-@param user the current user for edition ({})
+@param options additional options :
+{
+  cart: cart, // cart._id or null
+  loggedUser: user,  // user for edtion
+  doParse: true // should we parse the mod
+}
 @permission mod:browse
 ###
-exports.view = ((userid, slug, cart, user, parse ,callback) ->
+exports.lookup = ((userid, slug, options, cb) ->
+  if typeof options is callback
+    callback = options
+    options = {}
+  options = _.assign options,{cart: undefined, loggedUser: undefined, doParse: true}
+  cartId = options.cart
   canThis(userid, "mod", "browse").then (can)->
-    if can is false
-      callback(error.throwError("Forbidden", "UNAUTHORIZED"))
-    # Validate options
-
-    Mod = mongoose.model "Mod"
-    Mod.load
-      slug: slug
-      $cart_id: cart
-      $user: user
-      $populate: true
-    , (err, mod) ->
-      if not mod or mod.length is 0
-        return callback(error.throwError("Not found", "NOT_FOUND"))
-      if err
-        return callback(error.throwError(err, "INVALID_PARAMS"))
-      mod = mod.toObject()
-      if parse is true then mod.htmlbody = require("../parser")(mod.body)
-      Version = mongoose.model "Version"
-      Version.find {mod: mod._id}, (err, versions) ->
-        if err or not mod
-          return handleResult(err, mod, callback)
-        output = {}
-        for version in versions
-          output[version.name] = output[version.name] or {}
-          for file in version.files
-            output[version.name][file.path] = file.uid
-        mod.versions = output
-        return callback mod
-
-    return
-
-    return
+    try
+      if can is false
+        cb(error.throwError("Forbidden", "UNAUTHORIZED"))
+      # Validate options
+      Mod = mongoose.model "Mod"
+      query = Mod.findOne({slug: slug})
+      query.select("name slug body description summary comments logo")
+      query.populate("author", "name")
+      query.populate("comments.author", "username")
+      query.lean()
+      query.exec((err, mod) ->
+        if cartId and mod
+          return Cart.findById(cartId, (err, cart)->
+            if !err and cart
+              mod.fillCart cart
+            if user
+              mod.fillStargazer userid
+            cb(err or mod)
+          )
+        mod.htmlbody = parse mod.body
+        cb err or mod
+      )
+    catch err
+      console.log err.stack.red
+      cb err
 ).toPromise @
 
-
+###
+Return a mod description, title and quick informations
+@param userid the current logged user id or ""
+@param slug the slug of the mod
+@param options additional options :
+{
+  cart: cart, // cart._id or null
+  loggedUser: user,  // user for edtion
+  doParse: true // should we parse the mod
+}
+@permission mod:browse
+###
+exports.getLogo = ((userid, slug, options, callback) ->
+  Mod = mongoose.model "Mod"
+  query = Mod.findOne({slug: slug})
+  query.select("logo")
+  query.lean()
+  query.exec().then((mod) ->
+    callback mod
+  , (err)->
+    callback err
+  )
+).toPromise @
 ###
 Return a mod fully loaded with deps and versions
 @param userid the current logged user id or ""

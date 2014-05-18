@@ -13,7 +13,8 @@ Route for viewing mod
 ###
 exports.view = (req, res) ->
   if req.user then user = req.user._id else user = ""
-  app.api.mods.view(user, req.params.id, req.cookies.cart_id,  req.user, true).then((mod) ->
+  app.api.mods.lookup(user, req.params.id, {cart: req.cookies.cart_id, loggedUser:  req.user, parse: true}).then((mod) ->
+    console.log mod
     res.render "view.ect",
       mod: mod
       canEdit: (if req.user then if mod.author is req.user.id or req.user.role is "admin" then true else false)
@@ -84,7 +85,7 @@ exports.doEdit = (req, res) ->
 exports.getLogo = (req, res) ->
   if !req.params.slug
     return res.send 403, "no slug"
-  app.api.mods.view(req.getUserId(), req.params.slug, undefined, undefined, false).then((mod) ->
+  app.api.mods.getLogo(req.getUserId(), req.params.slug, false).then((mod) ->
     if(!mod.logo)
       return send(req, __dirname.getParent().getParent() + "/public/images/puzzle.png")
         .pipe(res)
