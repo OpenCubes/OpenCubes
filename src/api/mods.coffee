@@ -5,7 +5,7 @@ mongoose = require "mongoose"
 errors = error = require "../error"
 _  = require("lodash")
 parse = require "../parser"
-Q = require "Q"
+Q = require "q"
 
 ###
 Lists the mods and pass them to the then with a `totalCount` property that counts the mods
