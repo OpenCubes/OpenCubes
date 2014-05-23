@@ -33,3 +33,21 @@ exports.add = ((userid, slug, dep, version, callback) ->
 
     return
 ).toPromise @
+
+###
+Get the deps of a mod
+@param userid the current logged user
+@param ownerid
+@param id the mod _id
+@permission mod:edit
+###
+exports.get = ((userid, id, ownerid,  callback) ->
+  canThis(userid, "mod", "edit").then (can)->
+    # Validate options
+    Mod = mongoose.model "Mod"
+    Version = mongoose.model "Version"
+    if can is false and ownerid.equals(userid) isnt true
+      return callback error.throwError("Unathorized", "UNAUTHORIZED")
+    Version.find {"slaves.mod": id}, (err, docs) ->
+      callback err or docs
+).toPromise @

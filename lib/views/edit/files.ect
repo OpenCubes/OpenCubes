@@ -9,32 +9,32 @@
         </tr>
     </thead>
     <tbody>
-        <% for version of @versions: %>
+        <% for version in @versions: %>
         <tr>
             <td colspan="4">
                 <strong>
-                <%- version %>
+                <%- version.name %>
                 </strong>
             </td>
         </tr>
-        <% for file of @versions[version]: %>
+        <% for file in version.files: %>
         <tr>
             <td>
                 <span class="glyphicon glyphicon-file"></span>
             </td>
             <td>
-                <%- file %>
+                <%- file.path %>
             </td>
             <td>
-                <small><%- @versions[version][file] %></small>
+                <small><%- file.uid %></small>
             </td>
             <td>
-                <a href="/file/<%- @versions[version][file] %>/delete" data-no-instant class="btn btn-default">
-                <span class="glyphicon glyphicon-trash">
+                <a href="/file/<%- file.uid%>/delete" data-no-instant class="btn btn-default">
+                <span class="trash icon">
                 </span></a>
             </td>
             <td>
-                <a href="/file/<%- @versions[version][file] %>" class="glyphicon glyphicon-download btn"></a>
+                <a href="/file/<%- file.uid %>" class="download icon"></a>
             </td>
         </tr>
         <%end%>
@@ -47,11 +47,11 @@
                     <i class="add icon"></i>
                     <span class="text">Add a new file</span>
                     <div class="menu">
-                        <% for version of @versions: %>
-                            <div class="item version-selector"><%- version %></div>
+                        <% for version in @versions: %>
+                            <div class="item version-selector"><%- version.name %></div>
                         <% end %>
                         <div class="item add-version">Add a new version...</div>
-                        
+
                     </div>
                 </div>
             </th>

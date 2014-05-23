@@ -25,6 +25,7 @@ exports.view = (req, res) ->
 
 # lists the mods
 exports.index = (req, res) ->
+  console.log "index"
   page = ((if req.params.page > 0 then req.param("page") else 1)) - 1
   sort = (req.param("sort")) or "date"
   filter = (req.param("filter")) or "all"
@@ -64,13 +65,21 @@ exports.index = (req, res) ->
   return
 
 exports.edit = (req, res) ->
-  app.api.mods.load(req.getUserId(), req.params.id).then((container) ->
+  mod = deps = versions = undefined
+  app.api.mods.lookup(req.getUserId(), req.params.id, {}).then((doc) ->
+    mod = doc
+    return app.api.mods.getVersions(mod.slug)
+  ).then((docs) ->
+    versions = docs
+    return app.api.deps.get req.getUserId(), mod._id, mod.author._id
+  ).then((docs) ->
+    deps = docs
     res.render "edit/" + (req.params.section or "general") + ".ect",
-      mod: container.mod
-      deps: container.deps
-      title: "Editing " + container.mod.name
-      url: "/mods/" + container.mod.slug + "/edit"
-      versions: container.versions
+      mod: mod
+      deps: deps
+      title: "Editing " + mod.name
+      url: "/mods/" + mod.slug + "/edit"
+      versions: versions
   ).fail (err) ->
     errors.handleHttp err, req, res, "text"
 

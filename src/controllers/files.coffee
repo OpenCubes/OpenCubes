@@ -1,68 +1,42 @@
-copyFile = (source, target, cb) ->
-  done = (err) ->
-    unless cbCalled
-      cb err
-      cbCalled = true
-    return
-  cbCalled = false
-  rd = fs.createReadStream(source)
-  rd.on "error", (err) ->
-    done err
-    return
 
-  wr = fs.createWriteStream(target)
-  wr.on "error", (err) ->
-    done err
-    return
-
-  wr.on "close", (ex) ->
-    done()
-    return
-
-  rd.pipe wr
-  return
-
-formidable = require("formidable")
 util = require("util")
-fs = require("fs")
+fs = require("q-io/fs")
 archiver = require("archiver")
 uuid = require("node-uuid")
 Mod = require("mongoose").model("Mod")
 errors = require "../error"
 
 module.exports.upload = (req, res) ->
-  form = new formidable.IncomingForm()
-  form.uploadDir = __dirname.getParent() + "/temp/"
-  form.parse req, (err, fields, files) ->
-    console.log(err) if err
-    uid = uuid.v4()
-    newfile = __dirname.getParent() + "/uploads/" + uid
-    console.log "field:", fields
-    versionName = fields.version
-    path = fields.path
-    if not path or not versionName or path is "" or versionName is ""
-      console.log "missing"
-      req.flash "error", "There is something missing..."
-      return res.redirect(req.url)
-    copyFile files.file.path, newfile, (err) ->
-      if err
-       console.log(err)
-       return res.send 500, {error: "error"}
-      fs.unlink files.file.path, (err) ->
-        if err
-          console.log(err)
-          return res.send 500, {error: "error"}
-        slug = req.params.id
-        console.log req.params
-        app.api.mods.addFile(req.getUserId(), slug, uid, path, versionName).then((doc) ->
-          return res.redirect(req.url)
-        ).fail (err) ->
-          console.log(err)
-          return res.send 500, {error: "error"}
+  # We compute a new uuid for the file
+  uid = uuid.v4()
+  # Get the params
+  newfile = __dirname.getParent() + "/uploads/" + uid
+  versionName = req.body.version
+  path = req.body.path
+  file = req.files.file
+  slug = req.params.id
+  # Test them
+  vRegex = /^(\d\.){2}\d#(\d\.){2}\d(-|\.|_)?(stable|alpha|beta|)$/
+  # from https://stackoverflow.com/questions/11382919/relative-path-regular-expression
+  # pRegex =  new RegExp("^[a-z0-9]([a-z0-9\\-]{0,}[a-z0-9]){0,1}(/[a-z0-9]([a-z0-9\\-]{0,}[a-z0-9]){0,1}){0,}(/[a-z0-9]([a-z0-9\\-\\.]{0,}[a-z0-9]){0,1}){0,1}$", "g");
 
-      return
+  if vRegex.test(versionName) isnt true
+    return callback errors.throwError("Version or path is invalid", "INVALID_DATA")
 
-    return
+  handleErr = (err) ->
+    console.log(err)
+    return res.send 500, {error: "error"}
+
+
+  # Do the job
+  console.log "renaming"
+  fs.rename(file.path, newfile).then(() ->
+    console.log "renamed"
+    return app.api.mods.addFile(req.getUserId(), slug, uid, path, versionName)
+  , handleErr).then((doc) ->
+    console.log "added"
+    res.send 200
+  , handleErr).fail handleErr
 
   return
 
@@ -78,8 +52,8 @@ exports.download = (req, res) ->
       res.render "mods/download.ect",
         versions: mod.versions
     else
-      console.log "MOD:", mod
       version = version.replace("/", "#")
+      app.api.push.stats.mod.download req.getIp(), mod.mod._id, version
       files = mod.versions[version]
       id = uuid.v1()
       output = fs.createWriteStream(__dirname.getParent() + "/temp/" + id)
@@ -87,7 +61,6 @@ exports.download = (req, res) ->
       archive.on "error", (err) ->
         console.log err
         return
-
       res.set "Content-Disposition": "attachment; filename=\"" + mod.mod.name + " v" + version + ".zip\""
       archive.pipe res
       for file of files
@@ -109,4 +82,3 @@ exports.download = (req, res) ->
 
   return
 exports.remove = (req, res) ->
-

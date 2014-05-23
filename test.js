@@ -18,22 +18,7 @@ mongoose.connect(config.db_uri, config.db_opt, function (err) {
     console.log(("  Info - Bootstraping took " + (new Date().getTime() - timer2 + "").bold + " ms").cyan);
     Mod = mongoose.model("Mod");
     User = mongoose.model("User");
-    Mod.aggregate([{
-        $group: {
-            _id: "$author",
-            num_mods: {
-                $sum: 1
-            }
-        }
-    }], function (err, doc) {
-            console.log(err || doc);
-        User.populate(doc, {
-            path: "_id",
-            model: "User",
-            select: "username"
-        }, function (err, doc) {
-
-            console.log(err || doc);
-        });
-    })
+    Mod.find().count().exec(function(err, doc) {
+        console.log(err || doc)
+    });
 });

@@ -55,7 +55,7 @@ exports.lookup = ((userid, slug, options, cb) ->
       # Validate options
       Mod = mongoose.model "Mod"
       query = Mod.findOne({slug: slug})
-      query.select("name slug body description summary comments logo")
+      query.select("name slug body description summary comments logo created updatedAt author")
       query.populate("author", "name")
       query.populate("comments.author", "username")
       query.lean()
@@ -99,6 +99,25 @@ exports.getLogo = ((userid, slug, options, callback) ->
     callback err
   )
 ).toPromise @
+
+uuid = require("node-uuid")
+fs = require("fs")
+
+exports.setLogo = (req, res) ->
+  file = req.files.file
+  if(!file)
+    res.send 401, "missing file"
+  uid = uuid.v4() + ".png"
+  newfile = __dirname.getParent() + "/uploads/" + uid
+  fs.rename file.path, newfile, (err) ->
+    if err
+      console.log err
+      return res.send 500, "something went wrong while moving"
+    app.api.mods.edit(req.getUserId(), req.params.id, "logo", uid).then((status) ->
+      res.send 200, "Saved!"
+    ).fail (err) ->
+      errors.handleHttp err, req, res, "text"
+
 ###
 Return a mod fully loaded with deps and versions
 @param userid the current logged user id or ""
@@ -255,14 +274,65 @@ exports.addFile = ((userid, slug, uid, path, versionName, callback) ->
   canThis(userid, "mod", "edit").then (can)->
     # Validate options
     Mod = mongoose.model "Mod"
-    Mod.load
+    q = Mod.findOne
       slug: slug
-    , (err, mod) ->
+    q.select("name slug author")
+    q.exec (err, mod) ->
       if can is false and mod.author.equals(userid) isnt true
         callback(error.throwError("Forbidden", "UNAUTHORIZED"))
       if err or not mod
         callback err
       mod.addFile uid, path, versionName, (err, doc) ->
         errors.handleResult err, doc, callback
+
+).toPromise @
+
+###
+Get the file of a mod
+@param userid the current logged user id
+@param slug the slug of the mod
+@param uid the uid (name) of the files loacted in uploads
+@param path the target path
+@param versionName the version of the mod
+@permission mod:edit
+###
+
+exports.getFiles = ((slug, version, callback) ->
+  # Validate options
+  Mod = mongoose.model "Mod"
+  Version = mongoose.model "Version"
+  query = Mod.findOne({slug: slug})
+  query = Mod.select("name slug")
+  query.exec().then((mod) ->
+    return Version.findOne({mod: mod._id, version: version}).exec()
+  ).then((version) ->
+    callback version.files.toObject()
+  )
+
+).toPromise @
+###
+Get the versions of the mod
+@param userid the current logged user id
+@param slug the slug of the mod
+@param uid the uid (name) of the files loacted in uploads
+@param path the target path
+@param versionName the version of the mod
+@permission mod:edit
+###
+
+exports.getVersions = ((slug, callback) ->
+  # Validate options
+  Mod = mongoose.model "Mod"
+  Version = mongoose.model "Version"
+  query = Mod.findOne({slug: slug})
+  query.select("name slug")
+  query.exec().then((mod) ->
+    return Version.find({mod: mod._id}).exec()
+  ).then((versions) ->
+    data = []
+    i = 0
+    data[i++] = version.toObject() for version in versions when version isnt undefined
+    callback data
+  )
 
 ).toPromise @

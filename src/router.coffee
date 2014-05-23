@@ -11,7 +11,7 @@ module.exports = (app) ->
 
   app.server.get "/mods/:id/edit/(:section)?", auth.requiresLogin, app.controllers.mods.edit
 
-  app.server.post "/mods/:id/edit/files", auth.requiresLogin, app.controllers.files.upload
+  app.server.post "/mods/:id/edit/files", auth.requiresLogin, app.bodyParser, app.controllers.files.upload
   app.server.post "/mods/:id/edit/(:section)?/post", auth.requiresLogin, app.controllers.mods.doEdit
 
   app.server.post "/mods/:slug/edit/dependencies", auth.requiresLogin, app.bodyParser, app.controllers.deps.add

@@ -20,6 +20,7 @@ $(document).on("eldarion-ajax:begin", function (evt, $el) {
   $el.addClass("loading");
 });
 $(document).on("eldarion-ajax:success", function (evt, $el, data) {
+  alert("hi")
   $.reloadSection($el.attr("data-target"));
 });
 $.reloadSection = function (id) {
