@@ -5,6 +5,7 @@ mongoose = require "mongoose"
 errors = error = require "../error"
 _  = require("lodash")
 parse = require "../parser"
+Q = require "Q"
 
 ###
 Lists the mods and pass them to the then with a `totalCount` property that counts the mods
@@ -42,8 +43,9 @@ Return a mod description, title and quick informations
 }
 @permission mod:browse
 ###
-exports.lookup = ((userid, slug, options, cb) ->
-  if typeof options is callback
+exports.lookup = (userid, slug, options) ->
+  deferred = Q.defer();
+  if not options
     callback = options
     options = {}
   options = _.assign options,{cart: undefined, loggedUser: undefined, doParse: true}
@@ -66,15 +68,19 @@ exports.lookup = ((userid, slug, options, cb) ->
               mod.fillCart cart
             if user
               mod.fillStargazer userid
-            cb(err or mod)
+            if err
+              return deferred.reject err
+            deferred.resolve mod
           )
         mod.htmlbody = parse mod.body
-        cb err or mod
+        if err
+          return deferred.reject err
+        deferred.resolve mod
       )
     catch err
       console.log err.stack.red
-      cb err
-).toPromise @
+      return deferred.reject err
+
 
 ###
 Return a mod description, title and quick informations
@@ -301,14 +307,17 @@ exports.getFiles = ((slug, version, callback) ->
   # Validate options
   Mod = mongoose.model "Mod"
   Version = mongoose.model "Version"
-  query = Mod.findOne({slug: slug})
-  query = Mod.select("name slug")
-  query.exec().then((mod) ->
-    return Version.findOne({mod: mod._id, version: version}).exec()
-  ).then((version) ->
-    callback version.files.toObject()
-  )
 
+  query = Mod.findOne({slug: slug})
+  query.select("name slug")
+  query.exec().then((mod) ->
+    console.log mod
+    return Version.findOne({mod: mod._id, name: version}).exec()
+  ).then((version) ->
+    callback version.files
+  , (err) ->
+    errors.handleResult err, callback
+  )
 ).toPromise @
 ###
 Get the versions of the mod
@@ -324,6 +333,7 @@ exports.getVersions = ((slug, callback) ->
   # Validate options
   Mod = mongoose.model "Mod"
   Version = mongoose.model "Version"
+
   query = Mod.findOne({slug: slug})
   query.select("name slug")
   query.exec().then((mod) ->

@@ -1,6 +1,7 @@
 
 util = require("util")
-fs = require("q-io/fs")
+qfs = require("q-io/fs")
+fs = require("fs")
 archiver = require("archiver")
 uuid = require("node-uuid")
 Mod = require("mongoose").model("Mod")
@@ -30,7 +31,7 @@ module.exports.upload = (req, res) ->
 
   # Do the job
   console.log "renaming"
-  fs.rename(file.path, newfile).then(() ->
+  qfs.rename(file.path, newfile).then(() ->
     console.log "renamed"
     return app.api.mods.addFile(req.getUserId(), slug, uid, path, versionName)
   , handleErr).then((doc) ->
@@ -43,42 +44,50 @@ module.exports.upload = (req, res) ->
 exports.doDelete = (req, res) ->
 
 exports.download = (req, res) ->
-  app.api.mods.load(req.getUserId(), req.params.id).fail((err) ->
-    res.reason = "Mod not found"
-    return res.send("Not found")
-  ).then (mod) ->
-    version = req.query.v
-    unless version
+  unless req.query.v
+    return app.api.mods.getVersions(req.params.id).then((versions) ->
       res.render "mods/download.ect",
-        versions: mod.versions
-    else
-      version = version.replace("/", "#")
-      app.api.push.stats.mod.download req.getIp(), mod.mod._id, version
-      files = mod.versions[version]
-      id = uuid.v1()
-      output = fs.createWriteStream(__dirname.getParent() + "/temp/" + id)
-      archive = archiver("zip")
-      archive.on "error", (err) ->
-        console.log err
-        return
-      res.set "Content-Disposition": "attachment; filename=\"" + mod.mod.name + " v" + version + ".zip\""
-      archive.pipe res
-      for file of files
-        if files.hasOwnProperty(file)
-          archive.append fs.createReadStream(__dirname.getParent() + "/uploads/" + files[file]),
-            name: file
+        versions: versions
+    ).fail (err) ->
+      res.send err
 
-          console.log "Adding file " + files[file] + " to " + file
-      for dep of mod.deps
-        files = mod.deps[dep].files.toObject()
-        for file of files
-          if files.hasOwnProperty(file) and file
-            archive.append fs.createReadStream(__dirname.getParent() + "/uploads/" + files[file].uid),
-              name: files[file].path
-            console.log "Adding file " + files[file].uid + " to " +  files[file].path
-      archive.finalize (err, bytes) ->
-        errors.handleHttp err, req, res, "json" if err
-        console.log bytes + " total bytes"
+  version = req.query.v.replace("/", "#")
+  mod = undefined
+  app.api.mods.lookup(req.getUserId(), req.params.id).then((doc) ->
+    mod = doc
+    return app.api.mods.getFiles(req.params.id, version)
+
+  ).then((files) ->
+    app.api.push.stats.mod.download req.getIp(), mod._id, version
+
+    # we create an uid for the file (temp) and then the output
+    id = uuid.v4()
+
+    output = fs.createWriteStream(__dirname.getParent() + "/temp/" + id)
+    archive = archiver("zip")
+    archive.on "error", (err) ->
+      console.log err
+      return
+
+    # Set the file name for the client
+    res.set "Content-Disposition": "attachment; filename=\"" + mod.name + " v" + version + ".zip\""
+
+    # and pipe it
+    archive.pipe res
+
+    # let's add the files
+    for file in files
+      archive.append fs.createReadStream(__dirname.getParent() + "/uploads/" + file.uid),
+        name: file.path
+
+    # end the archive
+    archive.finalize (err, bytes) ->
+      errors.handleHttp err, req, res, "json" if err
+      console.log bytes + " total bytes"
+
+
+  ).fail (err) ->
+    errors.handleHttp err, req, res
 
   return
 exports.remove = (req, res) ->
