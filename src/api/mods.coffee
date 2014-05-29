@@ -44,7 +44,7 @@ Return a mod description, title and quick informations
 @permission mod:browse
 ###
 exports.lookup = (userid, slug, options) ->
-  deferred = Q.defer();
+  deferred = Q.defer()
   if not options
     callback = options
     options = {}

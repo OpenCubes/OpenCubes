@@ -43,7 +43,6 @@ describe("mods", function () {
                 author: userid
             }).then(function (status) {
                 expect(status).not.toBe(undefined);
-                console.log('add');
                 done();
             }).fail(function (err) {
                 console.log(err);

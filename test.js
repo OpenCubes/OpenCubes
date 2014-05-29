@@ -1,24 +1,18 @@
+/*
 config = config = require("./lib/config");
-mongoose = require("mongoose");
 require("colors");
 fs = require("fs");
 require("./lib/utils")
-mongoose.connect(config.db_uri, config.db_opt, function (err) {
-    var api_path, controllers_path, ectRenderer, httpServer, models_path, server, timer2;
-    if (err) {
-        return console.log("  Error - Can't connect to mongodb".red);
-    }
-    timer2 = new Date().getTime();
-    models_path = __dirname + "/lib/models";
-    fs.readdirSync(models_path).forEach(function (file) {
-        if (~file.indexOf(".js")) {
-            return require(models_path + "/" + file);
-        }
-    });
-    console.log(("  Info - Bootstraping took " + (new Date().getTime() - timer2 + "").bold + " ms").cyan);
-    Mod = mongoose.model("Mod");
-    User = mongoose.model("User");
-    Mod.find().count().exec(function(err, doc) {
-        console.log(err || doc)
-    });
-});
+mail = require("./lib/api/mail");
+handler = function (res) {
+    console.log(res);
+}
+var mailOptions = {
+    from: "Fred Foo ✔ <foo@blurdybloop.com>", // sender address
+    to: "vinz243@gmail.com", // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: "Hello world ✔", // plaintext body
+    html: "<b>Hello world ✔</b>" // html body
+}
+mail(mailOptions).then(handler, handler).fail(handler);
+*/

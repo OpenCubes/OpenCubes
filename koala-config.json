@@ -10,7 +10,7 @@
 
 	// Add the ignore rules that Koala will not search them.
 	// e.g. ["*.json", "*.txt", "test", "path/libs"]
-	"ignores": ["*.js", "*.js","lib/less/lesshat/", "node_modules/", "public/"],
+	"ignores": ["*.js", "*.js","lib/less/lesshat/*", "node_modules/", "public/"],
 
 	// Options of Compilers.
 	"options": {
