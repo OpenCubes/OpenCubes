@@ -47,6 +47,10 @@ module.exports = (app) ->
   app.server.get "/cart/:id", app.controllers.mods.cart
   app.server.get "/signup", app.controllers.users.signup
   app.server.get "/users/:name", app.controllers.users.show
+  app.server.get "/recover", app.controllers.users.requestPasswordRecovery
+  app.server.post "/recover", app.bodyParser, app.controllers.users.doRequestPasswordRecovery
+  app.server.get "/recover/:uid", app.controllers.users.recover
+  app.server.post "/recover/:uid", app.bodyParser, app.controllers.users.doRecover
   app.server.post "/signup", app.controllers.users.create
   app.server.post "/upload", auth.requiresLogin, app.controllers.mods.doUpload
   app.server.get "/logout", (req, res) ->

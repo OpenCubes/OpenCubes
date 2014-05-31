@@ -87,5 +87,17 @@ exports.show = (req, res) ->
   ).fail (err) ->
     errors.handleHttp err, req, res, "text"
 
+exports.requestPasswordRecovery = (req, res) ->
+  res.render("users/askRecover.ect")
 
+exports.doRequestPasswordRecovery = (req, res) ->
+  app.api.users.requestPasswordRecovery(req.body.email)
+  res.send 200, "We have sent you an email if #{req.body.email} exists"
 
+exports.recover = (req, res) ->
+  if app.api.users.recoverPassword(req.params.uid)
+    res.render("users/recover.ect")
+
+exports.doRecover = (req, res) ->
+  app.api.users.recoverPassword(req.params.uid, req.body.password)
+  res.send 200

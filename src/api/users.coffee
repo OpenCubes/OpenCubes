@@ -4,6 +4,10 @@ canThis = perms.canThis
 mongoose = require "mongoose"
 errors = error = require "../error"
 async = require "async"
+uuid = require "node-uuid"
+config = require "../config"
+mail = require "./mail"
+
 ###
 Returns an user
 @param userid the current logged user
@@ -55,3 +59,59 @@ exports.registerLocal = ((userid, data, callback) ->
       callback err or user
 
 ).toPromise @
+
+requests = {}
+exports.requestPasswordRecovery = (email) ->
+  uid = uuid.v1()
+  User = mongoose.model "User"
+
+  User.findOne {email: email}, (err, user) ->
+
+    # We register the uid
+    requests[uid] = user._id
+
+    # and we program autodestruction
+    id = setTimeout(() ->
+      delete requests[uid]
+    , 1000*60*40)
+
+    # The options
+    mailOptions =
+      from: "OpenCubes.org <no-reply@opencubes.org>",
+      to: email,
+      subject: "Account password recovery",
+
+    # We create the message body in markdown
+    body = """
+    ## Resetting password
+    Hi #{user.username},
+
+    You have requested a **password recovery**. If you didn't, please ignore this email.
+
+    To recover the password click on this link [on this link][1].
+
+    Sincerly,
+
+    The adminstrators
+
+
+    [1]: https://#{config.host}/recover/#{uid}
+    """
+
+    # The result handler
+    handler = (msg) ->
+      console.log msg
+
+    # Send it!
+    mail(mailOptions, body).then(handler, handler).fail(() ->
+      delete requests[uid]
+    )
+
+exports.recoverPassword = (uid, password, cb) ->
+  User = mongoose.model "User"
+  if not password and requests[uid]
+    return true
+  User.findOne {_id: requests[uid]}, (err, doc) ->
+    return cb err if err
+    doc.password = password
+    doc.save()
