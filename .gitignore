@@ -1,4 +1,4 @@
-lib-cov
+
 *.seed
 *.log
 *.csv
@@ -13,12 +13,9 @@ results
 
 npm-debug.log
 node_modules
-public/css/main.css
 /.idea/
-/lib/config.js
 /nodemon.json
 /OpenCubes.njsproj
 /.settings/
 /public/css/main.css.map
-/src/config.coffee
 config.json
