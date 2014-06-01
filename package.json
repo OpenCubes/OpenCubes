@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "install": "npm i -g grunt-cli && grunt build"
+    "install": "npm install -g grunt-cli && grunt build"
   },
   "dependencies": {
     "URIjs": "*",

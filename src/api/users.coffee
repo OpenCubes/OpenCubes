@@ -66,6 +66,8 @@ exports.requestPasswordRecovery = (email) ->
   User = mongoose.model "User"
 
   User.findOne {email: email}, (err, user) ->
+    if not user or err
+      return;
 
     # We register the uid
     requests[uid] = user._id
@@ -95,7 +97,7 @@ exports.requestPasswordRecovery = (email) ->
     The adminstrators
 
 
-    [1]: https://#{config.host}/recover/#{uid}
+    [1]: http://#{config.host}/recover/#{uid}
     """
 
     # The result handler

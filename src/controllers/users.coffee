@@ -92,12 +92,15 @@ exports.requestPasswordRecovery = (req, res) ->
 
 exports.doRequestPasswordRecovery = (req, res) ->
   app.api.users.requestPasswordRecovery(req.body.email)
-  res.send 200, "We have sent you an email if #{req.body.email} exists"
+  req.flash "success", "An email have been to #{req.body.email} if such user exists."
+  res.redirect "/"
 
 exports.recover = (req, res) ->
   if app.api.users.recoverPassword(req.params.uid)
-    res.render("users/recover.ect")
+    return res.render("users/recover.ect")
+  res.send 401
 
 exports.doRecover = (req, res) ->
   app.api.users.recoverPassword(req.params.uid, req.body.password)
-  res.send 200
+  req.flash "success", "Password successfully changed. You can login now."
+  res.redirect "/"

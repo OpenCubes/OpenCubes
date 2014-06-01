@@ -32,8 +32,7 @@ module.exports = function(grunt) {
 
     var cb = this.async();
     if(grunt.option('mode') === "copy")
-      var fs = require("fs");
-      return fs.createReadStream('config.json.default').pipe(fs.createWriteStream('config.json'));
+      return copyFile('config.json.default', 'config.json', cb);
 
 
     if(grunt.option('mode') === "interactive") {
@@ -59,3 +58,27 @@ module.exports = function(grunt) {
 
 
 };
+var fs = require("fs");
+function copyFile(source, target, cb) {
+  var cbCalled = false;
+
+  var rd = fs.createReadStream(source);
+  rd.on("error", function(err) {
+    done(err);
+  });
+  var wr = fs.createWriteStream(target);
+  wr.on("error", function(err) {
+    done(err);
+  });
+  wr.on("close", function(ex) {
+    done();
+  });
+  rd.pipe(wr);
+
+  function done(err) {
+    if (!cbCalled) {
+      cb(err);
+      cbCalled = true;
+    }
+  }
+}

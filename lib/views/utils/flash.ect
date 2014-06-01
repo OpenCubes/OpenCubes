@@ -1,41 +1,36 @@
+
 <div class="flash">
-    <% if @messages :%> 
-        <% if @messages.info : %>
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title pull-left"><%- @messages.info %></h3>
-                    <button type="button" class="close pull-right" aria-hidden="true" onclick="$('.panel-info').remove()">&times;</button>
-                    <div class="clearfix col-x"></div>
-                </div>
-            </div>
-        <% end %>
-        <% if @messages.error : %>
-            <div class="panel panel-danger">
-                <div class="panel-heading">
-                    <h3 class="panel-title pull-left"><%- @messages.error %></h3>
-                    <button type="button" class="close pull-right" aria-hidden="true" onclick="$('.panel-danger').remove()">&times;</button>
-                    <div class="clearfix col-x"></div>
-                </div>
-            </div>
-        <% end %>
-        <% if @messages.warning : %>
-            <div class="panel panel-warning">
-                <div class="panel-heading">
-                    <h3 class="panel-title pull-left"><%- @messages.warning %></h3>
-                    <button type="button" class="close pull-right" aria-hidden="true" onclick="$('.panel-warning').remove()">&times;</button>
-                    <div class="clearfix col-x"></div>
-            </div>
-        </div>
-        <% end %>
-        <% if @messages.success : %>
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <h3 class="panel-title pull-left"><%- @messages.success %></h3>
-                    <button type="button" class="close pull-right" aria-hidden="true" onclick="$('.panel-success').remove()">&times;</button>
-                    <div class="clearfix col-x"></div>
-                </div>
-            </div>
-        <% end %>
-    <% end %> 
+  <% if @messages :%>
+  <% if @messages.info : %>
+  <div class="ui info message">
+    <i class="close icon" onclick="$('.ui.info.message').remove()">
+    </i>
+      <%- @messages.info %>
+  </div>
+  <% end %>
+  <% if @messages.error : %>
+  <div class="ui error message">
+    <i class="close icon"onclick="$('.ui.error.message').remove()">
+    </i>
+      <%- @messages.error %>
+  </div>
+  <% end %>
+  <% if @messages.warning : %>
+  <div class="ui warning message" onclick="$('.ui.warning.message').remove()">
+    <i class="close icon">
+    </i>
+      <%- @messages.warning %>
+  </div>
 </div>
-<div class="clearfix"></div>
+<% end %>
+<% if @messages.success : %>
+<div class="ui success message" onclick="$('.ui.success.message').remove()">
+  <i class="close icon">
+  </i>
+    <%- @messages.success %>
+</div>
+<% end %>
+<% end %>
+</div>
+<div class="clearfix">
+</div>
