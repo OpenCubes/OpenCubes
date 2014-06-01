@@ -4,6 +4,6 @@ node_js:
 before_install:
   - npm install -g jasmine-node
   - npm install -g grunt-cli
-  - grunt configure --mode=copy
 before_script:
+  - grunt configure --mode=copy
   - jasmine-node tests
