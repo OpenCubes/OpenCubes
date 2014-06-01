@@ -1,6 +1,6 @@
 {
   "securitySalt": "ThisIsNotAVeryGoodSalt",
-  "db_uri": "mongodb://host:port/path,
+  "db_uri": "mongodb://host:port/path",
   "db_opt": {
     "user": "user",
     "pass": "pass"
