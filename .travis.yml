@@ -3,7 +3,7 @@ node_js:
   - "0.10"
 before_install:
   - npm install -g jasmine-node
-before_script:
   - npm install -g grunt-cli
+before_script:
   - grunt configure --mode=copy
   - jasmine-node tests
