@@ -21,3 +21,4 @@ public/css/main.css
 /.settings/
 /public/css/main.css.map
 /src/config.coffee
+config.json
