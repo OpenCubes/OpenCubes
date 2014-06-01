@@ -23,7 +23,14 @@ module.exports = (passport, config) ->
   # use local strategy
   passport.use new LocalStrategy((email, password, done) ->
     User.findOne
-      email: email
+      $or:[
+        {
+          'email': email
+        },
+        {
+          'username': email
+        }
+      ]
     , (err, user) ->
       return done(err)  if err
       unless user
