@@ -10,14 +10,7 @@
     <div id="wrapper">
       <% content 'navbar' %>
       <div class="main container" id="content">
-        <div class="ui grid container">
-          <div class="four wide column">
-            <% content 'sidebar' %>
-          </div>
-          <div class="eight wide column">
-            <% content %>
-          </div>
-        </div>
+        <% content %>
       </div>
       <%- include "parts/login-dialog.ect" %>
       <footer><%- include "parts/footer.ect" %></footer>
