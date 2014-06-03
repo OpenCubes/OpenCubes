@@ -1,111 +1,26 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <link data-no-instant rel="stylesheet" href="/css/main.css">
-    <link data-no-instant rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.13.0/css/semantic.min.css">
-    <script data-no-instant src="//code.jquery.com/jquery-2.1.0.min.js"></script>
-    <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.13.0/javascript/semantic.min.js"></script>
-    <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Open+Sans:300italic,400,300,700' rel='stylesheet' type='text/css'>
-    <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.2.0/bootbox.min.js"></script>
-    <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
-    <script data-no-instant src="//cdn.jsdelivr.net/instantclick/3.0.1/instantclick.min.js"></script>
-    <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js"></script>
-    <script data-no-instant src="/js/jquery.eldarion-ajax.min.js"></script>
-    <script>
-        $.isLoggedIn = <%- if @user then 'true' else 'false' %>;
-    </script>
-    <% content 'head' %>
-        <script src="/js/main.js" data-no-instant></script>
-        <title>
-            <%- (@title or 'OpenCubes').replace /(\r\n|\n|\r)/g, "" %>
-        </title>
-</head>
-
-<body>
+  <head>
+    <%- include "parts/default-assets.ect" %>
+    <title>
+      <%- (@title or 'OpenCubes').replace /(\r\n|\n|\r)/g, "" %>
+    </title>
+  </head>
+  <body>
     <div id="wrapper">
-    <% content 'navbar' %>
-        <div class="main container" id="content">
-            <div class="ui grid container">
-                <div class="four wide column">
-                    <% content 'sidebar' %>
-                </div>
-                <div class="eight wide column">
-                    <div class="screen">
-                        <div class="text">
-                            <img src="/images/load/spinner-128.gif" />
-                        </div>
-                    </div>
-                    <% content %>
-                </div>
-            </div>
+      <% content 'navbar' %>
+      <div class="main container" id="content">
+        <div class="ui grid container">
+          <div class="four wide column">
+            <% content 'sidebar' %>
+          </div>
+          <div class="eight wide column">
+            <% content %>
+          </div>
         </div>
-        <div class="ui small modal">
-            <i class="close icon"></i>
-            <div class="header">
-                Login
-            </div>
-            <div class="content">
-                <div class="ui form segment" id="login-form">
-                <div class="field">
-                    <label>Username</label>
-                    <div class="ui left labeled icon input">
-                        <input type="text" placeholder="Username" id="username" />
-                        <i class="user icon"></i>
-                        <div class="ui corner label">
-                            <i class="icon asterisk"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="field">
-                    <label>Password</label>
-                    <div class="ui left labeled icon input">
-                        <input type="password" id="password" />
-                        <i class="lock icon"></i>
-                        <div class="ui corner label">
-                            <i class="icon asterisk"></i>
-                        </div>
-                    </div>
-                </div>
-                </div>
-            </div>
-
-            <div class="actions">
-              <a href="/recover" class="ui basic button" id="recover-dialog"> Forgot password?</a>
-                <div class="ui buttons">
-                    <div class="ui button">Cancel</div>
-                    <div class="or"></div>
-                    <div class="ui positive button">Login</div>
-                </div>
-            </div>
-        </div>
-        <footer>
-        <div class="ui divider"></div>
-        <div class="ui divided horizontal footer link list" style="display: block;text-align: center; margin-bottom: 1.5rem;">
-            <div class="item">&copy; CraftYourMod 2014</div>
-            <div class="item">
-            <a href="/help" target="_blank">Help</a>
-            </div>
-            <div class="item">
-            <a href="https://github.com/CraftYourModCorporation/OpenCubes" class="" ><i class="circular github icon" style="text-decoration: none"></i></a>
-            </div>
-            <div class="item">
-            <a href="/tos" target="_blank">Terms of Service</a>
-            </div>
-            <div class="item">
-            <a href="/privacy" target="_blank">Privacy Policy</a>
-            </div>
-            <div class="item">
-            <a href="/about" target="_blank">About</a>
-            </div>
-        </div>
-        </footer>
-            </div>
-            <script>
-    jQuery(document).ready(function () {
-        jQuery("abbr.timeago").timeago();
-    });
-</script>
-</body>
-
+      </div>
+      <%- include "part/login-dialog.ect" %>
+      <footer><%- include "parts/footer.ect" %></footer>
+    </div>
+  </body>
 </html>
