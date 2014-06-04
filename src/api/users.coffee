@@ -19,6 +19,7 @@ exports.view = ((userid, name, callback) ->
     if can is false then return callback (error.throwError "", "UNAUTHORIZED")
     # Validate options
     User = mongoose.model "User"
+    Feed = mongoose.model "Feed"
     User.findOne({username: name}).exec (err, user) ->
       return callback err if err
       return callback errors.throwError("Not found", "NOT_FOUND") if not user
@@ -32,6 +33,10 @@ exports.view = ((userid, name, callback) ->
         (callback) ->
           Mod.find({author: user._id}).select("name vote_count created logo slug").sort("-created").limit(5).exec (err, mods) ->
             data.lastestMods = mods
+            callback err
+        (callback) ->
+          Feed.find({author: user._id}).sort("-date").limit(10).exec (err, feed) ->
+            data.feed = feed
             callback err
       ], (err) ->
         callback err or data

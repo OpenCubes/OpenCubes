@@ -28,39 +28,21 @@
   <div class="column">
      <div class="ui small piled feed segment">
       <h4 class="ui header"><%- @user.username %>'s activity</h4>
+      <% for event in @user.feed: %>
       <div class="event">
         <div class="label">
           <i class="circular upload disk icon"></i>
         </div>
         <div class="content">
           <div class="date">
-            3 days ago
+            <abbr class="timeago" title="<%- event.date.toISOString() %>"> </abbr>  
           </div>
           <div class="summary">
-            <%- @user.username %> submitted a new mod
-          </div>
-          <div class="extra text">
-            ModLoader
+            <%- @user.username %> <%- event.description %> <%- event.mod_name %>. 
           </div>
         </div>
       </div>
-      <div class="event">
-        <div class="label">
-          <i class="circular photo icon"></i>
-        </div>
-        <div class="content">
-          <div class="date">
-            3 days ago
-          </div>
-          <div class="summary">
-            <a>Sally Poodle</a> added <a>2 new photos</a> of you
-          </div>
-          <div class="extra images">
-            <img src="/images/demo/item1.jpg">
-            <img src="/images/demo/item2.jpg">
-          </div>
-        </div>
-      </div>
+      <% end %>
     </div>
   </div>
   <div class="column">

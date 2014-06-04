@@ -33,6 +33,19 @@ ModSchema = mongoose.Schema(
     date: Date
   ]
 )
+
+ModSchema.pre 'save', true, (next, done) ->
+  console.log "feed"
+  Feed = mongoose.model "Feed"
+  type = if @isNew then "post" else "edition"
+  feed = new Feed
+    type: type
+    date: Date.now()
+    mod_name: @name
+    author: @author._id or @author
+  next()
+  feed.save(done)
+  
 ModSchema.post 'remove',  (doc) ->
 
   console.log('`%s` has been removed', doc.name)
