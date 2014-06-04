@@ -259,4 +259,22 @@ aside ul li a.selected {
 #recover-dialog {
   float: left;
 }
+.user.sub.header {
+  /*
+    margin-top: 10px !important;
+
+    i {
+        display: inline-block !important;
+        margin-left: 10px !important;
+    }*/
+}
+.user.sub.header div {
+  margin: 15px 15px 15px 15px;
+}
+.ui.list a.header {
+  color: #000 !important;
+}
+.tiny.mod-title {
+  font-size: 14px;
+}
 /*# sourceMappingURL=main.css.map */

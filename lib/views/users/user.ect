@@ -1,25 +1,86 @@
-<% extend 'layout.ect' %>
-<div><h3><%- @user.username %></h3></div>
-
+<% extend 'layout-wide.ect' %>
+<h1 class="ui header">
+  <img src="/images/user-default.png" width="128" height="128"/>
+  <div class="content">
+    <%- @user.username %>
+    <div class="user sub header">
+      <div class="ui icon header">
+        12
+        <div class="sub header">mods</div>
+      </div>
+      <div class="ui icon header">
+        42
+        <div class="sub header">stars</div>
+      </div>
+      <div class="ui icon header">
+        16
+        <div class="sub header">followers</div>
+      </div>
+    </div>
+  </div>
+</h1>
+<div class="ui segment">
+  <i class="globe icon">     </i> http://example.com
+  <i class="map marker icon"></i> New York, US
+  <i class="time icon">      </i> 1 year ago
+</div>
 <div class="ui two column divided grid">
   <div class="column">
-    <h4><%- @user.username %>'s most popular mods</h4>
-      <div class="ui relaxed list">
-<% include 'mods/items/item-tiny.ect' %>
-		<% for mod in @user.popularMods : %>
-		<%- @tinyModItem(mod, {stars: true, author: false, labels: false}) %>
-    	<% end %>
-
- </div>
-
+     <div class="ui small piled feed segment">
+      <h4 class="ui header"><%- @user.username %>'s activity</h4>
+      <div class="event">
+        <div class="label">
+          <i class="circular upload disk icon"></i>
+        </div>
+        <div class="content">
+          <div class="date">
+            3 days ago
+          </div>
+          <div class="summary">
+            <%- @user.username %> submitted a new mod
+          </div>
+          <div class="extra text">
+            ModLoader
+          </div>
+        </div>
+      </div>
+      <div class="event">
+        <div class="label">
+          <i class="circular photo icon"></i>
+        </div>
+        <div class="content">
+          <div class="date">
+            3 days ago
+          </div>
+          <div class="summary">
+            <a>Sally Poodle</a> added <a>2 new photos</a> of you
+          </div>
+          <div class="extra images">
+            <img src="/images/demo/item1.jpg">
+            <img src="/images/demo/item2.jpg">
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-     <div class="column">
-    <h4><%- @user.username %>'s latest mods</h4>
+  <div class="column">
+    <div class="ui segment">
+      <h4><%- @user.username %>'s most popular mods</h4>
+      <div class="ui relaxed list b-w" >
+        <% include 'mods/items/item-tiny.ect' %>
+        <% for mod in @user.popularMods : %>
+        <%- @tinyModItem(mod, {stars: true, author: false, labels: false}) %>
+        <% end %>
+      </div>
+    </div>
+    <div class="ui segment">
+      <h4><%- @user.username %>'s latest mods</h4>
       <div class="ui relaxed list">
         <% for mod in @user.lastestMods : %>
         <%- @tinyModItem(mod, {stars: true, author: false, labels: false}) %>
-          <% end %>
-           </div>
- </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>
 <% end %> <% block 'navbar': %> <% include 'navs/main-nav.ect' %> <% end %>

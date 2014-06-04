@@ -26,11 +26,11 @@ exports.view = ((userid, name, callback) ->
       Mod = mongoose.model("Mod")
       async.parallel [
         (callback) ->
-          Mod.find({author: user._id}).select("name vote_count created logo slug").sort("-vote_count").limit(10).exec (err, mods) ->
+          Mod.find({author: user._id}).select("name vote_count created logo slug").sort("-vote_count").limit(5).exec (err, mods) ->
             data.popularMods = mods
             callback err
         (callback) ->
-          Mod.find({author: user._id}).select("name vote_count created logo slug").sort("-created").limit(10).exec (err, mods) ->
+          Mod.find({author: user._id}).select("name vote_count created logo slug").sort("-created").limit(5).exec (err, mods) ->
             data.lastestMods = mods
             callback err
       ], (err) ->
