@@ -4,14 +4,15 @@ Schema = mongoose.Schema(
   date: Date
   author: mongoose.Schema.Types.ObjectId
   mod_name: String
+  link: String
 )
 Schema.virtual("description").get () ->
   if @type is "edition"
-    return "edited mod #{@mod.name}"
+    return "edited mod"
   if @type is "post"
     return "published a new mod"
   if @type is "deletion"
-    return "deleted mod #{@mod.name}"
+    return "deleted mod"
 Schema.methods = {}
 Schema.statics = 
   createQuery: () ->

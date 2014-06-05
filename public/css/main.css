@@ -277,4 +277,8 @@ aside ul li a.selected {
 .tiny.mod-title {
   font-size: 14px;
 }
+a {
+  text-decoration: none;
+  color: #007eda;
+}
 /*# sourceMappingURL=main.css.map */

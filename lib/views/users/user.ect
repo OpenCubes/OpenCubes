@@ -31,14 +31,14 @@
       <% for event in @user.feed: %>
       <div class="event">
         <div class="label">
-          <i class="circular upload disk icon"></i>
+          <i class="circular <%- if event.type is "post" then "upload disk" else "pencil" %> icon"></i>
         </div>
         <div class="content">
           <div class="date">
             <abbr class="timeago" title="<%- event.date.toISOString() %>"> </abbr>  
           </div>
           <div class="summary">
-            <%- @user.username %> <%- event.description %> <%- event.mod_name %>. 
+            <%- @user.username %> <%- event.description %> <a href="<%- event.link or "/" %>"><%- event.mod_name %></a>. 
           </div>
         </div>
       </div>

@@ -43,6 +43,7 @@ ModSchema.pre 'save', true, (next, done) ->
     date: Date.now()
     mod_name: @name
     author: @author._id or @author
+    link: "/mods/#{@slug}"
   next()
   feed.save(done)
   
@@ -65,10 +66,10 @@ ModSchema.plugin timestamps
 ModSchema.path("name").validate (value) ->
   if not value or value is ""
     return false
-  if value.length < 5 or value.length > 20
+  if value.length < 5 or value.length > 40
     return false
   return true
-, "Name should be between 5 and 20 characters long"
+, "Name should be between 5 and 40 characters long"
 ModSchema.path("summary").validate (value) ->
   if not value or value is ""
     return false
