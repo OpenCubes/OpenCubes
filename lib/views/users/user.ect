@@ -5,15 +5,15 @@
     <%- @user.username %>
     <div class="user sub header">
       <div class="ui icon header">
-        12
+        <%- @user.meta.mods %>
         <div class="sub header">mods</div>
       </div>
       <div class="ui icon header">
-        42
-        <div class="sub header">stars</div>
+        <%- @user.meta.starred %>
+        <div class="sub header">starred</div>
       </div>
       <div class="ui icon header">
-        16
+        0
         <div class="sub header">followers</div>
       </div>
     </div>

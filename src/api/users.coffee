@@ -24,6 +24,7 @@ exports.view = ((userid, name, callback) ->
       return callback err if err
       return callback errors.throwError("Not found", "NOT_FOUND") if not user
       data = user.toObject()
+      data.meta = {}
       Mod = mongoose.model("Mod")
       async.parallel [
         (callback) ->
@@ -38,6 +39,15 @@ exports.view = ((userid, name, callback) ->
           Feed.find({author: user._id}).sort("-date").limit(10).exec (err, feed) ->
             data.feed = feed
             callback err
+        (callback) ->            
+          Mod.count {"stargazers.id": user._id}, (err, count) ->
+            data.meta.starred = count
+            callback err
+        (callback) ->            
+          Mod.count {"author": user._id}, (err, count) ->
+            data.meta.mods = count
+            callback err
+    
       ], (err) ->
         callback err or data
 
