@@ -5,6 +5,7 @@ mongoose = require "mongoose"
 errors = error = require "../error"
 async = require "async"
 uuid = require "node-uuid"
+Q = require "q"
 config = require "../config"
 mail = require "./mail"
 
@@ -39,20 +40,89 @@ exports.view = ((userid, name, callback) ->
           Feed.find({author: user._id}).sort("-date").limit(10).exec (err, feed) ->
             data.feed = feed
             callback err
-        (callback) ->            
+        (callback) ->
           Mod.count {"stargazers.id": user._id}, (err, count) ->
             data.meta.starred = count
             callback err
-        (callback) ->            
+        (callback) ->
           Mod.count {"author": user._id}, (err, count) ->
             data.meta.mods = count
             callback err
-    
+
       ], (err) ->
         callback err or data
 
     return
 ).toPromise @
+
+validators =
+  website: /((https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/g
+  bio: /(.){15,100}/g
+  avatar: /(.)+/g
+  location: /(.)+/g
+  company: /(.)+/g
+  public_email: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g
+
+escapeHtml = (str) ->
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace />/g, "&gt;"
+exports.doEdit = ((userid, name, data) ->
+  # Q promise
+  deferred = Q.defer()
+  console.log "data", data
+  # Q promise
+  deferred = Q.defer()
+  # default value
+  can = false
+  # We check wheteher it can or not
+  canThis(userid, "user", "edit").then((can)->
+    if not userid
+      return deferred.reject(error.throwError "", "UNAUTHORIZED")
+    User = mongoose.model "User"
+    User.findOne({username: name}).select("username location website public_email company bio").exec()
+  ).then((user) ->
+    # Can the current user do that?
+    if not user._id.equals(userid) and can is false
+      return deferred.reject(error.throwError "", "UNAUTHORIZED")
+    # Update if validated
+    user.website        = data.website       if validators.website.test       data.website
+    user.bio            = data.bio           if validators.bio.test           data.bio
+    user.public_email   = data.public_email  if validators.public_email.test  data.public_email
+    user.company        = data.company       if validators.company.test       data.company
+    user.location       = data.location      if validators.website.test       data.location
+    user.save (err, user) ->
+      if err
+        return deferred.reject err
+      deferred.resolve user
+  ).fail((err) ->
+    deferred.reject err
+  )
+  deferred.promise
+
+
+)
+exports.edit = (userid, name) ->
+  # Q promise
+  deferred = Q.defer()
+  # default value
+  can = false
+  # We check wheteher it can or not
+  canThis(userid, "user", "edit").then((can)->
+    if not userid
+      return deferred.reject(error.throwError "", "UNAUTHORIZED")
+    User = mongoose.model "User"
+    User.findOne({username: name}).select("username location website public_email company bio").exec()
+  ).then((user) ->
+    # Can the current user do that?
+    if not user._id.equals(userid) and can is false
+      return deferred.reject(error.throwError "", "UNAUTHORIZED")
+    # Done!
+    deferred.resolve user
+  ).fail((err) ->
+    deferred.reject err
+  )
+  deferred.promise
+
+
 
 ###
 Creates an user

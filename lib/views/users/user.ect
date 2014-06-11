@@ -2,7 +2,7 @@
 <h1 class="ui header">
   <img src="/images/user-default.png" width="128" height="128"/>
   <div class="content">
-    <%- @user.username %>
+    <%- @user.username %>  <a href="/users/<%- @user.username %>/edit"> <i class="pencil icon"></i> </a>
     <div class="user sub header">
       <div class="ui icon header">
         <%- @user.meta.mods %>

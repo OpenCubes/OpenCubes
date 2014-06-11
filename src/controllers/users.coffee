@@ -45,6 +45,21 @@ exports.signup = (req, res) ->
 
   return
 
+exports.edit = (req, res) ->
+  app.api.users.edit(req.getUserId(), req.params.name).then((user) ->
+    res.render "users/edit.ect",
+      title: "Edit my profile"
+      user: user
+  ).fail((err) ->
+    errors.handleHttp err, req, res
+  )
+exports.doEdit = (req, res) ->
+  app.api.users.doEdit(req.getUserId(), req.params.name, req.body).then((user) ->
+    res.redirect "/users/#{user.username}/edit"
+  ).fail((err) ->
+    errors.handleHttp err, req, res
+  )
+
 
 ###
 Logout

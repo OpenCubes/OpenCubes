@@ -1,0 +1,40 @@
+<% extend 'layout.ect' %>
+<form class="ui form stacked segment" method="post">
+   <% url = "/users/#{@user.username}/edit" %>
+   <h2>Edit my profile </h2>
+   <% console.log @user %>
+   <div class="field">
+     <label>Name</label>
+     <input type="text" value="<%- @user.username %>" name="name"/>
+   </div>
+   <div class="field">
+     <label>Email (will be public)</label>
+     <input type="text" value="<%- @user.public_email %>" name="public_email"/>
+   </div>
+   <div class="field">
+     <label>URL</label>
+     <input type="text" value="<%- @user.website %>" name="website"/>
+   </div>
+   <div class="field">
+     <label>Company</label>
+     <input type="text" value="<%- @user.company %>" name="company"/>
+   </div>
+   <div class="field">
+     <label>Location</label>
+     <input type="text" value="<%- @user.location %>" name="location"/>
+   </div>
+   <div class="field">
+     <label>Bio</label>
+     <textarea name="bio"><%- @user.bio %></textarea>
+   </div>
+
+   <input class="ui blue submit button" type="submit" value="Update profile" />
+
+
+
+
+
+
+</form>
+
+<% end %> <% block 'navbar': %> <% include 'navs/main-nav.ect' %> <% end %>
