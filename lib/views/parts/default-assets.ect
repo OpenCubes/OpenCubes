@@ -9,7 +9,7 @@
 <script data-no-instant src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js"></script>
 <script data-no-instant src="/js/jquery.eldarion-ajax.min.js"></script>
 <script>
-  $.isLoggedIn = <%- if @user then 'true' else 'false' %>;
+  $.isLoggedIn = <%- if @luser then 'true' else 'false' %>;
 </script>
 <% content 'head' %>
 <script src="/js/main.js" data-no-instant></script>

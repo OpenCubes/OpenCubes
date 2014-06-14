@@ -44,16 +44,18 @@ UserSchema = new Schema(
   role:
     type: String
     default: "user"
-  website: String
-  bio: String
-  avatar: String
   date: Date
-
   facebook: {}
   twitter: {}
   github: {}
   google: {}
   linkedin: {}
+  website: String
+  bio: String
+  avatar: String
+  location: String
+  company: String
+  public_email: String
 )
 
 ###

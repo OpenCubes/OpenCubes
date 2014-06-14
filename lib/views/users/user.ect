@@ -2,7 +2,7 @@
 <h1 class="ui header">
   <img src="/images/user-default.png" width="128" height="128"/>
   <div class="content">
-    <%- @user.username %>  <a href="/users/<%- @user.username %>/edit"> <i class="pencil icon"></i> </a>
+    <%- @user.username %>  <a href="/users/<%- @user.username %>/edit"> <% if @luser.username is @user.username : %><i id="edit-user-button" class="circular pencil icon"></i><% end %></a>
     <div class="user sub header">
       <div class="ui icon header">
         <%- @user.meta.mods %>
@@ -19,10 +19,28 @@
     </div>
   </div>
 </h1>
-<div class="ui segment">
-  <i class="globe icon">     </i> http://example.com
-  <i class="map marker icon"></i> New York, US
-  <i class="time icon">      </i> 1 year ago
+<div class="ui segment" id="user-card">
+  <% if @user.bio: %>
+    <p><%- @user.bio %></p>
+  <% end %>
+  <% if @user.website: %>
+    <div><i class="globe icon"></i><a href="<%- @user.website %>"><%- @user.website %></a></div>
+  <% end %>
+  <% if @user.location: %>
+    <div><i class="map marker icon"></i><%- @user.location %></div>
+  <% end %>
+  <% if @user.company: %>
+    <div><i class="users icon"></i><%- @user.company %></div>
+  <% end %>
+  
+  <% if @user.public_email: %>
+    <div><% if @luser : %>
+      <i class="mail icon"></i><a href="mailto:<%- @user.public_email %>"><%- @user.public_email %></a><%else:%>
+      <i class="lock icon"></i>Login to view email
+      
+      <% end %>
+     </div>
+  <% end %>
 </div>
 <div class="ui two column divided grid">
   <div class="column">

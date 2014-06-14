@@ -8,15 +8,15 @@
       <a href="/search" class="item" data-no-instant>
         <i class="search icon"></i> Search
         </a>
-      <a href="/upload" class="item <%- if !@user then ' need-login' %>" data-no-instant>
+      <a href="/upload" class="item <%- if !@luser then ' need-login' %>" data-no-instant>
         <i class="upload icon"></i> Submit a mod
       </a>
       <div class="right menu">
-      <%if !@user: %>
+      <%if !@luser: %>
           <a href="/signup" class="item" data-no-instant ><i class="user icon"></i> Register</a></a>
           <a class="need-login no-redirect item" id="login" href="/login" data-no-instant>Login</a>
       <% else :%>
-          <a class="item" href="/user"><i class="user icon"></i><%- @user.username %></a>
+          <a class="item" href="/user"><i class="user icon"></i><%- @luser.username %></a>
           <a class="item" id="logout" href="/logout" data-no-instant>Logout</a>
       <% end %>
       </div>

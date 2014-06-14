@@ -292,4 +292,16 @@ a {
   text-decoration: none;
   color: #007eda;
 }
+#user-card p {
+  margin-bottom: 10px;
+}
+#user-card div {
+  margin: 10px 20px 5px 5px;
+  display: inline;
+}
+#edit-user-button {
+  font-size: 20px;
+  margin-left: 15px;
+  margin-top: 0px;
+}
 /*# sourceMappingURL=main.css.map */
