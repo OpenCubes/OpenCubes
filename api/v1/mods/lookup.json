@@ -1,0 +1,394 @@
+
+{
+  "status": "success",
+  "mods": "This is only a fake of a lookup. Used onlly for local dev.",
+  "mods": [
+    {
+      "__v": 3,
+      "_id": "537377d43f6432ac1d89b6c8",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "api",
+      "created": "2014-05-14T14:04:04.621Z",
+      "lastUpdated": "2014-06-05T18:02:03.463Z",
+      "logo": "ea1cf63d-fc61-45c6-9618-af1dd6e38ac9.png",
+      "name": "ModLoader",
+      "slug": "modloader",
+      "stargazers": [
+        {
+          "id": "537377493f6432ac1d89b6c7",
+          "date": "2014-05-14T14:04:26.013Z",
+          "_id": "537377ea3f6432ac1d89b6c9"
+        }
+      ],
+      "summary": "A mod, kind of like a mod manager, that stops conflicts with mods that alter rendering, recipes, add entities, gui, smeltables or fuel. ANd all that stuff",
+      "vote_count": 1,
+      "urls": {
+        "api": "/api/mods/view/modloader.json",
+        "web": "/mods/modloader",
+        "logo": "/assets/modloader.png"
+      }
+    },
+    {
+      "__v": 2,
+      "_id": "537654d1b040920c1a2a19d4",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "api",
+      "created": "2014-05-16T18:11:29.811Z",
+      "lastUpdated": "2014-06-05T18:02:52.690Z",
+      "name": "Sign Tags",
+      "slug": "sign-tags",
+      "stargazers": [],
+      "summary": "Type [time] into a sign, and it will show the current time. You can also type [x], [y], or [z] and find the current position of the sign in regards to that axis. And a lot of more!",
+      "vote_count": 0,
+      "urls": {
+        "api": "/api/mods/view/sign-tags.json",
+        "web": "/mods/sign-tags",
+        "logo": "/assets/sign-tags.png"
+      }
+    },
+    {
+      "__v": 2,
+      "_id": "537659c72c0cda28199df3f2",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "api",
+      "created": "2014-05-16T18:32:39.967Z",
+      "lastUpdated": "2014-06-05T18:02:56.266Z",
+      "name": "AudioMod",
+      "slug": "audiomod",
+      "stargazers": [],
+      "summary": "AudioMod is an upgrade of sorts, and a modder's utility. It allows Minecraft to play (in addition to ogg, wav, and mus files), xm, s3m, and mod files.",
+      "vote_count": 0,
+      "urls": {
+        "api": "/api/mods/view/audiomod.json",
+        "web": "/mods/audiomod",
+        "logo": "/assets/audiomod.png"
+      }
+    },
+    {
+      "lastUpdated": "2014-05-16T18:33:54.299Z",
+      "created": "2014-05-16T18:33:54.299Z",
+      "slug": "floodgate",
+      "name": "Floodgate",
+      "summary": "Floodgate block can be used as either a floodgate, allowing toggleable water and lava falls, or as a trapdoor. ",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "api",
+      "_id": "53765a122c0cda28199df3f4",
+      "stargazers": [],
+      "__v": 0,
+      "urls": {
+        "api": "/api/mods/view/floodgate.json",
+        "web": "/mods/floodgate",
+        "logo": "/assets/floodgate.png"
+      }
+    },
+    {
+      "__v": 1,
+      "_id": "53765a452c0cda28199df3f5",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "miscellaneous",
+      "created": "2014-05-16T18:34:45.428Z",
+      "lastUpdated": "2014-05-16T18:38:20.117Z",
+      "name": "Spawner GUI",
+      "slug": "spawner-gui",
+      "stargazers": [
+        {
+          "id": "537377493f6432ac1d89b6c7",
+          "date": "2014-05-16T18:38:20.106Z",
+          "_id": "53765b1ccd95a4f823f51580"
+        }
+      ],
+      "summary": "Adds a GUI to all mob spawners, that will allow you to pick what mob to spawn. I also reallowed mining spawners. You can disable spawners with redstone aswell",
+      "vote_count": 1,
+      "urls": {
+        "api": "/api/mods/view/spawner-gui.json",
+        "web": "/mods/spawner-gui",
+        "logo": "/assets/spawner-gui.png"
+      }
+    },
+    {
+      "lastUpdated": "2014-05-16T18:39:03.673Z",
+      "created": "2014-05-16T18:39:03.673Z",
+      "slug": "block-distortion",
+      "name": "Block Distortion",
+      "summary": "This mod is just an experiment. Everything that is 3D (Mostly noticeable on blocks) has a random distortion. ",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "miscellaneous",
+      "_id": "53765b47cd95a4f823f51581",
+      "stargazers": [],
+      "__v": 0,
+      "urls": {
+        "api": "/api/mods/view/block-distortion.json",
+        "web": "/mods/block-distortion",
+        "logo": "/assets/block-distortion.png"
+      }
+    },
+    {
+      "lastUpdated": "2014-05-16T18:41:03.988Z",
+      "created": "2014-05-16T18:41:03.988Z",
+      "slug": "block-distortion",
+      "name": "Block Distortion",
+      "summary": "This mod is just an experiment. Everything that is 3D (Mostly noticeable on blocks) has a random distortion. ",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "miscellaneous",
+      "_id": "53765bbfcd95a4f823f51582",
+      "stargazers": [],
+      "__v": 0,
+      "urls": {
+        "api": "/api/mods/view/block-distortion.json",
+        "web": "/mods/block-distortion",
+        "logo": "/assets/block-distortion.png"
+      }
+    },
+    {
+      "lastUpdated": "2014-05-16T18:42:32.463Z",
+      "created": "2014-05-16T18:42:32.463Z",
+      "slug": "block-distortion",
+      "name": "Block Distortion",
+      "summary": "This mod is just an experiment. Everything that is 3D (Mostly noticeable on blocks) has a random distortion. ",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "miscellaneous",
+      "_id": "53765c1834c4895c20c9f354",
+      "stargazers": [],
+      "__v": 0,
+      "urls": {
+        "api": "/api/mods/view/block-distortion.json",
+        "web": "/mods/block-distortion",
+        "logo": "/assets/block-distortion.png"
+      }
+    },
+    {
+      "lastUpdated": "2014-05-16T18:47:33.839Z",
+      "created": "2014-05-16T18:47:33.839Z",
+      "slug": "griefer-creepers",
+      "name": "Griefer Creepers",
+      "summary": "This mod changes how creepers attack. Instead of blowing itself up, It will disappear and launcher 100 arrows straight into the air, which will rain down on the landscape. ",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "mobs",
+      "_id": "53765d454cbc46081718a7d3",
+      "stargazers": [],
+      "__v": 0,
+      "urls": {
+        "api": "/api/mods/view/griefer-creepers.json",
+        "web": "/mods/griefer-creepers",
+        "logo": "/assets/griefer-creepers.png"
+      }
+    },
+    {
+      "lastUpdated": "2014-05-16T18:52:03.287Z",
+      "created": "2014-05-16T18:52:03.287Z",
+      "slug": "recipe-book",
+      "name": "Recipe Book",
+      "summary": "\r\nThis item when used opens up a GUI of every recipe that can be done. ",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "api",
+      "_id": "53765e536a3cd31006a65e71",
+      "stargazers": [],
+      "__v": 0,
+      "urls": {
+        "api": "/api/mods/view/recipe-book.json",
+        "web": "/mods/recipe-book",
+        "logo": "/assets/recipe-book.png"
+      }
+    },
+    {
+      "lastUpdated": "2014-05-16T18:59:36.692Z",
+      "created": "2014-05-16T18:59:36.692Z",
+      "slug": "shelf",
+      "name": "Shelf",
+      "summary": "Ever wanted to store your items in a way you can see them? Here you go. This block allows you to add up to 9 items to it and the items you put in are shown in the world.",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "decoration",
+      "_id": "537660189caf7cc80d1d1528",
+      "stargazers": [],
+      "__v": 0,
+      "urls": {
+        "api": "/api/mods/view/shelf.json",
+        "web": "/mods/shelf",
+        "logo": "/assets/shelf.png"
+      }
+    },
+    {
+      "lastUpdated": "2014-06-04T14:29:09.674Z",
+      "created": "2014-06-04T14:29:09.674Z",
+      "slug": "foo-bar",
+      "name": "Foo-bar",
+      "summary": "Foooooooooooooooooooooooooooooooooooooooooooooo",
+      "author": {
+        "_id": "5341610b3c76f26825d3fb2f",
+        "username": "JohnDoe"
+      },
+      "category": "api",
+      "_id": "538f2d35c91d63541c91d796",
+      "stargazers": [],
+      "__v": 0,
+      "urls": {
+        "api": "/api/mods/view/foo-bar.json",
+        "web": "/mods/foo-bar",
+        "logo": "/assets/foo-bar.png"
+      }
+    },
+    {
+      "lastUpdated": "2014-06-04T14:50:46.133Z",
+      "created": "2014-06-04T14:50:46.133Z",
+      "slug": "fooooooooooo",
+      "name": "Fooooooooooo",
+      "summary": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "author": {
+        "_id": "5341610b3c76f26825d3fb2f",
+        "username": "JohnDoe"
+      },
+      "category": "api",
+      "_id": "538f3246e4864af01d3c18d9",
+      "stargazers": [],
+      "__v": 0,
+      "urls": {
+        "api": "/api/mods/view/fooooooooooo.json",
+        "web": "/mods/fooooooooooo",
+        "logo": "/assets/fooooooooooo.png"
+      }
+    },
+    {
+      "lastUpdated": "2014-06-04T14:54:25.194Z",
+      "created": "2014-06-04T14:54:25.194Z",
+      "slug": "baaaaaaar",
+      "name": "Baaaaaaar",
+      "summary": "aaaaaaaaaaaaaaaaaaaaaa&lt;",
+      "author": {
+        "_id": "5341610b3c76f26825d3fb2f",
+        "username": "JohnDoe"
+      },
+      "category": "api",
+      "_id": "538f33212a5d95802223556c",
+      "stargazers": [],
+      "__v": 0,
+      "urls": {
+        "api": "/api/mods/view/baaaaaaar.json",
+        "web": "/mods/baaaaaaar",
+        "logo": "/assets/baaaaaaar.png"
+      }
+    },
+    {
+      "__v": 0,
+      "_id": "538f3489eae887c02120e713",
+      "author": {
+        "_id": "5341610b3c76f26825d3fb2f",
+        "username": "JohnDoe"
+      },
+      "category": "api",
+      "created": "2014-06-04T15:00:25.621Z",
+      "lastUpdated": "2014-06-05T16:49:24.493Z",
+      "name": "aaaaaaaaaaaaaaaa",
+      "slug": "aaaaaaaaaaaaaaaa",
+      "stargazers": [],
+      "summary": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "urls": {
+        "api": "/api/mods/view/aaaaaaaaaaaaaaaa.json",
+        "web": "/mods/aaaaaaaaaaaaaaaa",
+        "logo": "/assets/aaaaaaaaaaaaaaaa.png"
+      }
+    },
+    {
+      "__v": 0,
+      "_id": "5390a55adb7c03040efe2d40",
+      "author": {
+        "_id": "5389c2c3c2ba290c06a6169a",
+        "username": "JohnDoe"
+      },
+      "category": "world",
+      "created": "2014-06-05T17:14:02.608Z",
+      "lastUpdated": "2014-06-05T17:29:22.828Z",
+      "logo": "727ea444-a65e-4ebd-9212-584a303a5c90.png",
+      "name": "A Game of Cubes and Skeletons",
+      "slug": "a-game-of-cubes-and-skeletons",
+      "stargazers": [],
+      "summary": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non felis vitae nisi ultrices suscipit. Aenean laoreet aliquam consequat. Proin et metus. Lorem. Lorem.",
+      "urls": {
+        "api": "/api/mods/view/a-game-of-cubes-and-skeletons.json",
+        "web": "/mods/a-game-of-cubes-and-skeletons",
+        "logo": "/assets/a-game-of-cubes-and-skeletons.png"
+      }
+    },
+    {
+      "__v": 0,
+      "_id": "5390a8ad81a4430011255d47",
+      "author": {
+        "_id": "5389c2c3c2ba290c06a6169a",
+        "username": "JohnDoe"
+      },
+      "category": "world",
+      "created": "2014-06-05T17:28:13.216Z",
+      "lastUpdated": "2014-06-05T17:28:52.217Z",
+      "name": "Cubic sphere",
+      "slug": "cubic-sphere",
+      "stargazers": [],
+      "summary": "Make your world round. You can get back to where you come from now! Yes you can!",
+      "urls": {
+        "api": "/api/mods/view/cubic-sphere.json",
+        "web": "/mods/cubic-sphere",
+        "logo": "/assets/cubic-sphere.png"
+      }
+    },
+    {
+      "__v": 1,
+      "_id": "53764fb7c8eb5188229f5d3c",
+      "author": {
+        "_id": "537377493f6432ac1d89b6c7",
+        "username": "JohnDoe"
+      },
+      "category": "miscellaneous",
+      "created": "2014-05-16T17:49:43.608Z",
+      "lastUpdated": "2014-06-05T18:02:06.117Z",
+      "name": "Elemental Arrows",
+      "slug": "elemental-arrows",
+      "stargazers": [
+        {
+          "id": "5341610b3c76f26825d3fb2f",
+          "date": "2014-06-05T18:02:06.090Z",
+          "_id": "5390b09e3169ef380910d610"
+        }
+      ],
+      "summary": "The Elemental Arrows mod adds four new types of arrows; explosive arrows, fire arrows, ice arrows, and a joke weapon, egg arrows",
+      "vote_count": 1,
+      "urls": {
+        "api": "/api/mods/view/elemental-arrows.json",
+        "web": "/mods/elemental-arrows",
+        "logo": "/assets/elemental-arrows.png"
+      }
+    }
+  ],
+  "page": 1,
+  "pages": 1
+}

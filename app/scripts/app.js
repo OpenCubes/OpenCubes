@@ -27,7 +27,21 @@ angular
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
       })
+      .when('/notifications', {
+        templateUrl: 'views/notifications.html',
+        controller: 'NotificationsCtrl'
+      })
+      .when('/mods/:slug/edit', {
+        templateUrl: 'views/modedit.html',
+        controller: 'ModeditCtrl'
+      })
+      .when('/mods/:slug/stats', {
+        templateUrl: 'views/modstats.html',
+        controller: 'ModstatsCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
-  });
+  }).run(function ($rootScope) {
+    $rootScope.globalVariable = 'Amadou'; //global variable
+});
