@@ -1,7 +1,0 @@
-typeof $getUser === 'function' && $getUser({
-  "username": "JohnDoe",
-  "website": "johndoe.com",
-  "role": "user",
-  "public_email": "john.doe@gmail.com",
-  "company": "Acme, Inc"
-});

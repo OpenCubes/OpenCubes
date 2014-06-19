@@ -12,36 +12,29 @@
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
-
     <!-- endbuild -->
   </head>
-  <body ng-app="dashboardApp">
+  <body ng-app="opencubesDashboardApp">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
     <!-- Add your site or application content here -->
     <div class="container">
-          <div class="ui vertical menu">
-          <a class="active teal item">
-          Inbox
-        <div class="ui teal label">1</div>
-      </a>
-      <a class="item">
-        Spam
-        <div class="ui label">51</div>
-      </a>
-      <a class="item">
-        Updates
-        <div class="ui label">1</div>
-      </a>
-      <div class="item">
-        <div class="ui small icon input">
-          <input type="text" placeholder="Search mail...">
-          <i class="search icon"></i>
-        </div>
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a ng-href="#">Home</a></li>
+          <li><a ng-href="#/about">About</a></li>
+          <li><a ng-href="#">Contact</a></li>
+        </ul>
+        <h3 class="text-muted">opencubesDashboard</h3>
       </div>
-</div>
+
+      <div ng-view=""></div>
+
+      <div class="footer">
+        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+      </div>
     </div>
 
 
@@ -63,7 +56,6 @@
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
@@ -73,16 +65,11 @@
     <script src="bower_components/angular-route/angular-route.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script>
-        <script src="scripts/controllers/userprofile.js"></script>
-        <script src="scripts/controllers/modstats.js"></script>
-        <script src="scripts/controllers/modedit.js"></script>
-        <script src="scripts/controllers/notifications.js"></script>
         <!-- endbuild -->
 </body>
 </html>
