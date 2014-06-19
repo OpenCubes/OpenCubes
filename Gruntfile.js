@@ -37,10 +37,10 @@ module.exports = function (grunt) {
       files: ['<%= yeoman.app %>/scripts/{,*/}*.{coffee,litcoffee,coffee.md}'],
         tasks: ['newer:coffee:dist']
       },
-      coffeeTest: {
-        files: ['test/spec/{,*/}*.{coffee,litcoffee,coffee.md}'],
+      /*coffeeTest: {
+        files: ['test/spec/{,*//*}*.{coffee,litcoffee,coffee.md}'],
         tasks: ['newer:coffee:test', 'karma']
-      },
+      },*/
       compass: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
         tasks: ['compass:server', 'autoprefixer']
@@ -178,15 +178,15 @@ module.exports = function (grunt) {
           ext: '.js'
         }]
       },
-      test: {
+    /*  test: {
         files: [{
           expand: true,
           cwd: 'test/spec',
-          src: '{,*/}*.coffee',
+          src: '{,*//*}*.coffee',
           dest: '.tmp/spec',
           ext: '.js'
         }]
-      }
+      }*/
     },
 
     // Compiles Sass to CSS and generates necessary files if requested
@@ -395,12 +395,12 @@ module.exports = function (grunt) {
     },
 
     // Test settings
-    karma: {
+  /*  karma: {
       unit: {
         configFile: 'test/karma.conf.js',
         singleRun: true
       }
-    }
+    }*/
   });
 
 
@@ -429,7 +429,7 @@ module.exports = function (grunt) {
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'karma'
+    //'karma'
   ]);
 
   grunt.registerTask('build', [
