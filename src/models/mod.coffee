@@ -35,7 +35,6 @@ ModSchema = mongoose.Schema(
 )
 
 ModSchema.pre 'save', true, (next, done) ->
-  console.log "feed"
   Feed = mongoose.model "Feed"
   type = if @isNew then "post" else "edition"
   feed = new Feed
@@ -46,7 +45,7 @@ ModSchema.pre 'save', true, (next, done) ->
     link: "/mods/#{@slug}"
   next()
   feed.save(done)
-  
+
 ModSchema.post 'remove',  (doc) ->
 
   console.log('`%s` has been removed', doc.name)

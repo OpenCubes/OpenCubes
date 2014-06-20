@@ -8,6 +8,62 @@ parse = require "../parser"
 Q = require "q"
 
 ###
+Lists the mods
+@param criterias the criterias
+@param options the options
+@permission mod:browse
+###
+exports.itemize = ($criterias, options) ->
+  regexpCriterias = /name|description|summary|category|slug/
+  criterias = {}
+  deferred = Q.defer()
+  result = {}
+
+  for own key, value of $criterias
+    if key.match regexpCriterias
+      if value.match /\*((\w|_|-\s)+)/g
+        criterias[key] = new RegExp(/\*((\w|_|-\s)+)/g.exec(value)[1],"gi")
+      else
+        criterias[key] = value.replace((/[^a-zA-Z\s-_]/g), "")
+
+  # Validate options
+  if options.limit > 100
+    deferred.reject(error.throwError("Too much mods per page", "INVALID_PARAMS"))
+
+  # start finding
+  Mod = mongoose.model "Mod"
+  Mod.find(criterias)
+  # limit
+  .limit(options.limit or 25)
+  # skip items
+  .skip(options.skip or 0)
+  # sort order
+  .sort(options.sort or "-created")
+  # select and lean
+  .select("-body -logo -stargazers -comments").lean()
+  .exec().then((mods) ->
+    result.mods = mods
+    # count the mods
+    return Mod.count(criterias).exec()
+  , deferred.reject).then((count) ->
+    result.totalCount = count
+    result.status = "success"
+    criterias[k] = criterias[k].toString() for k of criterias
+    result.query =
+      criterias: criterias
+      options: options
+    for mod of result.mods
+      result.mods[mod].links =
+        http: "/api/v1/mods/#{result.mods[mod].slug}"
+        html: "/mods/#{result.mods[mod].slug}"
+        logo: "/assets/#{result.mods[mod].slug}.png"
+    deferred.resolve result
+  , deferred.reject)
+
+  return deferred.promise
+
+
+###
 Lists the mods and pass them to the then with a `totalCount` property that counts the mods
 @param userid the current logged user
 @param options the options

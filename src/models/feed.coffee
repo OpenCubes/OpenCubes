@@ -14,10 +14,5 @@ Schema.virtual("description").get () ->
   if @type is "deletion"
     return "deleted mod"
 Schema.methods = {}
-Schema.statics = 
-  createQuery: () ->
-    console.log "CREATING"
-    query = @find.apply(@, Array.prototype.slice.call(arguments))
-    query.populate "mod", "name summary"
-
+Schema.statics = {}
 mongoose.model "Feed", Schema

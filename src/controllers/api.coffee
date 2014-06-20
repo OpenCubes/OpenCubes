@@ -1,15 +1,62 @@
 errors = require("../error")
+### Http api ###
+
+exports.routes =
+  v1:
+    mods:
+      # remove: (req, res) ->
+      # create: (req, res) ->
+      # edit: (req, res) ->
+      get: (req, res) ->
+        if req.user then user = req.user._id else user = ""
+        app.api.mods.lookup(user, req.params.slug).then((mod) ->
+          mod.urls =
+            web: "/mods/"+mod.slug
+            logo: "/assets/"+mod.slug+".png"
+          return res.jsonp {
+            status: "success",
+            result: mod
+          }
+
+        ).fail (err) ->
+          res.jsonp 500, {
+            status: "error"
+            result: {}
+          }
+      list: (req, res) ->
+        regexpMeta      = /sort_by|skip|limit/
+        regexpCriterias = /name|description|summary|category|slug/
+        criterias = {}
+        options = {}
+        # push query if validated
+        for own key, value of req.query
+          if key.match regexpCriterias
+            criterias[key] = value
+
+          else if key.match regexpMeta
+            switch key
+              when "sort_by" then options.sort  = value
+              when "skip"    then options.skip  = value
+              when "limit"   then options.limit = value
+        app.api.mods.itemize(criterias, options).then((result) ->
+          res.jsonp result
+        ).fail (err) ->
+          console.log err
+          res.jsonp 500, {
+            status: "error"
+            result: {}
+          }
+
+    users:
+      get: (req, res) ->
+      mods: (req, res) ->
+      list: (req, res) ->
+
 
 exports.ajaxLogin = (req, res) ->
   res.render "forms/login.ect"
   return
 
-exports.glyphicons = (req, res) ->
-  data = require("../../public/api/glyphicons.json")
-  res.render "utils/glyphicons.ect",
-    list: data
-
-  return
 
 exports.parseMd = (req, res) ->
   res.send(req.application.parser(req.body.markdown or ""))
@@ -59,16 +106,6 @@ exports.createCart = (req, res)->
   ).fail (err) ->
     errors.handleHttp err, req, res, "json"
 
-exports.view = (req, res) ->
-  if req.user then user = req.user._id else user = ""
-  app.api.mods.view(user, req.params.id, req.cookies.cart_id,  req.user, true).then((mod) ->
-    mod.urls =
-      web: "/mods/"+mod.slug
-      logo: "/assets/"+mod.slug+".png"
-    return res.send mod
-  ).fail (err) ->
-    res.send 500, err.message
-  return
 
 exports.search = (req, res) ->
   app.api.mods.search(req.getUserId(), req.params.string).then((mods)->

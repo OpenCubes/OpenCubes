@@ -44,27 +44,30 @@ module.exports = (app) ->
     ) req, res, next
     return
 
-  app.server.get "/cart/:id", app.controllers.mods.cart
-  app.server.get "/signup", app.controllers.users.signup
+  app.server.get  "/cart/:id", app.controllers.mods.cart
+  app.server.get  "/signup", app.controllers.users.signup
 
   app.server.get  "/users/:name", app.controllers.users.show
   app.server.get  "/users/:name/edit", app.controllers.users.edit
   app.server.post "/users/:name/edit", app.bodyParser, app.controllers.users.doEdit
 
-  app.server.get "/recover", app.controllers.users.requestPasswordRecovery
-  app.server.post "/recover", app.bodyParser, app.controllers.users.doRequestPasswordRecovery
-  app.server.get "/recover/:uid", app.controllers.users.recover
-  app.server.post "/recover/:uid", app.bodyParser, app.controllers.users.doRecover
-  app.server.post "/signup", app.controllers.users.create
-  app.server.post "/upload", auth.requiresLogin, app.controllers.mods.doUpload
-  app.server.get "/logout", (req, res) ->
+  app.server.get  "/recover",       app.controllers.users.requestPasswordRecovery
+  app.server.post "/recover",       app.bodyParser, app.controllers.users.doRequestPasswordRecovery
+  app.server.get  "/recover/:uid",  app.controllers.users.recover
+  app.server.post "/recover/:uid",  app.bodyParser, app.controllers.users.doRecover
+  app.server.post "/signup",        app.controllers.users.create
+  app.server.post "/upload",        auth.requiresLogin, app.controllers.mods.doUpload
+  app.server.get  "/logout", (req, res) ->
     req.logout()
     res.redirect "/"
     return
   # Admin panel
-  app.server.get "/admin/mods", app.controllers.admin.mods
+  app.server.get  "/admin/mods", app.controllers.admin.mods
 
   # API
+  app.server.get  "/api/v1/mods",      app.controllers.api.routes.v1.mods.list
+  app.server.get  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.get
+  ###
   app.server.post "/api/ajax/parse.md", app.controllers.api.parseMd
   app.server.get "/api/ajax/login", app.controllers.api.ajaxLogin
   app.server.get "/api/ajax/glyphicons", app.controllers.api.glyphicons
@@ -74,10 +77,23 @@ module.exports = (app) ->
   app.server.get "/api/mods/view/:id.json", app.controllers.api.view
   app.server.get "/api/mods/list(/perPage:perPage)?/page:page.json", flood(1000, 2, 1000), app.controllers.api.list
 
+  app.server.get "/api/v1/users/\\$.json", (req, res) ->
+    if req.user
+      return res.jsonp
+        username: req.user.username
+        bio: req.user.bio
+        website: req.user.website
+        role: req.user.role
+        public_email: req.user.public_email
+        company: req.user.company
+        location: req.user.location
+    res.jsonp({})
+
+
   app.server.get "/api/cart/:cart/push/:id", app.controllers.api.addToCart
   app.server.get "/api/cart/create", app.controllers.api.createCart
   app.server.get "/api/cart/:cart", app.controllers.api.lsCart
-
+  ###
   app.server.get "/help/(:section)?.md", app.controllers.help.raw
   app.server.get "/help/(:section)?", app.controllers.help.getHelp
 
