@@ -12,8 +12,20 @@
 body {
   padding-top: 20px;
   padding-bottom: 20px;
+  font-family: "Calibri";
 }
-
+.ui.vertical.menu {
+  padding-top: 40px;
+  height: 80% !important;
+}
+.ui.fixed.transparent.main.menu {
+  width: 100%;
+  z-index: 9999;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  top: 0;
+  left: 0;
+}
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .marketing,

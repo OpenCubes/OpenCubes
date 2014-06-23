@@ -1,75 +1,100 @@
 <!doctype html>
 <html class="no-js">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <!-- endbower -->
-    <!-- endbuild -->
-    <!-- build:css(.tmp) styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
-    <!-- endbuild -->
-  </head>
-  <body ng-app="opencubesDashboardApp">
-    <!--[if lt IE 7]>
+   <head>
+      <meta charset="utf-8">
+      <title>
+      </title>
+      <meta name="description" content="">
+      <meta name="viewport" content="width=device-width">
+      <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+      <!-- build:css styles/vendor.css -->
+      <!-- bower:css -->
+      <!-- endbower -->
+      <!-- endbuild -->
+      <!-- build:css(.tmp) styles/main.css -->
+      <link rel="stylesheet" href="styles/main.css">
+      <!-- endbuild -->
+   </head>
+   <body ng-app="opencubesDashboardApp">
+      <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
-
-    <!-- Add your site or application content here -->
-    <div class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a ng-href="#">Home</a></li>
-          <li><a ng-href="#/about">About</a></li>
-          <li><a ng-href="#">Contact</a></li>
-        </ul>
-        <h3 class="text-muted">opencubesDashboard</h3>
+      <![endif]-->
+      <!-- Add your site or application content here -->
+      <div class="ui inverted fixed transparent main menu" >
+         <a class="item" id="menu-button"><i class="icon list layout"></i>
+         </a>
+         <a class="item" href="/">
+         <i class="home icon"></i> Home
+         </a>
+         <a href="/search" class="item" data-no-instant>
+         <i class="search icon"></i> Search
+         </a>
+         <a href="/upload" class="item <%- if !@luser then ' need-login' %>" data-no-instant>
+         <i class="upload icon"></i> Submit a mod
+         </a>
+         <div class="right menu">
+            <a class="item" href="/user"><i class="user icon"></i>Vinz243</a>
+            <a class="item" id="logout" href="/logout" data-no-instant>Logout</a>
+         </div>
       </div>
-
-      <div ng-view=""></div>
-
-      <div class="footer">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+      <div class="container">
+         <div class="ui sidebar">
+            <div class="ui vertical menu" ng-controller="SidebarCtrl">
+               <a class="teal item">
+                  Inbox
+                  <div class="ui teal label">1</div>
+               </a>
+               <a class="item">
+                  Spam
+                  <div class="ui label">51</div>
+               </a>
+               <a class="item">
+                  Updates
+                  <div class="ui label">1</div>
+               </a>
+               <div class="item">
+                  <div class="ui small icon input">
+                     <input placeholder="Search mods..." type="text" ng-model="searchQuery">
+                     <i class="search icon">
+                     </i>
+                  </div>
+                  <div class="menu">
+                     <a class="item" ng-repeat="mod in mods | filter:{name: searchQuery}" href="#/{{mod.slug}}">{{mod.name}}</a>
+                  </div>
+               </div>
+            </div>
+         </div>
       </div>
-    </div>
-
-
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
-       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script>
-
-    <!--[if lt IE 9]>
-    <script src="bower_components/es5-shim/es5-shim.js"></script>
-    <script src="bower_components/json3/lib/json3.min.js"></script>
-    <![endif]-->
-
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
-    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="bower_components/angular-animate/angular-animate.js"></script>
-    <script src="bower_components/angular-touch/angular-touch.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
-
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/about.js"></script>
-        <!-- endbuild -->
-</body>
+      </div>
+      <ng-view>
+      </ng-view>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+      <script src="//cdn.jsdelivr.net/semantic-ui/0.18.0/javascript/semantic.min.js"></script>
+      <link rel="stylesheet" href="//cdn.jsdelivr.net/semantic-ui/0.18.0/css/semantic.min.css">
+      <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+      <script>       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');       ga('create', 'UA-XXXXX-X');       ga('send', 'pageview');    </script>
+      <!--[if lt IE 9]>
+      <script src="bower_components/es5-shim/es5-shim.js"></script>
+      <script src="bower_components/json3/lib/json3.min.js"></script>
+      <![endif]-->
+      <!-- build:js scripts/vendor.js -->
+      <!-- bower:js -->
+      <script src="bower_components/angular/angular.js"></script>
+      <script src="bower_components/angular-resource/angular-resource.js"></script>
+      <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+      <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+      <script src="bower_components/angular-animate/angular-animate.js"></script>
+      <script src="bower_components/angular-touch/angular-touch.js"></script>
+      <script src="bower_components/angular-route/angular-route.js"></script>
+      <!-- endbower -->
+      <!-- endbuild -->
+      <!-- build:js({.tmp,app}) scripts/scripts.js -->
+      <script src="scripts/app.js"></script>
+      <script src="scripts/controllers/main.js"></script>
+      <script src="scripts/controllers/about.js"></script>
+      <script src="scripts/controllers/editdescription.js"></script>
+      <script src="scripts/controllers/sidebar.js"></script>
+      <script src="scripts/controllers/mod.js"></script>
+      <!-- endbuild -->
+   </body>
 </html>

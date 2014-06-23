@@ -2,17 +2,15 @@
 
 ###*
  # @ngdoc function
- # @name opencubesDashboardApp.controller:MainCtrl
+ # @name opencubesDashboardApp.controller:EditdescriptionCtrl
  # @description
- # # MainCtrl
+ # # EditdescriptionCtrl
  # Controller of the opencubesDashboardApp
 ###
 angular.module('opencubesDashboardApp')
-  .controller 'MainCtrl', ($scope) ->
+  .controller 'EditdescriptionCtrl', ($scope) ->
     $scope.awesomeThings = [
       'HTML5 Boilerplate'
       'AngularJS'
       'Karma'
     ]
-    $('.ui.sidebar')
-      .sidebar('show')
