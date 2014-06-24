@@ -41,3 +41,4 @@ window.menu = true
 $ ->
   $('.ui.sidebar')
   .sidebar 'attach events', '#menu-button'
+  
