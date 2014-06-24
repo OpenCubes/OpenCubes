@@ -28,17 +28,16 @@ angular
       .when '/about',
         templateUrl: 'views/about.html'
         controller: 'AboutCtrl'
-      .when '/:slug/edit/description',
+      .when '/:slug/edit/body',
         templateUrl: 'views/editdescription.html'
         controller: 'EditdescriptionCtrl'
       .when '/:slug',
         templateUrl: 'views/mod.html'
         controller: 'ModCtrl'
-      .otherwise
-        redirectTo: '/'
+      #.otherwise
+      #  redirectTo: '/'
 
 window.menu = true
 $ ->
   $('.ui.sidebar')
   .sidebar 'attach events', '#menu-button'
-  

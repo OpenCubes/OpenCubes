@@ -8,12 +8,9 @@
  # Controller of the opencubesDashboardApp
 ###
 angular.module('opencubesDashboardApp')
-  .controller 'ModCtrl',["$scope", "$routeParams", ($scope, $routeParams) ->
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate'
-      'AngularJS'
-      'Karma'
-    ]
+  .controller 'ModCtrl',["$scope", "$routeParams", "$rootScope", ($scope, $routeParams, $rootScope) ->
+    $rootScope.navbarSection = "mod"
+    $rootScope.navbarHrefPre = "#{$routeParams.slug}/"
     $scope.slug = $routeParams.slug
     $('.ui.sidebar')
       .sidebar('hide')

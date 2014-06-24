@@ -20,17 +20,15 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
       <![endif]-->
       <!-- Add your site or application content here -->
-      <div class="ui inverted fixed transparent main menu" >
+      <div class="ui inverted fixed transparent main menu" ng-controller="NavbarCtrl">
          <a class="item" id="menu-button"><i class="icon list layout"></i>
          </a>
          <a class="item" href="/">
          <i class="home icon"></i> Home
          </a>
-         <a href="/search" class="item" data-no-instant>
-         <i class="search icon"></i> Search
-         </a>
-         <a href="/upload" class="item <%- if !@luser then ' need-login' %>" data-no-instant>
-         <i class="upload icon"></i> Submit a mod
+         <a class="item" ng-class="getClass(item.href)" href="#/{{navbarHrefPre || ''}}{{item.href}}" ng-repeat="item in items[navbarSection || 'default'].left">
+           <i class="{{item.icon}}"></i>
+           {{item.text}}
          </a>
          <div class="right menu">
             <a class="item" href="/user"><i class="user icon"></i>Vinz243</a>
@@ -96,6 +94,9 @@
       <script src="scripts/controllers/editdescription.js"></script>
       <script src="scripts/controllers/sidebar.js"></script>
       <script src="scripts/controllers/mod.js"></script>
+      <script src="scripts/services/navbar.js"></script>
+      <script src="scripts/controllers/navbar.js"></script>
+      <script src="scripts/filters/makeurl.js"></script>
       <!-- endbuild -->
    </body>
 </html>
