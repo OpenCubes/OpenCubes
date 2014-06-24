@@ -1,0 +1,25 @@
+{
+  "name": "pagedown-semantic-ui",
+  "version": "1.1.1",
+  "homepage": "https://craftyourmodcorporation.github.io/pagedown/",
+  "authors": [
+    "Vinz243 <vinz243@gmail.com>"
+  ],
+  "description": "A modern fork of pagedown using semantic-ui inspired by stackedit",
+  "main": "pagedown.js",
+  "keywords": [
+    "markdown",
+    "semanic-ui",
+    "markdown-editor",
+    "pagedown",
+    "editor"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
