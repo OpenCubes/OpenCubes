@@ -107,3 +107,18 @@ ul#wmd-button-row {
 #wmd-input, .left.panel {
   margin-top: 80px !important;
 }
+#wmd-button-row {
+  background-color: #5C5C5C !important;
+
+
+}
+.ui.top.sidebar.active {
+  top: 78px;
+  left: 80%;
+  height: 75px !important;
+  .menu {
+    padding-top: 3px;
+    border-radius: 0 0 5px 5px !important;
+
+  }
+}

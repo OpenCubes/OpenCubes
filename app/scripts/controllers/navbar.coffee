@@ -11,9 +11,7 @@ angular.module('opencubesDashboardApp')
   .controller 'NavbarCtrl', ['$scope', 'Navbar', ($scope, Navbar) ->
     $scope.items = Navbar
     $scope.getClass = (path) ->
-      console.log path
-      if window.location.href.endsWith path
-        console.log path, "active"
+      if window.location.href.endsWith(path) and path isnt ''
         return "active"
       else
         return ""

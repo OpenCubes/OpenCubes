@@ -8,7 +8,9 @@
  # Controller of the opencubesDashboardApp
 ###
 angular.module('opencubesDashboardApp')
-  .controller 'EditdescriptionCtrl', ["$scope", "$routeParams", ($scope, $routeParams) ->
+  .controller 'EditdescriptionCtrl', ["$scope", "$routeParams", "$rootScope", ($scope, $routeParams, $rootScope) ->
+    $rootScope.navbarSection = "mod"
+    $rootScope.navbarHrefPre = "#{$routeParams.slug}/"
     $.ajax
       url: "//#{window.config.host}/api/v1/mods/#{$routeParams.slug}"
       dataType: "jsonp"
@@ -18,4 +20,11 @@ angular.module('opencubesDashboardApp')
         converter1 = Markdown.getSanitizingConverter()
         editor1 = new Markdown.Editor converter1
         editor1.run()
+        showed = false
+        $('textarea#wmd-input').on 'input', ->
+          if not showed
+            $('.ui.top.sidebar')
+            .sidebar
+              overlay: true
+            .sidebar 'show'
       ]
