@@ -37,6 +37,9 @@ angular
       .when '/add',
         templateUrl: 'views/addmod.html'
         controller: 'AddmodCtrl'
+      .when '/:slug/edit/meta',
+        templateUrl: 'views/editmeta.html'
+        controller: 'EditmetaCtrl'
       #.otherwise
       #  redirectTo: '/'
 
