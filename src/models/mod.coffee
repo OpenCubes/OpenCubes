@@ -24,6 +24,7 @@ ModSchema = mongoose.Schema(
     id: Schema.Types.ObjectId
     date: Date
   ]
+  published: Boolean
   comments: [
     author:
       type: Schema.Types.ObjectId
@@ -77,6 +78,8 @@ ModSchema.path("summary").validate (value) ->
   return true
 , "Name should be between 7 and 200 characters long"
 ModSchema.path("body").validate (value) ->
+  if not @published
+    return true
   if not value or value is ""
     return false
   if value.length < 50 or value.length > 2e5
@@ -201,6 +204,7 @@ ModSchema.statics =
   ###
   list: (options, cb) ->
     criteria = options.criteria or {}
+    criteria.published = true
     q = @find(criteria).sort(options.sort)
       .limit(options.perPage).populate("author", "username")
       .skip(options.perPage * options.page)
