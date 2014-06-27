@@ -113,7 +113,7 @@ exports.lookup = (userid, slug, options) ->
       # Validate options
       Mod = mongoose.model "Mod"
       query = Mod.findOne({slug: slug})
-      query.select("name slug body description summary comments logo created updatedAt author")
+      query.select("name slug body description summary comments logo created updatedAt author category")
       query.populate("author", "name")
       query.populate("comments.author", "username")
       query.lean()
@@ -246,6 +246,7 @@ Edit a mod
 
 exports.put = (userid, slug, body) ->
   deferred = Q.defer()
+  console.log body
   body = _.pick body, ['name', 'body', 'summary', 'category']
   canThis(userid, "mod", "browse").then (can)->
     # Validate options
