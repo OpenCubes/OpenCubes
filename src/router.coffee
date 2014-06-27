@@ -65,6 +65,11 @@ module.exports = (app) ->
   app.server.get  "/admin/mods", app.controllers.admin.mods
 
   # API
+  app.server.all  "/api*", (req, res, next) ->
+    for own key, value of app.config.api_headers
+      res.header key, value
+    next()
+
   app.server.get  "/api/v1/mods",      app.controllers.api.routes.v1.mods.list
   app.server.get  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.get
   app.server.put  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.edit
