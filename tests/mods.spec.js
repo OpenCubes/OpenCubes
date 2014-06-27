@@ -96,7 +96,8 @@ describe("mods", function() {
     });
   });
   it("should be able to add multiple mapped mods", function(done) {
-    var entries = ['Mod A', 'Mod B', 'Mod C', 'Mod D', 'Mod E', 'Mod F', 'Mod J',
+    var entries = ['Mod A', 'Mod B', 'Mod C', 'Mod D', 'Mod E', 'Mod F',
+      'Mod J',
       'Mod H', 'Mod I', 'Mod J'
     ]
     var promises = entries.map(function(name) {
@@ -231,16 +232,25 @@ describe("mods", function() {
       done();
     });
   });
-  it("should be able to itemize a mod with options and criterias", function(done) {
+  it("should be able to itemize a mod with options and criterias", function(
+    done) {
     api.mods.itemize({}, {}).then(function(results) {
       expect(results.totalCount).toBe(14);
       expect(results.mods.length).toBe(14);
-      return api.mods.itemize({name: "*mod"}, {sort: "-name"})
+      return api.mods.itemize({
+        name: "*mod"
+      }, {
+        sort: "-name"
+      })
     }).then(function(results) {
       expect(results.totalCount).toBe(10);
       expect(results.mods.length).toBe(10);
       expect(results.mods[0].name).toBe("Mod J");
-      return api.mods.itemize({name: "*mod"}, {limit: 5})
+      return api.mods.itemize({
+        name: "*mod"
+      }, {
+        limit: 5
+      })
     }).then(function(results) {
       expect(results.totalCount).toBe(10);
       expect(results.mods.length).toBe(5);
@@ -251,5 +261,20 @@ describe("mods", function() {
       done();
     });
   });
-
+  it("should be able to put mod", function(  done) {
+    var s = chance.sentence({
+      words: 7
+    });
+    api.mods.put(userid,"foo-bar", {author: "537660189caf7cc80d1d1528", summary: s}).then(function(results) {
+      expect(results.query.body.author).toBe(undefined);
+      expect(results.query.body.summary).toBe(s);
+      expect(results.result.author).not.toBe("537660189caf7cc80d1d1528");
+       expect(results.result.summary).toBe(s);
+      return done();
+    }).fail(function(err) {
+      console.log(err);
+      expect(err).toBe(undefined);
+      done();
+    });
+  });
 });
