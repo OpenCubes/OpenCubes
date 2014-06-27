@@ -67,6 +67,7 @@ module.exports = (app) ->
   # API
   app.server.get  "/api/v1/mods",      app.controllers.api.routes.v1.mods.list
   app.server.get  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.get
+  app.server.put  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.edit
 
   app.server.get  "/api/v1/users", app.controllers.api.routes.v1.users.list
   ###

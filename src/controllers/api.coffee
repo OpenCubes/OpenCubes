@@ -26,7 +26,17 @@ exports.routes =
     mods:
       # remove: (req, res) ->
       # create: (req, res) ->
-      # edit: (req, res) ->
+      edit: (req, res) ->
+        app.api.mods.put(req.getUserId(), req.params.slug, req.body).then((status) ->
+          return res.jsonp
+            status: "success",
+            result: status
+        ).fail (err) ->
+          console.log err
+          res.jsonp 500, {
+            status: "error"
+            result: {}
+          }
       get: (req, res) ->
         if req.user then user = req.user._id else user = ""
         app.api.mods.lookup(user, req.params.slug).then((mod) ->
@@ -50,6 +60,7 @@ exports.routes =
         r = parse regexpMeta, regexpCriterias, req.query
 
         app.api.mods.itemize(r.criterias, r.options).then((result) ->
+          
           res.jsonp result
         ).fail (err) ->
           console.log err

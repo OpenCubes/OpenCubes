@@ -236,6 +236,40 @@ exports.edit = ((userid, slug, field, value, callback) ->
 
 
 ).toPromise @
+###
+Edit a mod
+@param userid the current logged user id
+@param slug the slug of the mod
+@param body
+@permission mod:edit
+###
+
+exports.put = (userid, slug, body) ->
+  deferred = Q.defer()
+  body = _.pick body, ['name', 'body', 'summary', 'category']
+  canThis(userid, "mod", "browse").then (can)->
+    # Validate options
+
+    Mod = mongoose.model "Mod"
+
+    Mod.findOne {slug: slug}, (err, mod) ->
+      if can is false and mod.author isnt userid
+        deferred.reject(error.throwError("Forbidden", "UNAUTHORIZED"))
+      if err or not mod
+        return handleResult(err, mod, deferred.reject)
+      mod = _.assign mod, body
+      mod.save (err, mod) ->
+        if err
+          return deferred.reject err
+
+        deferred.resolve
+          result: mod
+          query:
+            body: body
+
+
+  return deferred.promise
+
 
 ###
 Upload a mod
