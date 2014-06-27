@@ -55,6 +55,57 @@ exports.view = ((userid, name, callback) ->
     return
 ).toPromise @
 
+
+exports.itemize = ($criterias, options) ->
+  regexpCriterias = /username|location|public_email/
+  criterias = {}
+  deferred = Q.defer()
+  result = {}
+
+  for own key, value of $criterias
+    if key.match regexpCriterias
+      if value.match /\*((\w|_|-\s)+)/g
+        criterias[key] = new RegExp(/\*((\w|_|-\s)+)/g.exec(value)[1],"gi")
+      else
+        criterias[key] = value.replace((/[^a-zA-Z\s-_]/g), "")
+
+  # Validate options
+  if options.limit > 100
+    deferred.reject(error.throwError("Too much users per page", "INVALID_PARAMS"))
+
+  # start finding
+  User = mongoose.model "User"
+  User.find(criterias)
+  # limit
+  .limit(options.limit or 25)
+  # skip items
+  .skip(options.skip or 0)
+  # sort order
+  .sort(options.sort or "-created")
+  # select and lean
+  .select("username location bio").lean()
+  .exec().then((users) ->
+    result.users = users
+    # count the users
+    return User.count(criterias).exec()
+  , deferred.reject).then((count) ->
+    result.totalCount = count
+    result.status = "success"
+    criterias[k] = criterias[k].toString() for k of criterias
+    result.query =
+      criterias: criterias
+      options: options
+    for user of result.users
+      result.users[user].links =
+        http: "/api/v1/users/#{result.users[user].username}"
+        html: "/users/#{result.users[user].username}"
+      #  logo: "/assets/#{result.users[user].slug}.png"
+    deferred.resolve result
+  , deferred.reject)
+
+  return deferred.promise
+
+
 validators =
   website: /((https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))/g
   bio: /(.){15,100}/g

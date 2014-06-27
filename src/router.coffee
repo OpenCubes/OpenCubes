@@ -67,6 +67,8 @@ module.exports = (app) ->
   # API
   app.server.get  "/api/v1/mods",      app.controllers.api.routes.v1.mods.list
   app.server.get  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.get
+
+  app.server.get  "/api/v1/users", app.controllers.api.routes.v1.users.list
   ###
   app.server.post "/api/ajax/parse.md", app.controllers.api.parseMd
   app.server.get "/api/ajax/login", app.controllers.api.ajaxLogin

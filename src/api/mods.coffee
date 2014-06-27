@@ -14,17 +14,17 @@ Lists the mods
 @permission mod:browse
 ###
 exports.itemize = ($criterias, options) ->
-  regexpCriterias = /name|description|summary|category|slug/
+  regexpCriterias = /name|description|summary|category|slug|author/
   criterias = {}
   deferred = Q.defer()
   result = {}
 
   for own key, value of $criterias
     if key.match regexpCriterias
-      if value.match /\*((\w|_|-\s)+)/g
-        criterias[key] = new RegExp(/\*((\w|_|-\s)+)/g.exec(value)[1],"gi")
+      if value.match /\*((\w|\d|_|-\s)+)/g
+        criterias[key] = new RegExp(/\*((\w|_|\d|-\s)+)/g.exec(value)[1],"gi")
       else
-        criterias[key] = value.replace((/[^a-zA-Z\s-_]/g), "")
+        criterias[key] = value.replace((/[^a-zA-Z\s\d-_]/g), "")
 
   # Validate options
   if options.limit > 100

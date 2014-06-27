@@ -1,4 +1,24 @@
 errors = require("../error")
+
+###
+Parses and validates options according regex
+###
+parse = (regexpMeta, regexpCriterias, query) ->
+  criterias = {}
+  options = {}
+  # push query if validated
+  for own key, value of query
+    if key.match regexpCriterias
+      criterias[key] = value
+
+    else if key.match regexpMeta
+      options[key] = value
+
+  {
+    options: options
+    criterias: criterias
+  }
+
 ### Http api ###
 
 exports.routes =
@@ -24,21 +44,12 @@ exports.routes =
             result: {}
           }
       list: (req, res) ->
-        regexpMeta      = /sort_by|skip|limit/
-        regexpCriterias = /name|description|summary|category|slug/
-        criterias = {}
-        options = {}
-        # push query if validated
-        for own key, value of req.query
-          if key.match regexpCriterias
-            criterias[key] = value
+        regexpMeta      = /sort|skip|limit/
+        regexpCriterias = /name|description|summary|category|slug|author/
 
-          else if key.match regexpMeta
-            switch key
-              when "sort_by" then options.sort  = value
-              when "skip"    then options.skip  = value
-              when "limit"   then options.limit = value
-        app.api.mods.itemize(criterias, options).then((result) ->
+        r = parse regexpMeta, regexpCriterias, req.query
+
+        app.api.mods.itemize(r.criterias, r.options).then((result) ->
           res.jsonp result
         ).fail (err) ->
           console.log err
@@ -51,6 +62,19 @@ exports.routes =
       get: (req, res) ->
       mods: (req, res) ->
       list: (req, res) ->
+        regexpMeta      = /sort_by|skip|limit/
+        regexpCriterias = /username/
+
+        r = parse regexpMeta, regexpCriterias, req.query
+
+        app.api.users.itemize(r.criterias, r.options).then((result) ->
+          res.jsonp result
+        ).fail (err) ->
+          console.log err
+          res.jsonp 500, {
+            status: "error"
+            result: {}
+          }
 
 
 exports.ajaxLogin = (req, res) ->
