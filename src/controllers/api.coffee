@@ -1,4 +1,7 @@
 errors = require("../error")
+qfs = require("q-io/fs")
+fs = require("fs")
+uuid = require("node-uuid")
 
 ###
 Parses and validates options according regex
@@ -100,6 +103,35 @@ exports.routes =
       files:
         get: (req, res) ->
         add: (req, res) ->
+          console.log req.getUserId()
+          if req.getUserId() is "" or not req.getUserId()
+            res.send 401
+          path = req.params[0]
+          slug = req.params.slug
+          versionName = req.params.name.replace "_", "#"
+
+          uid = uuid.v4()
+          # Get the params
+          newfile = __dirname.getParent() + "/uploads/" + uid
+          file = req.files.file
+
+
+          handleErr = (err) ->
+            console.log(err)
+            return res.send 500, {error: "error"}
+
+
+          # Do the job
+          console.log "renaming"
+          qfs.rename(file.path, newfile).then(() ->
+            console.log "renamed"
+            return app.api.mods.addFile(req.getUserId(), slug, uid, path, versionName)
+          , handleErr).then((doc) ->
+            console.log "added"
+            res.send 200
+          , handleErr).fail handleErr
+
+          return
         remove: (req, res) ->
 
 exports.ajaxLogin = (req, res) ->

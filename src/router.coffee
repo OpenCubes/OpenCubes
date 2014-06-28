@@ -80,7 +80,7 @@ module.exports = (app) ->
   app.server.get   "/api/v1/versions/:slug/:name",  app.controllers.api.routes.v1.versions.get
   app.server.post  "/api/v1/versions/:slug/:name",  app.controllers.api.routes.v1.versions.add
   app.server.get   "/api/v1/versions/:slug/:name/*",  app.controllers.api.routes.v1.versions.files.get
-  app.server.post  "/api/v1/versions/:slug/:name/*",  app.controllers.api.routes.v1.versions.files.add
+  app.server.post  "/api/v1/versions/:slug/:name/*",  app.bodyParser, app.controllers.api.routes.v1.versions.files.add
 
 
   ###
