@@ -60,7 +60,7 @@ exports.routes =
         r = parse regexpMeta, regexpCriterias, req.query
 
         app.api.mods.itemize(r.criterias, r.options).then((result) ->
-          
+
           res.jsonp result
         ).fail (err) ->
           console.log err
@@ -86,7 +86,21 @@ exports.routes =
             status: "error"
             result: {}
           }
-
+    versions:
+      list: (req, res) ->
+        app.api.mods.getVersions(req.params.slug).then (r) ->
+          console.log r
+          res.jsonp r
+      get: (req, res) ->
+        app.api.mods.getVersion(req.params.slug, req.params.name.replace("_", "#")).then (r) ->
+          res.jsonp r
+      add: (req, res) ->
+        app.api.mods.addVersion(req.params.slug, req.params.name.replace("_", "#")).then (r) ->
+          res.jsonp r
+      files:
+        get: (req, res) ->
+        add: (req, res) ->
+        remove: (req, res) ->
 
 exports.ajaxLogin = (req, res) ->
   res.render "forms/login.ect"

@@ -75,6 +75,14 @@ module.exports = (app) ->
   app.server.put  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.edit
 
   app.server.get  "/api/v1/users", app.controllers.api.routes.v1.users.list
+
+  app.server.get   "/api/v1/versions/:slug",  app.controllers.api.routes.v1.versions.list
+  app.server.get   "/api/v1/versions/:slug/:name",  app.controllers.api.routes.v1.versions.get
+  app.server.post  "/api/v1/versions/:slug/:name",  app.controllers.api.routes.v1.versions.add
+  app.server.get   "/api/v1/versions/:slug/:name/*",  app.controllers.api.routes.v1.versions.files.get
+  app.server.post  "/api/v1/versions/:slug/:name/*",  app.controllers.api.routes.v1.versions.files.add
+
+
   ###
   app.server.post "/api/ajax/parse.md", app.controllers.api.parseMd
   app.server.get "/api/ajax/login", app.controllers.api.ajaxLogin

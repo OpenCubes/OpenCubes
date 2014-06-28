@@ -412,15 +412,12 @@ exports.getFiles = ((slug, version, callback) ->
 ).toPromise @
 ###
 Get the versions of the mod
-@param userid the current logged user id
 @param slug the slug of the mod
-@param uid the uid (name) of the files loacted in uploads
-@param path the target path
-@param versionName the version of the mod
 @permission mod:edit
 ###
 
-exports.getVersions = ((slug, callback) ->
+exports.getVersions = (slug) ->
+  deferred = Q.defer()
   # Validate options
   Mod = mongoose.model "Mod"
   Version = mongoose.model "Version"
@@ -430,10 +427,65 @@ exports.getVersions = ((slug, callback) ->
   query.exec().then((mod) ->
     return Version.find({mod: mod._id}).exec()
   ).then((versions) ->
+    console.log versions
     data = []
     i = 0
     data[i++] = version.toObject() for version in versions when version isnt undefined
-    callback data
+    deferred.resolve data
   )
+  deferred.promise
 
-).toPromise @
+###
+Get the version of the mod
+@param userid the current logged user id
+@param slug the slug of the mod
+@param name the version of the mod
+@permission mod:edit
+###
+
+exports.getVersion = (slug, name) ->
+  deferred = Q.defer()
+  # Validate options
+  Mod = mongoose.model "Mod"
+  Version = mongoose.model "Version"
+
+  query = Mod.findOne({slug: slug})
+  query.select("name slug")
+  query.exec().then((mod) ->
+    return Version.findOne({mod: mod._id, name: name}).exec()
+  ).then((versions) ->
+    deferred.resolve versions
+  )
+  deferred.promise
+
+
+###
+Get the version of the mod
+@param userid the current logged user id
+@param slug the slug of the mod
+@param name the version of the mod
+@permission mod:edit
+###
+
+exports.addVersion = (slug, name) ->
+  deferred = Q.defer()
+  # Validate options
+  Mod = mongoose.model "Mod"
+  Version = mongoose.model "Version"
+  modid = undefined
+  query = Mod.findOne({slug: slug})
+  query.select("name slug")
+  query.exec().then((mod) ->
+    modid = mod._id
+    return Version.findOne({mod: mod._id, name: name}).exec()
+  ).then((version) ->
+    if version
+      return deferred.resolve version
+    version = new Version()
+    version.name = name
+    version.mod = modid
+    version.save (err, v) ->
+      if err then deferred.reject err
+      deferred.resolve v
+  )
+  deferred.promise
