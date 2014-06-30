@@ -119,6 +119,67 @@ ul#wmd-button-row {
   .menu {
     padding-top: 3px;
     border-radius: 0 0 5px 5px !important;
-
   }
+
+}
+.ui.fsidebar.wide {
+  box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.2);
+  margin-top: 58px !important;
+  margin-left: 15px !important;
+  position: fixed;
+  height: 100% !important;
+  border-radius: 0px !important;
+  box-sizing: border-box;
+  overflow-y: auto;
+  top: 0px;
+  left: 0px;
+  z-index: 999;
+  width: 380px;
+  transition: margin-left 0.3s ease 0s, margin-top 0.3s ease 0s;
+  .menu {
+    border-radius: 0px !important;
+    padding-top: 5px;
+    width: 97%;
+    overflow-y: hidden;
+    height: 93% !important;
+    width: 100%;
+    .input {
+      width: 100%;
+      padding: 0 0 0 0 !important;
+      margin-bottom: 0px !important;
+      margin-top: 0px !important;
+      border-width: 0 !important;
+      input {
+        border-width: 0 !important;
+      }
+    }
+    .item {
+      border-bottom: 1px solid #EDECE4;
+      padding: 10px 5px 10px 20px !important;
+      strong {
+        font-size: 20px;
+      }
+      div:not(.input) {
+        margin-bottom: 15px !important;
+        margin-top: 15px !important;
+      }
+    }
+    .menu {
+      overflow-y: scroll;
+    }
+  }
+}
+.content{
+  background-color: White;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.2);
+  -moz-box-shadow:    0px 0px 5px 0px rgba(50, 50, 50, 0.2);
+  box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.2);
+  height: 95%;
+  padding: 20px 20px;
+  margin-left: 382px;
+}
+body, html {
+  height: 97%;
+  padding: 25px 5px 5px 5px;
+  background-color: #EDECE4;
 }

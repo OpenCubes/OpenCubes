@@ -9,10 +9,3 @@
 ###
 angular.module('opencubesDashboardApp')
   .controller 'MainCtrl', ($scope) ->
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate'
-      'AngularJS'
-      'Karma'
-    ]
-    $('.ui.sidebar')
-      .sidebar('show')

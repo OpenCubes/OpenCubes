@@ -36,36 +36,29 @@
          </div>
       </div>
       <div class="container">
-         <div class="ui sidebar">
+         <div class="ui wide active fsidebar">
             <div class="ui vertical menu" ng-controller="SidebarCtrl">
-               <a class="teal item">
-                  Inbox
-                  <div class="ui teal label">1</div>
-               </a>
-               <a class="item">
-                  Spam
-                  <div class="ui label">51</div>
-               </a>
-               <a class="item">
-                  Updates
-                  <div class="ui label">1</div>
-               </a>
                <div class="item">
                   <div class="ui small icon input">
                      <input placeholder="Search mods..." type="text" ng-model="searchQuery">
                      <i class="search icon">
                      </i>
                   </div>
-                  <div class="menu">
-                     <a class="item" ng-repeat="mod in mods | filter:{name: searchQuery}" href="#/{{mod.slug}}">{{mod.name}}</a>
-                  </div>
                </div>
+                  <div class="menu">
+                     <a class="item" ng-repeat="mod in mods | filter:{name: searchQuery}" href="#/{{mod.slug}}">
+                       <strong class="mod-name">{{mod.name}}</strong>
+                       <div class="mod-summary">{{mod.summary.slice(0, 60)}}...</div>
+                     </a>
+                  </div>
             </div>
          </div>
       </div>
       </div>
+      <div class="content">
       <ng-view>
       </ng-view>
+    </div>
       <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
       <script src="//cdn.jsdelivr.net/semantic-ui/0.18.0/javascript/semantic.min.js"></script>
       <link rel="stylesheet" href="//cdn.jsdelivr.net/semantic-ui/0.18.0/css/semantic.min.css">
@@ -99,6 +92,8 @@
       <script src="scripts/filters/makeurl.js"></script>
       <script src="scripts/controllers/addmod.js"></script>
       <script src="scripts/controllers/editmeta.js"></script>
+      <script src="scripts/controllers/editversion.js"></script>
+      <script src="scripts/directives/fileread.js"></script>
       <!-- endbuild -->
    </body>
 </html>

@@ -40,10 +40,11 @@ angular
       .when '/:slug/edit/meta',
         templateUrl: 'views/editmeta.html'
         controller: 'EditmetaCtrl'
+      .when '/:slug/edit/versions',
+        templateUrl: 'views/editversion.html'
+        controller: 'EditversionCtrl'
       #.otherwise
       #  redirectTo: '/'
 
 window.menu = true
 $ ->
-  $('.ui.sidebar')
-  .sidebar 'attach events', '#menu-button'
