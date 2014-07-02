@@ -1,50 +1,12 @@
-'use strict'
+OpencubesDashboard = window.OpencubesDashboard = Ember.Application.create()
 
-###*
- # @ngdoc overview
- # @name opencubesDashboardApp
- # @description
- # # opencubesDashboardApp
- #
- # Main module of the application.
-###
-window.config = {
-  host: "localhost:1234"
-}
-angular
-  .module('opencubesDashboardApp', [
-    'ngAnimate',
-    'ngCookies',
-    'ngResource',
-    'ngRoute',
-    'ngSanitize',
-    'ngTouch'
-  ])
-  .config ($routeProvider) ->
-    $routeProvider
-      .when '/',
-        templateUrl: 'views/main.html'
-        controller: 'MainCtrl'
-      .when '/about',
-        templateUrl: 'views/about.html'
-        controller: 'AboutCtrl'
-      .when '/:slug/edit/body',
-        templateUrl: 'views/editdescription.html'
-        controller: 'EditdescriptionCtrl'
-      .when '/:slug',
-        templateUrl: 'views/mod.html'
-        controller: 'ModCtrl'
-      .when '/add',
-        templateUrl: 'views/addmod.html'
-        controller: 'AddmodCtrl'
-      .when '/:slug/edit/meta',
-        templateUrl: 'views/editmeta.html'
-        controller: 'EditmetaCtrl'
-      .when '/:slug/edit/versions',
-        templateUrl: 'views/editversion.html'
-        controller: 'EditversionCtrl'
-      #.otherwise
-      #  redirectTo: '/'
-
-window.menu = true
-$ ->
+# Order and include as you please.
+require 'scripts/controllers/*'
+require 'scripts/store'
+require 'scripts/models/*'
+require 'scripts/adapters/*'
+require 'scripts/fixtures/*'
+require 'scripts/routes/*'
+require 'scripts/components/*'
+require 'scripts/views/*'
+require 'scripts/router'

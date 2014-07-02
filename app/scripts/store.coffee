@@ -1,0 +1,1 @@
+OpencubesDashboard.ApplicationAdapter = DS.FixtureAdapter
