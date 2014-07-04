@@ -14,13 +14,24 @@ Route for viewing mod
 exports.view = (req, res) ->
   if req.user then user = req.user._id else user = ""
   app.api.mods.lookup(user, req.params.id, {cart: req.cookies.cart_id, loggedUser:  req.user, parse: true}).then((mod) ->
-    console.log mod
     res.render "view.ect",
       mod: mod
       canEdit: (if req.user then if mod.author is req.user.id or req.user.role is "admin" then true else false)
       title: mod.name + " - OpenCubes"
     return
   ).fail (err) ->
+    errors.handleHttp err, req, res, "text"
+
+###
+Route for browsing trending mods mod
+###
+exports.browse = (req, res) ->
+  app.api.mods.explore().then((mods) ->
+    res.render "mods/explore.ect",
+      mods: mods
+      title: "Browse mods - OpenCubes"
+    return
+  , console.log).fail (err) ->
     errors.handleHttp err, req, res, "text"
 
 # lists the mods

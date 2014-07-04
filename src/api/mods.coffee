@@ -6,7 +6,58 @@ errors = error = require "../error"
 _  = require("lodash")
 parse = require "../parser"
 Q = require "q"
+async = require "async"
 
+###
+Returns an user
+@param userid the current logged user
+@param name the name of the user
+@permission user:browse
+###
+exports.explore = () ->
+  deferred = Q.defer()
+  data = {}
+  Mod = mongoose.model("Mod")
+  Star = mongoose.model "Star"
+  async.parallel [
+    (callback) ->
+      Mod.find().select("name vote_count created logo slug").sort("-vote_count").limit(6).exec (err, mods) ->
+        data.popularMods = mods
+        callback err
+    (callback) ->
+      Mod.find().select("name vote_count created logo slug").sort("-created").limit(6).exec (err, mods) ->
+        data.lastestMods = mods
+        callback err
+    (callback) ->
+      date = new Date Date.now()
+      Star.aggregate [
+        {
+          $match:
+            "time_bucket.month": "#{date.getFullYear()}-#{date.getMonth()}"
+        }
+        {
+          $group:
+            _id: "$mod"
+            stars:
+              "$sum": 1
+        }
+
+      ], (err, docs) ->
+        Star.populate docs,
+          path: "_id",
+          model: "Mod",
+          select: "slug name description created last_updated"
+        , (err, docs) ->
+          data.trendingMods = []
+          for doc in docs
+            doc._id.vote_count = doc.stars
+            data.trendingMods.push doc._id
+          callback err
+
+  ], (err) ->
+    if err then return deferred.reject err
+    deferred.resolve data
+  deferred.promise
 ###
 Lists the mods
 @param criterias the criterias
@@ -300,41 +351,38 @@ Star a mod
 @permission mod:star
 ###
 
-exports.star = ((userid, slug, callback) ->
+exports.star = (userid, slug, date=Date.now(), dont_check=false) ->
+  deferred = Q.defer()
   canThis(userid, "mod", "star").then (can)->
-    try
-      if can is false
-        callback(error.throwError("Forbidden", "UNAUTHORIZED"))
-      # Validate options
-      Mod = mongoose.model "Mod"
-      q = Mod.findOne
-        slug: slug
-        "stargazers.id": userid
-      ,
-        "stargazers.$": 1
-      q.exec (err, mod) ->
-        return callback err  if err
-        Mod.findOne
-          slug: slug
-        , (err, doc) ->
-          return callback err  if err
-          if !mod
-            try
-              doc.stargazers.push
-                id: userid
-                date: Date.now()
-              doc.vote_count = (doc.vote_count or 0) + 1
-            catch err
-              console.log err
-          else
-            doc.vote_count--
-            doc.stargazers.id(mod.stargazers[0]._id).remove()
-          doc.save (err, mod) ->
-            errors.handleResult err, mod, callback
-    catch err
-      console.log err
-
-).toPromise @
+    if can is false
+      deferred.reject(error.throwError("Forbidden", "UNAUTHORIZED"))
+    # Validate options
+    Mod = mongoose.model "Mod"
+    mod = {}
+    Star = mongoose.model "Star"
+    q = Mod.findOne
+      slug: slug
+    q.select "slug"
+    q.exec().then (doc) ->
+      mod = doc
+      Star.findOne
+        user: userid
+        mod: mod._id
+      .exec()
+    .then (star) ->
+      if star and not dont_check
+        mod.vote_count--
+        mod.save()
+        star.remove()
+        return
+      star = new Star
+        user: userid
+        mod: mod._id
+        date: date
+      star.save()
+      deferred.resolve star
+    , deferred.reject
+  deferred.promise
 
 ###
 Search a mod

@@ -2,7 +2,9 @@ auth = require("./middlewares/auth.js")
 flood = require("./middlewares/flood.js")
 module.exports = (app) ->
   timer = new Date().getTime()
-  app.server.get "/(page/:page)?", app.controllers.mods.index
+  app.server.get "/", app.controllers.mods.browse
+  app.server.get "/browse", app.controllers.mods.browse
+  app.server.get "/mods/(page/:page)?", app.controllers.mods.index
 
   app.server.get "/search", app.controllers.mods.search
   app.server.get "/mods/:id", app.controllers.mods.view
@@ -65,10 +67,6 @@ module.exports = (app) ->
   app.server.get  "/admin/mods", app.controllers.admin.mods
 
   # API
-  app.server.all  "/api*", (req, res, next) ->
-    for own key, value of app.config.api_headers
-      res.header key, value
-    next()
 
   app.server.get  "/api/v1/mods",      app.controllers.api.routes.v1.mods.list
   app.server.get  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.get
@@ -78,20 +76,12 @@ module.exports = (app) ->
 
   app.server.get   "/api/v1/versions/:slug",  app.controllers.api.routes.v1.versions.list
   app.server.get   "/api/v1/versions/:slug/:name",  app.controllers.api.routes.v1.versions.get
-  app.server.post  "/api/v1/versions/:slug/:name",  app.controllers.api.routes.v1.versions.add
+  app.server.post  "/api/v1/versions/:slug",  app.controllers.api.routes.v1.versions.add
   app.server.get   "/api/v1/versions/:slug/:name/*",  app.controllers.api.routes.v1.versions.files.get
-  app.server.post  "/api/v1/versions/:slug/:name/*",  app.bodyParser, app.controllers.api.routes.v1.versions.files.add
+  app.server.post  "/api/v1/versions/:slug/:name",  app.bodyParser, app.controllers.api.routes.v1.versions.files.add
 
-
-  ###
-  app.server.post "/api/ajax/parse.md", app.controllers.api.parseMd
-  app.server.get "/api/ajax/login", app.controllers.api.ajaxLogin
-  app.server.get "/api/ajax/glyphicons", app.controllers.api.glyphicons
   app.server.post "/api/ajax/comments/:slug/add", auth.requiresLogin, app.bodyParser, app.controllers.comments.addComment
 
-  app.server.get "/api/mods/search/:string", app.controllers.api.search
-  app.server.get "/api/mods/view/:id.json", app.controllers.api.view
-  app.server.get "/api/mods/list(/perPage:perPage)?/page:page.json", flood(1000, 2, 1000), app.controllers.api.list
 
   app.server.get "/api/v1/users/\\$.json", (req, res) ->
     if req.user
@@ -109,7 +99,7 @@ module.exports = (app) ->
   app.server.get "/api/cart/:cart/push/:id", app.controllers.api.addToCart
   app.server.get "/api/cart/create", app.controllers.api.createCart
   app.server.get "/api/cart/:cart", app.controllers.api.lsCart
-  ###
+
   app.server.get "/help/(:section)?.md", app.controllers.help.raw
   app.server.get "/help/(:section)?", app.controllers.help.getHelp
 

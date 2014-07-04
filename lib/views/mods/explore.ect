@@ -1,0 +1,30 @@
+<% extend 'layout-wide.ect' %>
+    <% include 'utils/flash.ect'%>
+
+<div class="ui two column relaxed grid">
+  <div class="column">
+    <div class="ui fluid segment">
+      <h4>Trending mods this month</h4>
+      <div class="ui relaxed list b-w" >
+        <% include 'mods/items/item-tiny.ect' %>
+        <% for mod in @mods.trendingMods : %>
+        <%- @tinyModItem(mod, {stars: true, author: false, labels: false}) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="ui fluid segment">
+      <h4>Lastest mods</h4>
+      <div class="ui relaxed list b-w" >
+        <% include 'mods/items/item-tiny.ect' %>
+        <% for mod in @mods.lastestMods : %>
+        <%- @tinyModItem(mod, {stars: true, author: false, labels: false}) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<% block 'navbar' : %>
+<% include 'navs/main-nav.ect'%>
+<% end %>

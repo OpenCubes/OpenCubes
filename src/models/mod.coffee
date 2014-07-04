@@ -5,6 +5,8 @@ slug = require("mongoose-slug")
 timestamps = require("mongoose-times")
 fs = require("fs")
 _ = require "lodash"
+
+
 ModSchema = mongoose.Schema(
   name: String
   version: String
@@ -19,11 +21,7 @@ ModSchema = mongoose.Schema(
   created: Date
   lastUpdated: Date
   category: String
-  vote_count: Number
-  stargazers: [
-    id: Schema.Types.ObjectId
-    date: Date
-  ]
+  stars: Number
   published: Boolean
   comments: [
     author:
@@ -204,7 +202,7 @@ ModSchema.statics =
   ###
   list: (options, cb) ->
     criteria = options.criteria or {}
-    criteria.published = true
+    #criteria.published = true
     q = @find(criteria).sort(options.sort)
       .limit(options.perPage).populate("author", "username")
       .skip(options.perPage * options.page)

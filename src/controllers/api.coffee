@@ -98,15 +98,16 @@ exports.routes =
         app.api.mods.getVersion(req.params.slug, req.params.name.replace("_", "#")).then (r) ->
           res.jsonp r
       add: (req, res) ->
-        app.api.mods.addVersion(req.params.slug, req.params.name.replace("_", "#")).then (r) ->
+        app.api.mods.addVersion(req.params.slug, req.body.name).then (r) ->
           res.jsonp r
       files:
         get: (req, res) ->
         add: (req, res) ->
-          console.log req.getUserId()
+
+          console.log "'#{req.getUserId()}'"
           if req.getUserId() is "" or not req.getUserId()
-            res.send 401
-          path = req.params[0]
+            return res.send 401
+          path = req.body.path
           slug = req.params.slug
           versionName = req.params.name.replace "_", "#"
 
