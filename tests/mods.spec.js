@@ -145,6 +145,7 @@ describe("mods", function() {
   });
 
   it("should able to cart the mod", function(done) {
+
     api.carts.create().then(function(cart) {
       api.carts.addTo(cart._id, modid).then(function() {
         api.carts.view(cart._id).then(function(cart) {
@@ -163,19 +164,19 @@ describe("mods", function() {
       done();
     });
   });
-  /**
-    Doesn't work since mockgoose doesn't support nested refs update
-    it("should be able to unstar the mod", function (done) {
-        console.log("unstarring...")
-        api.mods.star(userid, "foo").then(function (mod) {
+  /*
+  Doesn't works, don't know why.
+  it("should be able to unstar the mod", function (done) {
+        api.mods.star(userid, "foo-bar").then(function (mod) {
+          console.log("mod", mod)
+
             expect(mod.vote_count).toBe(0);
             done();
-        }).fail(function (err) {
+        }, console.log).fail(function (err) {
             expect(err).toEqual(undefined);
             done();
-        });
-    });
-    */
+        }, console.log);
+    });*/
   it("shouldn't be able to push a mod with no name", function(done) {
     api.mods.add(userid, {
       name: "",

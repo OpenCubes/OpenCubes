@@ -36,7 +36,6 @@ exports.browse = (req, res) ->
 
 # lists the mods
 exports.index = (req, res) ->
-  console.log "index"
   page = ((if req.params.page > 0 then req.param("page") else 1)) - 1
   sort = (req.param("sort")) or "date"
   filter = (req.param("filter")) or "all"

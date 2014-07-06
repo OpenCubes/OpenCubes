@@ -19,13 +19,14 @@ exports.explore = () ->
   data = {}
   Mod = mongoose.model("Mod")
   Star = mongoose.model "Star"
+  User = mongoose.model "User"
   async.parallel [
     (callback) ->
-      Mod.find().select("name vote_count created logo slug").sort("-vote_count").limit(6).exec (err, mods) ->
+      Mod.find().select("name vote_count author created logo slug").sort("-vote_count").limit(6).exec (err, mods) ->
         data.popularMods = mods
         callback err
     (callback) ->
-      Mod.find().select("name vote_count created logo slug").sort("-created").limit(6).exec (err, mods) ->
+      Mod.find().select("name vote_count author created logo slug").sort("-created").limit(6).exec (err, mods) ->
         data.lastestMods = mods
         callback err
     (callback) ->
@@ -46,13 +47,19 @@ exports.explore = () ->
         Star.populate docs,
           path: "_id",
           model: "Mod",
-          select: "slug name description created last_updated"
+          select: "slug name summary author created lastUpdated"
         , (err, docs) ->
           data.trendingMods = []
           for doc in docs
             doc._id.vote_count = doc.stars
             data.trendingMods.push doc._id
-          callback err
+          User.populate data.trendingMods,
+            path: "author"
+            select: "username"
+          , (err, docs) ->
+            data.trendingMods = docs
+            callback err
+
 
   ], (err) ->
     if err then return deferred.reject err
@@ -120,23 +127,21 @@ Lists the mods and pass them to the then with a `totalCount` property that count
 @param options the options
 @permission mod:browse
 ###
-exports.list = ((userid, options, callback) ->
-  canThis(userid, "mod", "browse").then (can)->
-    if can is false
-      callback(error.throwError("Forbidden", "UNAUTHORIZED"))
-    # Validate options
-    if options.perPage > 50
-      callback(error.throwError("Too much mods per page", "INVALID_PARAMS"))
-    Mod = mongoose.model "Mod"
-    Mod.list options, (err, mods) ->
-      return callback error.throwError(err, "DATABASE_ERROR") if err
-      Mod.count().exec (err, count) ->
-        mods.totalCount = count
-        errors.handleResult err, mods, callback
+exports.list = (userid, options, callback) ->
+  deferred = Q.defer()
+  # Validate options
+  if options.perPage > 50
+    deferred.reject(error.throwError("Too much mods per page", "INVALID_PARAMS"))
+  Mod = mongoose.model "Mod"
+  Mod.list options, (err, mods) ->
+    return deferred.reject error.throwError(err, "DATABASE_ERROR") if err
+    Mod.count().exec (err, count) ->
+      mods.totalCount = count
+      if err
+        deferred.reject err
+      deferred.resolve mods
 
-    return
-).toPromise @
-
+  deferred.promise
 
 ###
 Return a mod description, title and quick informations
@@ -362,7 +367,7 @@ exports.star = (userid, slug, date=Date.now(), dont_check=false) ->
     Star = mongoose.model "Star"
     q = Mod.findOne
       slug: slug
-    q.select "slug"
+    q.select "slug name author vote_count logo"
     q.exec().then (doc) ->
       mod = doc
       Star.findOne
@@ -374,13 +379,17 @@ exports.star = (userid, slug, date=Date.now(), dont_check=false) ->
         mod.vote_count--
         mod.save()
         star.remove()
+        deferred.resolve mod
         return
       star = new Star
         user: userid
         mod: mod._id
         date: date
       star.save()
-      deferred.resolve star
+      mod.vote_count = (mod.vote_count or 0) + 1
+      mod.save(console.log)
+      deferred.resolve mod
+      return
     , deferred.reject
   deferred.promise
 

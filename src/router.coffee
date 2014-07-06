@@ -4,7 +4,7 @@ module.exports = (app) ->
   timer = new Date().getTime()
   app.server.get "/", app.controllers.mods.browse
   app.server.get "/browse", app.controllers.mods.browse
-  app.server.get "/mods/(page/:page)?", app.controllers.mods.index
+  app.server.get "/mods(/page/:page)?", app.controllers.mods.index
 
   app.server.get "/search", app.controllers.mods.search
   app.server.get "/mods/:id", app.controllers.mods.view

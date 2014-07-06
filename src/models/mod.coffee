@@ -8,32 +8,34 @@ _ = require "lodash"
 
 
 ModSchema = mongoose.Schema(
-  name: String
-  version: String
+  name:        String
+  version:     String
   author:
     type: Schema.Types.ObjectId
     ref: "User"
-
-  summary: String
-  body: String
-  logo: String
-  dl_id: String
-  created: Date
+  vote_count:  Number
+  summary:     String
+  body:        String
+  logo:        String
+  created:     Date
   lastUpdated: Date
-  category: String
-  stars: Number
-  published: Boolean
+  category:    String
+  stars:       Number
+  published:   Boolean
   comments: [
     author:
       type: Schema.Types.ObjectId
       ref: "User"
-    title: String
-    body: String
-    date: Date
+    title:     String
+    body:      String
+    date:      Date
   ]
 )
 
 ModSchema.pre 'save', true, (next, done) ->
+  if @modifiedPaths().indexOf("vote_count") isnt -1 or @modifiedPaths().length is 0
+    next()
+    done()
   Feed = mongoose.model "Feed"
   type = if @isNew then "post" else "edition"
   feed = new Feed
@@ -62,6 +64,8 @@ ModSchema.path("summary").required true, "Mod summary cannot be blank"
 ModSchema.plugin slug("name")
 ModSchema.plugin timestamps
 ModSchema.path("name").validate (value) ->
+  if not @isSelected "summary"
+    return true
   if not value or value is ""
     return false
   if value.length < 5 or value.length > 40
@@ -69,6 +73,8 @@ ModSchema.path("name").validate (value) ->
   return true
 , "Name should be between 5 and 40 characters long"
 ModSchema.path("summary").validate (value) ->
+  if not @isSelected "summary"
+    return true
   if not value or value is ""
     return false
   if value.length < 7 or value.length > 200
@@ -76,7 +82,7 @@ ModSchema.path("summary").validate (value) ->
   return true
 , "Name should be between 7 and 200 characters long"
 ModSchema.path("body").validate (value) ->
-  if not @published
+  if not @published or not @isSelected "body"
     return true
   if not value or value is ""
     return false
@@ -90,9 +96,13 @@ escapeHtml = (str) ->
 
 ModSchema.pre "save", (next) ->
   doc = @
-  doc.name = escapeHtml(doc.name)
-  doc.summary = escapeHtml(doc.summary)
-  doc.body = escapeHtml(doc.body)
+  # Only if selected
+  if @isSelected "name"
+    doc.name = escapeHtml(doc.name)
+  if @isSelected "summary"
+    doc.summary = escapeHtml(doc.summary)
+  if @isSelected "body"
+    doc.body = escapeHtml(doc.body)
   return next()
 
 
