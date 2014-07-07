@@ -13,8 +13,23 @@ angular.module('opencubesDashboardApp')
     $rootScope.navbarSection = "mod"
     $('.ui.sidebar').sidebar 'hide'
     $rootScope.navbarHrefPre = "#{$routeParams.slug}/"
+    removeQueue = {}
+    $scope.delete = (uid, $event) ->
+      selector = "[data-uid=#{uid}]"
+      $("#{selector} .shape").shape('flip over');
+      if not removeQueue[uid]
+        removeQueue[uid] = true
+        $(selector).animate opacity: 0, 5000, 'linear', ->
+          $("#{selector} td").animate 'font-size': '0px', 500
+          $("#{selector} .button").remove()
+
+        return
+      $(selector).stop()
+      $(selector).animate opacity: 1, 7500
+
+      return
     $scope.upload = (version, $event) ->
-      $el = $ event.target
+      $el = $ $event.target
       $el.html '<i class="loading icon"></i> Please wait...'
       vSlug = version.replace('#', '_')
       selector = "#file-#{vSlug.replace(/\./g, '\\.')}"

@@ -6,10 +6,17 @@
     <th>Actions</th>
   </tr></thead>
   <tbody>
-    <tr ng-repeat="file in version.files">
+    <tr ng-repeat="file in version.files" data-uid="{{file.uid}}">
       <td>{{file.path}}</td>
       <td>{{file.uid}}</td>
-      <td>delete</td>
+      <td><div class="ui labeled icon basic small button" ng-click="delete(file.uid, $event)">
+
+<div class="ui text shape">
+  <div class="sides">
+    <div class="active ui header side"><i class="trash icon"></i></div>
+    <div class="ui header side"><i class="undo icon"></i></div>
+  </div>
+</div></div></td>
     </tr>
       <tr >
         <td class="ui small input"><input type="text" ng-model="forms[version.name].path" /> </td>

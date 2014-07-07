@@ -43,6 +43,9 @@ angular
       .when '/:slug/edit/versions',
         templateUrl: 'views/editversion.html'
         controller: 'EditversionCtrl'
+      .when '/:slug/stats',
+        templateUrl: 'views/stats.html'
+        controller: 'StatsCtrl'
       #.otherwise
       #  redirectTo: '/'
 

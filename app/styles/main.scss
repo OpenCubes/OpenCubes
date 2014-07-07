@@ -100,21 +100,10 @@ body {
     border-bottom: 0;
   }
 }
-ul#wmd-button-row {
-  margin-top: 40px;
-  padding-left: 38px;
-}
-#wmd-input, .left.panel {
-  margin-top: 80px !important;
-}
-#wmd-button-row {
-  background-color: #5C5C5C !important;
 
-
-}
 .ui.top.sidebar.active {
-  top: 78px;
-  left: 80%;
+  top: 43px;
+  left: 75%;
   height: 75px !important;
   .menu {
     padding-top: 3px;
@@ -182,4 +171,16 @@ body, html {
   height: 97%;
   padding: 25px 5px 5px 5px;
   background-color: #EDECE4;
+}
+tr.up {
+  -moz-transform: translateX(0px) translateY(-50px);
+  -webkit-transform: translateX(0px) translateY(-50px);
+  -o-transform: translateX(0px) translateY(-50px);
+  -ms-transform: translateX(0px) translateY(-50px);
+  transform: translateX(0px) translateY(-50px);
+  -webkit-transition: all 500ms ease;
+  -moz-transition: all 500ms ease;
+  -ms-transition: all 500ms ease;
+  -o-transition: all 500ms ease;
+  transition: all 500ms ease;
 }

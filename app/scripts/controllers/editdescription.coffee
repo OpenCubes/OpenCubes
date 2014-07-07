@@ -26,10 +26,9 @@ angular.module('opencubesDashboardApp')
       success: (data) ->
         $scope.mod = data.result
         $scope.$digest()
-        converter1 = Markdown.getSanitizingConverter()
-        editor1 = new Markdown.Editor converter1
-        editor1.run()
         showed = false
+        $('#editor').setupEditor data.result.body, false
+        $('#editor .menu').removeClass "inverted"
         $('textarea#wmd-input').on 'input', ->
           if not showed
             $('.ui.top.sidebar')
