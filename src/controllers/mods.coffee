@@ -6,6 +6,7 @@ URI = require("URIjs")
 check = require("check-types")
 archiver = require("archiver")
 send = require("send");
+Q = require "q"
 errors = error = require "../error"
 
 ###
@@ -26,7 +27,13 @@ exports.view = (req, res) ->
 Route for browsing trending mods mod
 ###
 exports.browse = (req, res) ->
-  app.api.mods.explore().then((mods) ->
+  Q.all([
+    app.api.mods.getLatestMods()
+    app.api.mods.getTrendingMods()
+  ]).then((data) ->
+    mods =
+      latestMods:   data[0]
+      trendingMods: data[1]
     res.render "mods/explore.ect",
       mods: mods
       title: "Browse mods - OpenCubes"
