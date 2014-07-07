@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PageDown Demo Page</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/0.18.0/css/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/semantic-ui/0.18.0/javascript/semantic.min.js"></script>
+    <script type="text/javascript" src="pagedown.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+    <div class="wmd-panel input-panel">
+        <div id="wmd-button-bar"></div>
+        <textarea class="wmd-input" id="wmd-input">
+This is the *first* editor.
+------------------------------
+Just plain **Markdown**, except that the input is sanitized:
+
+<marquee>I'm the ghost from the past!</marquee>
+
+and that it implements "fenced blockquotes" via a plugin:
+"""
+Do it like this:
+1. Have idea.
+2. ???
+3. Profit!
+"""
+        </textarea>
+    </div>
+    <div class="left panel">
+        <div class="ui vertical divider">
+            <a href="#" id="collapse">
+                <i class="right arrow icon"></i>
+            </a>
+        </div>
+        <div id="wmd-preview" class="wmd-panel wmd-preview">
+        </div>
+    </div>
+    <br />
+    <br />
+    <script type="text/javascript">
+        (function () {
+            var converter1 = Markdown.getSanitizingConverter();
+
+            converter1.hooks.chain("preBlockGamut", function (text, rbg) {
+                return text.replace(/^ {0,3}""" *\n((?:.*?\n)+?) {0,3}""" *$/gm, function (whole, inner) {
+                    return "<blockquote>" + rbg(inner) + "</blockquote>\n";
+                });
+            });
+
+            var editor1 = new Markdown.Editor(converter1);
+
+            editor1.run();
+
+
+        })();
+    </script>
+</body>
+
+</html>

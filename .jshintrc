@@ -1,24 +1,24 @@
 {
-    "node": true,
-    "browser": true,
-    "esnext": true,
-    "bitwise": false,
-    "curly": false,
-    "eqeqeq": true,
-    "eqnull": true,
-    "immed": true,
-    "latedef": true,
-    "newcap": true,
-    "noarg": true,
-    "undef": true,
-    "strict": false,
-    "trailing": false,
-    "smarttabs": true,
-    "globals": {
-        "OpencubesDashboard": true,
-        "jQuery": true,
-        "Ember": true,
-        "Handlebars": true,
-        "DS": true
-    }
+  "node": true,
+  "browser": true,
+  "esnext": true,
+  "bitwise": true,
+  "camelcase": true,
+  "curly": true,
+  "eqeqeq": true,
+  "immed": true,
+  "indent": 2,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "quotmark": "single",
+  "regexp": true,
+  "undef": true,
+  "unused": true,
+  "strict": true,
+  "trailing": true,
+  "smarttabs": true,
+  "globals": {
+    "angular": false
+  }
 }
