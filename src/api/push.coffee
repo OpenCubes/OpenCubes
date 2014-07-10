@@ -23,7 +23,6 @@ createHash = (str, salt) ->
       hash = hash & hash # Convert to 32bit integer
       i++
    hash = hash.toString(36)
-   console.log hash
    hash.substring(1, hash.length)
 
 exports.stats.mod.download = (ip, mod, version) ->

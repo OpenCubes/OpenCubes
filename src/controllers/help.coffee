@@ -1,6 +1,5 @@
 fs = require("fs")
 exports.getHelp = (req, res) ->
-  console.log req.params.section
   section = ["markdown"].fetch(req.params.section or "welcome", "welcome")
   file = __dirname.getParent() + "/views/help/" + section + ".md"
   console.log file

@@ -31,9 +31,6 @@ describe("mods", function() {
   user.password = "bar";
   var userid;
   var modid;
-  var modsTimes = {
-    "foo-bar": {}
-  };
   it("should be able to add multiple mods", function(done) {
     user.save(function(err, user) {
       if (err) {
@@ -52,9 +49,6 @@ describe("mods", function() {
         author: userid
       }).then(function(status) {
         expect(status).not.toBe(undefined);
-        modsTimes["foo-bar"].created = status.created;
-        modsTimes["foo-bar"].lastUpdated = status.created;
-        console.log(modsTimes);
         return api.mods.add(userid, {
           name: "Abcdef",
           summary: chance.sentence({
@@ -149,6 +143,7 @@ describe("mods", function() {
   });
 
   it("should able to cart the mod", function(done) {
+
     api.carts.create().then(function(cart) {
       api.carts.addTo(cart._id, modid).then(function() {
         api.carts.view(cart._id).then(function(cart) {
@@ -167,19 +162,18 @@ describe("mods", function() {
       done();
     });
   });
-  /**
-    Doesn't work since mockgoose doesn't support nested refs update
-    it("should be able to unstar the mod", function (done) {
-        console.log("unstarring...")
-        api.mods.star(userid, "foo").then(function (mod) {
+  /*
+  Doesn't works, don't know why.
+  it("should be able to unstar the mod", function (done) {
+        api.mods.star(userid, "foo-bar").then(function (mod) {
+
             expect(mod.vote_count).toBe(0);
             done();
-        }).fail(function (err) {
+        }, console.log).fail(function (err) {
             expect(err).toEqual(undefined);
             done();
-        });
-    });
-    */
+        }, console.log);
+    });*/
   it("shouldn't be able to push a mod with no name", function(done) {
     api.mods.add(userid, {
       name: "",
@@ -296,28 +290,20 @@ describe("mods", function() {
       }),
       author: userid
     }).then(function(mod) {
-      console.log("1:", mod)
-      expect(mod).not.toBe(null);
-      expect(mod.created).not.toBe(null);
-      expect(mod.lastUpdated).not.toBe(null);
-      date = mod.lastUpdated;
-      created = mod.created;
-      return api.mods.star(userid, "timestamp-test");
-    }).then(function(mod) {
-      console.log("1:", mod)
       expect(mod).not.toBe(null);
       return api.mods.load(userid, "timestamp-test");
     }).then(function(mod) {
-      console.log("2:", mod)
       expect(mod).not.toBe(null);
-      expect(mod.mod.lastUpdated.getTime()).toEqual(date.getTime());
-      return api.mods.star(userid, "timestamp-test");
+      expect(mod.mod.created).not.toBe(null);
+      expect(mod.mod.lastUpdated).not.toBe(null);
+      date = mod.mod.lastUpdated;
+      created = mod.mod.created;
+      return api.mods.star(userid, "timestamp-test", new Date(), true);
     }).then(function(mod) {
-      console.log("3:", mod)
       expect(mod).not.toBe(null);
       return api.mods.load(userid, "timestamp-test");
-    }).then(function(mod) {
-      console.log("4:", mod)
+    }).then(function(r) {
+      var mod = r.mod;
       expect(mod).not.toBe(null);
       expect(mod.lastUpdated.getTime()).toEqual(date.getTime());
       expect(mod.created.getTime()).toEqual(created.getTime());
@@ -327,14 +313,12 @@ describe("mods", function() {
         })
       });
     }).then(function(mod) {
-      console.log("5:", mod)
       expect(mod).not.toBe(null);
       return api.mods.load(userid, "timestamp-test");
     }).then(function(mod){
-      console.log("6:", mod)
-      expect(mod).not.toBe(null);
-      expect(mod.created.getTime()).toEqual(created.getTime());
-      expect(mod.lastUpdated.getTime()).not.toEqual(date.getTime());
+      expect(mod.mod).not.toBe(null);
+      expect(mod.mod.created.getTime()).toEqual(created.getTime());
+      expect(mod.mod.lastUpdated.getTime()).not.toEqual(date.getTime());
       done();
     }).fail(function(err) {
       console.log(err, err.stack);

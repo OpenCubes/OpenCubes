@@ -78,6 +78,8 @@ app =
         req.getIp = () ->
           ip = (req.headers['x-forwarded-for'] or '').split(',')[0] or req.connection.remoteAddress
           ip
+        for own key, value of app.config.api_headers
+          res.header key, value
 
         next()
         return

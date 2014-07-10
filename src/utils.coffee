@@ -48,6 +48,28 @@ global.status = (status, code, id, message) ->
     id: id
     message: message
   }
+Date::getWeek = ->
+  d = new Date @
+  d.setHours(0,0,0)
+  d.setDate(d.getDate()+4-(d.getDay()||7))
+  return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7)
+
+Date::getQuarter = ->
+  d = @
+  q = [4,1,2,3]
+  return q[Math.floor(d.getMonth() / 3)]
+
+
+global.TimeBucket = (date=Date.now()) ->
+  date = new Date(date);
+
+  raw:      date
+  hour:     "#{date.getFullYear()}-#{date.getMonth()}-#{date.getDate()}-#{date.getHours()}"
+  day:      "#{date.getFullYear()}-#{date.getMonth()}-#{date.getDate()}"
+  week:     "#{date.getFullYear()}-#{date.getMonth()}-#{date.getWeek()}"
+  month:    "#{date.getFullYear()}-#{date.getMonth()}"
+  quarter:  "#{date.getFullYear()}-#{date.getQuarter()}"
+  year:     "#{date.getFullYear()}"
 
 ###
 

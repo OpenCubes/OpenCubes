@@ -15,7 +15,8 @@ Returns an user
 @param name the name of the user
 @permission user:browse
 ###
-exports.view = ((userid, name, callback) ->
+exports.view = (userid, name, callback) ->
+  deferred = Q.defer()
   canThis(userid, "user", "browse").then (can)->
     if can is false then return callback (error.throwError "", "UNAUTHORIZED")
     # Validate options
@@ -50,10 +51,11 @@ exports.view = ((userid, name, callback) ->
             callback err
 
       ], (err) ->
-        callback err or data
+        if err
+          return Q.reject err
+        Q.resolve data
 
     return
-).toPromise @
 
 
 exports.itemize = ($criterias, options) ->
@@ -119,7 +121,6 @@ escapeHtml = (str) ->
 exports.doEdit = ((userid, name, data) ->
   # Q promise
   deferred = Q.defer()
-  console.log "data", data
   # Q promise
   deferred = Q.defer()
   # default value

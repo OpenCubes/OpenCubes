@@ -288,6 +288,12 @@ div.user-edit-group a {
   margin-left: 50px;
   margin-top: 20px;
 }
+.content {
+  width: 89.5%;
+}
+.header small {
+  float: right;
+}
 a {
   text-decoration: none;
   color: #007eda;
@@ -304,4 +310,3 @@ a {
   margin-left: 15px;
   margin-top: 0px;
 }
-/*# sourceMappingURL=main.css.map */

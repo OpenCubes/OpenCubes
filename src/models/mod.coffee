@@ -5,41 +5,40 @@ slug = require("mongoose-slug")
 timestamps = require("mongoose-times")
 fs = require("fs")
 _ = require "lodash"
+
+
 ModSchema = mongoose.Schema(
-  name: String
-  version: String
+  name:        String
+  version:     String
   author:
     type: Schema.Types.ObjectId
     ref: "User"
-
-  summary: String
-  body: String
-  logo: String
-  created: Date
+  vote_count:  Number
+  summary:     String
+  body:        String
+  logo:        String
+  created:     Date
   lastUpdated: Date
-  category: String
-  vote_count: Number
-  stargazers: [
-    id: Schema.Types.ObjectId
-    date: Date
-  ]
-  published: Boolean
+  category:    String
+  stars:       Number
+  published:   Boolean
   comments: [
     author:
       type: Schema.Types.ObjectId
       ref: "User"
-    title: String
-    body: String
-    date: Date
+    title:     String
+    body:      String
+    date:      Date
   ]
 )
 
 ModSchema.pre 'save', true, (next, done) ->
   fields = ['name', 'summary', 'category', 'body', 'logo']
-  if _.intersection(fields, @modifiedPaths).length is 0
+  paths = []
+  if _.intersection(fields, @modifiedPaths()).length is 0 and not @isNew
     next()
     return done()
-  if @isNew then @created = New Date()
+  if @isNew then @created = new Date()
   @lastUpdated = new Date()
   Feed = mongoose.model "Feed"
   type = if @isNew then "post" else "edition"
@@ -67,8 +66,9 @@ ModSchema.path("body").required true, "Mod body cannot be blank"
 ModSchema.path("author").required true, "Mod author cannot be blank"
 ModSchema.path("summary").required true, "Mod summary cannot be blank"
 ModSchema.plugin slug("name")
-ModSchema.plugin timestamps
 ModSchema.path("name").validate (value) ->
+  if not @isSelected "summary"
+    return true
   if not value or value is ""
     return false
   if value.length < 5 or value.length > 40
@@ -76,6 +76,8 @@ ModSchema.path("name").validate (value) ->
   return true
 , "Name should be between 5 and 40 characters long"
 ModSchema.path("summary").validate (value) ->
+  if not @isSelected "summary"
+    return true
   if not value or value is ""
     return false
   if value.length < 7 or value.length > 200
@@ -83,7 +85,7 @@ ModSchema.path("summary").validate (value) ->
   return true
 , "Name should be between 7 and 200 characters long"
 ModSchema.path("body").validate (value) ->
-  if not @published
+  if not @published or not @isSelected "body"
     return true
   if not value or value is ""
     return false
@@ -97,9 +99,13 @@ escapeHtml = (str) ->
 
 ModSchema.pre "save", (next) ->
   doc = @
-  doc.name = escapeHtml(doc.name)
-  doc.summary = escapeHtml(doc.summary)
-  doc.body = escapeHtml(doc.body)
+  # Only if selected
+  if @isSelected "name"
+    doc.name = escapeHtml(doc.name)
+  if @isSelected "summary"
+    doc.summary = escapeHtml(doc.summary)
+  if @isSelected "body"
+    doc.body = escapeHtml(doc.body)
   return next()
 
 
@@ -209,7 +215,7 @@ ModSchema.statics =
   ###
   list: (options, cb) ->
     criteria = options.criteria or {}
-    criteria.published = true
+    #criteria.published = true
     q = @find(criteria).sort(options.sort)
       .limit(options.perPage).populate("author", "username")
       .skip(options.perPage * options.page)

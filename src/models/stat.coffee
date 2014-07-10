@@ -32,7 +32,6 @@ Schema.statics =
   ).toPromise @
   fetchAndHit: ((id, type, act0, ip, country, callback) ->
     mongoose.model("Stat").fetch(id, type).then((doc) ->
-      console.log "hitting"
       doc.hit(ip, country, act0)
     ).fail (err) ->
       console.log err.stack

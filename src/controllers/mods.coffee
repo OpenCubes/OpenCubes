@@ -6,6 +6,7 @@ URI = require("URIjs")
 check = require("check-types")
 archiver = require("archiver")
 send = require("send");
+Q = require "q"
 errors = error = require "../error"
 
 ###
@@ -14,7 +15,6 @@ Route for viewing mod
 exports.view = (req, res) ->
   if req.user then user = req.user._id else user = ""
   app.api.mods.lookup(user, req.params.id, {cart: req.cookies.cart_id, loggedUser:  req.user, parse: true}).then((mod) ->
-    console.log mod
     res.render "view.ect",
       mod: mod
       canEdit: (if req.user then if mod.author is req.user.id or req.user.role is "admin" then true else false)
@@ -23,9 +23,26 @@ exports.view = (req, res) ->
   ).fail (err) ->
     errors.handleHttp err, req, res, "text"
 
+###
+Route for browsing trending mods mod
+###
+exports.browse = (req, res) ->
+  Q.all([
+    app.api.mods.getLatestMods()
+    app.api.mods.getTrendingMods()
+  ]).then((data) ->
+    mods =
+      latestMods:   data[0]
+      trendingMods: data[1]
+    res.render "mods/explore.ect",
+      mods: mods
+      title: "Browse mods - OpenCubes"
+    return
+  , console.log).fail (err) ->
+    errors.handleHttp err, req, res, "text"
+
 # lists the mods
 exports.index = (req, res) ->
-  console.log "index"
   page = ((if req.params.page > 0 then req.param("page") else 1)) - 1
   sort = (req.param("sort")) or "date"
   filter = (req.param("filter")) or "all"

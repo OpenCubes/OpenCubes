@@ -1,0 +1,101 @@
+<% extend 'layout-m.ect' %>
+<% include 'utils/flash.ect'%>
+<div class="ui one column relaxed grid">
+  <div class="column">
+    <div class="ui fluid segment">
+      <h4>Trending mods this month</h4>
+      <div class="ui two column relaxed grid">
+        <div class="column">
+          <div class="ui list">
+            <% for mod in @mods.trendingMods.slice 0, 3: %>
+            <div class="item">
+              <img width="32" height="32" class="ui avatar image" src="/assets/<%- mod.slug %>.png" alt="Logo" />
+                <div class="content">
+                  <a class="header" href="/mods/<%- mod.slug %>/" data-no-instant>
+                    <%- mod.name %><small>
+                      <i class="star icon">
+                      </i>
+                      <%- mod.vote_count or 0%>
+                    </small>
+                  </a><br />
+                  <%- mod.summary.slice 0, 100 %>...
+
+                </div>
+              </div>
+              <% end %>
+            </div>
+          </div>
+          <div class="column">
+            <div class="ui list">
+              <% for mod in @mods.trendingMods.slice 3, 6: %>
+              <div class="item">
+                <img width="32" height="32" class="ui avatar image" src="/assets/<%- mod.slug %>.png" alt="Logo" />
+                  <div class="content">
+                    <a class="header" href="/mods/<%- mod.slug %>/" data-no-instant>
+                      <%- mod.name %><small>
+                        <i class="star icon">
+                        </i>
+                        <%- mod.vote_count or 0%>
+                      </small>
+                    </a><br />
+                    <%- mod.summary.slice 0, 150 %>...
+
+                  </div>
+                </div>
+                <% end %>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="ui fluid segment">
+        <h4>Latest mods</h4>
+        <div class="ui two column relaxed grid">
+          <div class="column">
+            <div class="ui list">
+              <% for mod in @mods.latestMods.slice 0, 3: %>
+              <div class="item">
+                <img width="32" height="32" class="ui avatar image" src="/assets/<%- mod.slug %>.png" alt="Logo" />
+                  <div class="content">
+                    <a class="header" href="/mods/<%- mod.slug %>/" data-no-instant>
+                      <%- mod.name %><small>
+                        <i class="star icon">
+                        </i>
+                        <%- mod.vote_count or 0%>
+                      </small>
+                    </a><br />
+                    <%- mod.summary.slice 0, 100 %>...
+
+                  </div>
+                </div>
+                <% end %>
+              </div>
+            </div>
+            <div class="column">
+              <div class="ui list">
+                <% for mod in @mods.latestMods.slice 3, 6: %>
+                <div class="item">
+                  <img width="32" height="32" class="ui avatar image" src="/assets/<%- mod.slug %>.png" alt="Logo" />
+                    <div class="content">
+                      <a class="header" href="/mods/<%- mod.slug %>/" data-no-instant>
+                        <%- mod.name %><small>
+                          <i class="star icon">
+                          </i>
+                          <%- mod.vote_count or 0%>
+                        </small>
+                      </a><br />
+                      <%- mod.summary.slice 0, 150 %>...
+
+                    </div>
+                  </div>
+                  <% end %>
+                </div>
+              </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <% block 'navbar' : %>
+  <% include 'navs/main-nav.ect'%>
+  <% end %>
