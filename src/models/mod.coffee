@@ -15,7 +15,6 @@ ModSchema = mongoose.Schema(
   summary: String
   body: String
   logo: String
-  dl_id: String
   created: Date
   lastUpdated: Date
   category: String
@@ -36,6 +35,12 @@ ModSchema = mongoose.Schema(
 )
 
 ModSchema.pre 'save', true, (next, done) ->
+  fields = ['name', 'summary', 'category', 'body', 'logo']
+  if _.intersection(fields, @modifiedPaths).length is 0
+    next()
+    return done()
+  if @isNew then @created = New Date()
+  @lastUpdated = new Date()
   Feed = mongoose.model "Feed"
   type = if @isNew then "post" else "edition"
   feed = new Feed

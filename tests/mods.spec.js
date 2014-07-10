@@ -1,4 +1,6 @@
+/* global describe: false, it: false,, expect: false */
 describe("mods", function() {
+  var models_path, api, api_path;
   var mongoose = require('mongoose');
   var mockgoose = require('mockgoose');
   var chance = require("chance")();
@@ -17,7 +19,7 @@ describe("mods", function() {
   api_path = __dirname.getParent() + "/lib/api";
   fs.readdirSync(api_path).forEach(function(file) {
     if (~file.indexOf(".js")) {
-      api[file.slice(0, -3)] = require(api_path + "/" + file);
+      api[file.slice(0, - 3)] = require(api_path + "/" + file);
     }
   });
   var User = mongoose.model("User");
@@ -25,16 +27,18 @@ describe("mods", function() {
     username: "foo",
     email: "foo@bar.gmail.com",
     role: "user",
-  })
-  user.password = "bar"
+  });
+  user.password = "bar";
   var userid;
   var modid;
-
+  var modsTimes = {
+    "foo-bar": {}
+  };
   it("should be able to add multiple mods", function(done) {
     user.save(function(err, user) {
       if (err) {
-        console.log(err)
-        throw err
+        console.log(err);
+        throw err;
       }
       userid = user._id;
       api.mods.add(userid, {
@@ -48,7 +52,9 @@ describe("mods", function() {
         author: userid
       }).then(function(status) {
         expect(status).not.toBe(undefined);
-
+        modsTimes["foo-bar"].created = status.created;
+        modsTimes["foo-bar"].lastUpdated = status.created;
+        console.log(modsTimes);
         return api.mods.add(userid, {
           name: "Abcdef",
           summary: chance.sentence({
@@ -96,10 +102,7 @@ describe("mods", function() {
     });
   });
   it("should be able to add multiple mapped mods", function(done) {
-    var entries = ['Mod A', 'Mod B', 'Mod C', 'Mod D', 'Mod E', 'Mod F',
-      'Mod J',
-      'Mod H', 'Mod I', 'Mod J'
-    ]
+    var entries = ['Mod A', 'Mod B', 'Mod C', 'Mod D', 'Mod E', 'Mod F', 'Mod J', 'Mod H', 'Mod I', 'Mod J'];
     var promises = entries.map(function(name) {
       return api.mods.add(userid, {
         name: name,
@@ -124,7 +127,7 @@ describe("mods", function() {
 
   it("should be able to fetch the mod ", function(done) {
     api.mods.load(userid, "foo-bar").then(function(mod) {
-      modid = mod.mod._id
+      modid = mod.mod._id;
       expect(mod).not.toBe(null);
       done();
 
@@ -137,6 +140,7 @@ describe("mods", function() {
   it("should be able to star the mod", function(done) {
     api.mods.star(userid, "foo-bar").then(function(mod) {
       expect(mod.vote_count).toBe(1);
+
       done();
     }).fail(function(err) {
       expect(err).toEqual(undefined);
@@ -233,7 +237,7 @@ describe("mods", function() {
     });
   });
   it("should be able to itemize a mod with options and criterias", function(
-    done) {
+  done) {
     api.mods.itemize({}, {}).then(function(results) {
       expect(results.totalCount).toBe(14);
       expect(results.mods.length).toBe(14);
@@ -241,7 +245,7 @@ describe("mods", function() {
         name: "*mod"
       }, {
         sort: "-name"
-      })
+      });
     }).then(function(results) {
       expect(results.totalCount).toBe(10);
       expect(results.mods.length).toBe(10);
@@ -250,7 +254,7 @@ describe("mods", function() {
         name: "*mod"
       }, {
         limit: 5
-      })
+      });
     }).then(function(results) {
       expect(results.totalCount).toBe(10);
       expect(results.mods.length).toBe(5);
@@ -261,19 +265,80 @@ describe("mods", function() {
       done();
     });
   });
-  it("should be able to put mod", function(  done) {
+  it("should be able to put mod", function(done) {
     var s = chance.sentence({
       words: 7
     });
-    api.mods.put(userid,"foo-bar", {author: "537660189caf7cc80d1d1528", summary: s}).then(function(results) {
+    api.mods.put(userid, "foo-bar", {
+      author: "537660189caf7cc80d1d1528",
+      summary: s
+    }).then(function(results) {
       expect(results.query.body.author).toBe(undefined);
       expect(results.query.body.summary).toBe(s);
       expect(results.result.author).not.toBe("537660189caf7cc80d1d1528");
-       expect(results.result.summary).toBe(s);
+      expect(results.result.summary).toBe(s);
       return done();
     }).fail(function(err) {
       console.log(err);
       expect(err).toBe(undefined);
+      done();
+    });
+  });
+  it("should update the timestamps only when required", function(done) {
+    var date, created;
+    api.mods.add(userid, {
+      name: "Timestamp Test",
+      summary: chance.sentence({
+        words: 7
+      }),
+      body: chance.sentence({
+        words: 100
+      }),
+      author: userid
+    }).then(function(mod) {
+      console.log("1:", mod)
+      expect(mod).not.toBe(null);
+      expect(mod.created).not.toBe(null);
+      expect(mod.lastUpdated).not.toBe(null);
+      date = mod.lastUpdated;
+      created = mod.created;
+      return api.mods.star(userid, "timestamp-test");
+    }).then(function(mod) {
+      console.log("1:", mod)
+      expect(mod).not.toBe(null);
+      return api.mods.load(userid, "timestamp-test");
+    }).then(function(mod) {
+      console.log("2:", mod)
+      expect(mod).not.toBe(null);
+      expect(mod.mod.lastUpdated.getTime()).toEqual(date.getTime());
+      return api.mods.star(userid, "timestamp-test");
+    }).then(function(mod) {
+      console.log("3:", mod)
+      expect(mod).not.toBe(null);
+      return api.mods.load(userid, "timestamp-test");
+    }).then(function(mod) {
+      console.log("4:", mod)
+      expect(mod).not.toBe(null);
+      expect(mod.lastUpdated.getTime()).toEqual(date.getTime());
+      expect(mod.created.getTime()).toEqual(created.getTime());
+      return api.mods.put(userid, "timestamp-test", {
+        summary: chance.sentence({
+          words: 7
+        })
+      });
+    }).then(function(mod) {
+      console.log("5:", mod)
+      expect(mod).not.toBe(null);
+      return api.mods.load(userid, "timestamp-test");
+    }).then(function(mod){
+      console.log("6:", mod)
+      expect(mod).not.toBe(null);
+      expect(mod.created.getTime()).toEqual(created.getTime());
+      expect(mod.lastUpdated.getTime()).not.toEqual(date.getTime());
+      done();
+    }).fail(function(err) {
+      console.log(err, err.stack);
+      expect(err).toBe(null);
       done();
     });
   });
