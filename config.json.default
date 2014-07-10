@@ -33,7 +33,6 @@
   },
   "mail": {
     "transport": "Direct"
-    }
   },
   "api_headers": "Additional headers to be added on each request in API. Useful for dev.",
   "api_headers": {
