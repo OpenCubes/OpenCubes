@@ -556,7 +556,7 @@ exports.getStats = (userid, slug, name, type="day") ->
     Mod = mongoose.model "Mod"
     Star = mongoose.model "Star"
     Mod.findOne(slug: slug).select("name slug").exec()
-  .then (mod)
+  .then (mod) ->
     if not mod then return deferred.resolve()
     $match =
       "mod": mod._id,

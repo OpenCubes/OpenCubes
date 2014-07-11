@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     watch: {
       serve: {
         files: ['server.js', 'src/**/*.coffee'],
-        tasks: ['coffee', 'develop', 'jasmine'],
+        tasks: ['coffee', 'develop'],
         options: {
           nospawn: true
         }

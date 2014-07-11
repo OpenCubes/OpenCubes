@@ -1,41 +1,50 @@
 mongoose = require("mongoose")
-require("./hit")
-Schema = mongoose.Schema(
+Q = require "q"
+schema = mongoose.Schema
   ref_id: mongoose.Schema.Types.ObjectId
-  ref_type: String
-  hits: [mongoose.model("Hit").Schema]
-)
-Schema.methods =
-  hit: (hash, country, act0) ->
-    Hit = mongoose.model "Hit"
-    hit = new Hit
-      ip_h: hash
-      ctry: country
-      act0: act0
-      date: Date.now()
-    @hits.push hit
-    @save()
-Schema.statics =
-  fetch: ((id, type, callback) ->
-    Stat = mongoose.model("Stat")
-    Stat.findOne({ref_id: id, ref_type: type}, (err, doc) ->
-      if err or not doc
-        doc = new Stat()
-        doc.ref_id = id
-        doc.ref_type = type
-        return doc.save (err, doc) ->
-          if err then return callback err
-          callback doc
-       callback doc
-      
-    )
-  ).toPromise @
-  fetchAndHit: ((id, type, act0, ip, country, callback) ->
-    mongoose.model("Stat").fetch(id, type).then((doc) ->
-      doc.hit(ip, country, act0)
-    ).fail (err) ->
-      console.log err.stack
-      callback err
-  ).toPromise @
+  evt_type: String # "dl" or "view"
+  hits: mongoose.Schema.Types.Mixed
+  total: Number
 
-mongoose.model "Stat", Schema
+schema.methods =
+  hit: (date=new Date()) ->
+    # We create empty fields if necessary
+    @hits = @hits or {}
+
+    @hits[date.getFullYear()] = @hits[date.getFullYear()] or {}
+    @hits[date.getFullYear()][date.getMonth()] =
+      @hits[date.getFullYear()][date.getMonth()] or {}
+    @hits[date.getFullYear()][date.getMonth()][date.getDate()] =
+      @hits[date.getFullYear()][date.getMonth()][date.getDate()] or {}
+
+    @hits[date.getFullYear()][date.getMonth()][date.getDate()][date.getHours()] =
+      @hits[date.getFullYear()][date.getMonth()][date.getDate()][date.getHours()] + 1 or 1
+
+    @total = @total + 1 or 1
+    @markModified "hits"
+
+
+schema.statics =
+  hit: (type, refId, date=new Date()) ->
+    deferred = Q.defer()
+    Stat = mongoose.model "Stat"
+    date = new Date date
+    refId = new mongoose.Types.ObjectId refId
+    Stat.findOne(ref_id: refId, evt_type: type).exec().then (stat) ->
+      if stat
+        stat.hit date
+        stat.save (err, doc) ->
+          if err then return deferred.reject err
+          deferred.resolve doc
+        return
+      stat = new Stat
+        ref_id: refId
+        evt_type: type
+      stat.hit date
+      stat.save (err, doc) ->
+        if err then return deferred.reject err
+        deferred.resolve doc
+      return
+    , console.log
+    deferred.promise
+mongoose.model "Stat", schema

@@ -35,76 +35,56 @@ mongoose.connect(config.db_uri, config.db_opt, function(err) {
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
-  var slug = "floodgate";
-  app.api.mods.star(userid, slug, Date.now() - 31 * 24 * 3600 * 1000, true).then(
-    function(star) {
-      console.log(star)
-      return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 100) *
+
+  function update(i) {
+    if(i > 50) return;
+    var slug = "floodgate";
+    var type = "view",
+      id = "53765b47cd95a4f823f51581";
+
+    app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 100) *
+      31 * 24 * 3600 * 1000, true).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 100) *
         31 * 24 * 3600 * 1000, true)
-    }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 100) *
-      31 * 24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 100) *
-      31 * 24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 100) *
-      31 * 24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 100) *
-      31 * 24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
-      24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
-      24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
-      24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
-      24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
-      24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
-      24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
-      24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
-      24 * 3600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - 2 * 3600 * 1000,
-      true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - 600 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - 611 * 1000, true)
-  }).then(function(star) {
-    console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - 596 * 1000, true)
-  }).fail(function(star) {
-    console.log(star)
-  });
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 100) *
+        31 * 24 * 3600 * 1000, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 500) *
+        24 * 3600 * 1000, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 500) *
+        24 * 3600 * 1000, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 500) *
+        24 * 3600 * 1000, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 500) *
+        24 * 3600 * 1000, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 500) *
+        24 * 3600 * 1000, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 500) *
+        24 * 3600 * 1000, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 500) *
+        24 * 3600 * 1000, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - getRandomInt(0, 500) *
+        24 * 3600 * 1, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - 600 * 1000, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - 611 * 1000, true)
+    }).then(function() {
+      return app.api.stats.hit(id, type, Date.now() - 596 * 1000, true)
+    }).then(function() {
+      update(i + 1);
+      console.log((i + "/50"));
+    });
+  }
+  var i = 0;
+  update(0);
+
 });
