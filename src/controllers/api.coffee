@@ -26,6 +26,20 @@ parse = (regexpMeta, regexpCriterias, query) ->
 
 exports.routes =
   v1:
+    stats:
+      mods:
+        stars: (req, res) ->
+          app.api.mods.getStats(req.getUserId(), req.params.slug, "stars", req.params.type).then (stats) ->
+            res.jsonp {
+              result: stats
+              status: "success"
+            }
+          .fail (err) ->
+            res.jsonp {
+              result: []
+              status: "error"
+            }
+
     mods:
       # remove: (req, res) ->
       # create: (req, res) ->

@@ -540,6 +540,65 @@ exports.getVersions = (slug) ->
   deferred.promise
 
 ###
+Get the stats of the mod
+@param userid the current logged user id
+@param slug the slug of the mod
+@param name the stats wanted
+@permission mod:edit
+###
+
+exports.getStats = (userid, slug, name, type="day") ->
+  deferred = Q.defer()
+  canThis(userid, "mod", "browse").then (can)->
+    if can is false
+      callback(error.throwError("Forbidden", "UNAUTHORIZED"))
+    # Validate options
+    Mod = mongoose.model "Mod"
+    Star = mongoose.model "Star"
+    Mod.findOne(slug: slug).select("name slug").exec()
+  .then (mod)
+    if not mod then return deferred.resolve()
+    $match =
+      "mod": mod._id,
+  #  $match["time_bucket.#{type}"] = new TimeBucket()[type]
+    Star.aggregate [
+      {
+        $match: $match
+      },
+      {
+        $group:
+          _id: "$time_bucket.#{type}",
+          stars:
+            "$sum": 1
+      },
+      {
+        $sort:
+          _id: 1
+      }
+    ], (err, mods) ->
+      dates = []
+      time = Date.now()
+      i = 0
+      max = switch
+        when type is "day"   then 32
+        when type is "month" then 24
+        when type is "hour" then 24
+        when type is "year"  then 3
+        else 0
+      while i < max
+        dates.push new TimeBucket(new Date(time - (if type is "year" then 12 else 1)  * (if type is "month" then 31 else 1) * 24 * 3600 * 1000 * i))[type]
+        i++
+
+      dates= dates.reverse()
+      data = {}
+      mods.forEach (value) ->
+        data[value._id] = value.stars
+      r = dates.map (el) ->
+        return data[el] || 0
+      deferred.resolve {data: r, labels: dates}
+
+  deferred.promise
+###
 Get the version of the mod
 @param userid the current logged user id
 @param slug the slug of the mod

@@ -2,6 +2,7 @@ config = config = require("./lib/config");
 mongoose = require("mongoose");
 require("colors");
 fs = require("fs");
+_ = require("lodash");
 require("./lib/utils")
 mongoose.connect(config.db_uri, config.db_opt, function(err) {
   var api_path, controllers_path, ectRenderer, httpServer, models_path,
@@ -29,20 +30,71 @@ mongoose.connect(config.db_uri, config.db_opt, function(err) {
   console.log((" Info - Bootstraping took " + (new Date().getTime() - timer2 +
     "").bold + " ms").cyan);
   Mod = mongoose.model("Mod");
-  Star = mongoose.model("Star");/*
-  var slug = "spawner-gui";
-  app.api.mods.star(userid, slug, Date.now() - 31 * 24 * 3600 * 1000, true).then(function(star) {
+  Star = mongoose.model("Star");
+
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+  var slug = "floodgate";
+  app.api.mods.star(userid, slug, Date.now() - 31 * 24 * 3600 * 1000, true).then(
+    function(star) {
+      console.log(star)
+      return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 100) *
+        31 * 24 * 3600 * 1000, true)
+    }).then(function(star) {
     console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - 5 * 31 * 24 * 3600 * 1000, true)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 100) *
+      31 * 24 * 3600 * 1000, true)
   }).then(function(star) {
     console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - 12 * 31 * 24 * 3600 * 1000, true)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 100) *
+      31 * 24 * 3600 * 1000, true)
   }).then(function(star) {
     console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - 5 * 24 * 3600 * 1000, true)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 100) *
+      31 * 24 * 3600 * 1000, true)
   }).then(function(star) {
     console.log(star)
-    return app.api.mods.star(userid, slug, Date.now() - 2 * 3600 * 1000, true)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 100) *
+      31 * 24 * 3600 * 1000, true)
+  }).then(function(star) {
+    console.log(star)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
+      24 * 3600 * 1000, true)
+  }).then(function(star) {
+    console.log(star)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
+      24 * 3600 * 1000, true)
+  }).then(function(star) {
+    console.log(star)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
+      24 * 3600 * 1000, true)
+  }).then(function(star) {
+    console.log(star)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
+      24 * 3600 * 1000, true)
+  }).then(function(star) {
+    console.log(star)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
+      24 * 3600 * 1000, true)
+  }).then(function(star) {
+    console.log(star)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
+      24 * 3600 * 1000, true)
+  }).then(function(star) {
+    console.log(star)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
+      24 * 3600 * 1000, true)
+  }).then(function(star) {
+    console.log(star)
+    return app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 500) *
+      24 * 3600 * 1000, true)
+  }).then(function(star) {
+    console.log(star)
+  }).then(function(star) {
+    console.log(star)
+    return app.api.mods.star(userid, slug, Date.now() - 2 * 3600 * 1000,
+      true)
   }).then(function(star) {
     console.log(star)
     return app.api.mods.star(userid, slug, Date.now() - 600 * 1000, true)
@@ -54,35 +106,5 @@ mongoose.connect(config.db_uri, config.db_opt, function(err) {
     return app.api.mods.star(userid, slug, Date.now() - 596 * 1000, true)
   }).fail(function(star) {
     console.log(star)
-  });*/
-  var id = "537654d1b040920c1a2a19d4";
-  Star.count({
-    mod: id,
-    "time_bucket.year": "2014"
-  }, function(err, doc) {
-    console.log(err || doc);
-
   });
-  Star.aggregate({
-    $match: {
-      "time_bucket.year": "2014"
-    }
-  },{
-    $group: {
-      _id: "$mod",
-      stars: {
-        "$sum": 1
-      }
-    }
-  }, function(err, docs) {
-     Star.populate(docs, {
-            path: "_id",
-            model: "Mod",
-            select: "slug name description"
-        }, function (err, doc) {
-
-            console.log(err || doc);
-        });
-  })
-
 });
