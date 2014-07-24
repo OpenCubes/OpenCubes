@@ -11,7 +11,10 @@ Mod = mongoose.model "Mod"
 Star = mongoose.model "Star"
 User = mongoose.model "User"
 
-
+exports.check = (slug) ->
+  q = Mod.findOne slug: slug
+  q.select "name author created logo slug"
+  q.exec()
 ###
 Return the latest mods
 @params limit the max amount of mods

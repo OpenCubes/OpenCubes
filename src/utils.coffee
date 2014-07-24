@@ -59,6 +59,9 @@ Date::getQuarter = ->
   q = [4,1,2,3]
   return q[Math.floor(d.getMonth() / 3)]
 
+Date.getDayOfTheYear = ->
+  onejan = new Date this.getFullYear(), 0, 1
+  Math.ceil (this - onejan) / 86400000
 
 global.TimeBucket = (date=Date.now()) ->
   date = new Date(date);

@@ -81,6 +81,7 @@ module.exports = (app) ->
   app.server.post  "/api/v1/versions/:slug/:name",  app.bodyParser, app.controllers.api.routes.v1.versions.files.add
 
   app.server.get   "/api/v1/stats/:slug/stars/:type", app.controllers.api.routes.v1.stats.mods.stars
+  app.server.get   "/api/v1/stats/:slug/views/:ts", app.controllers.api.routes.v1.stats.mods.views
 
   app.server.post  "/api/ajax/comments/:slug/add", auth.requiresLogin, app.bodyParser, app.controllers.comments.addComment
 
