@@ -12,6 +12,9 @@ angular.module('opencubesDashboardApp')
     $rootScope.navbarSection = "mod"
     $rootScope.navbarHrefPre = "#{$routeParams.slug}/"
     $scope.slug = $routeParams.slug
+    Mod.find $routeParams.slug, (err, mod) ->
+      $scope.mod = mod
+      $scope.$digest()
     $('.ui.sidebar')
       .sidebar('hide')
     ]
