@@ -28,6 +28,33 @@ angular.module('opencubesDashboardApp')
       $(selector).animate opacity: 1, 7500
 
       return
+    loadVersions = ->
+      $.ajax
+        url: "//#{window.config.host}/api/v1/versions/#{$routeParams.slug}"
+        dataType: "jsonp"
+        success: (data) ->
+          $scope.versions = data
+          forms = {}
+          forms[v.name] = {} for v in data
+          console.log forms, data
+          $scope.forms = forms
+          $scope.$digest()
+    loadVersions()
+    $('.add-version').on 'click', ->
+      $el = $ 'input#new-version-name'
+      $('.ui.modal').modal
+        onApprove: ->
+          name = $el.val()
+          $.ajax
+            url: "//#{window.config.host}/api/v1/versions/#{$routeParams.slug}"
+            type: "POST"
+            data:
+              name: name
+            success: ->
+              loadVersions()
+              $el.val('')
+        onDeny: -> $el.val('')
+      .modal "show"
     $scope.upload = (version, $event) ->
       $el = $ $event.target
       $el.html '<i class="loading icon"></i> Please wait...'
@@ -52,14 +79,4 @@ angular.module('opencubesDashboardApp')
           $el.html '<i class="frown icon"></i> '+data.statusText
         success: (data) ->
           console.log data
-    $.ajax
-      url: "//#{window.config.host}/api/v1/versions/#{$routeParams.slug}"
-      dataType: "jsonp"
-      success: (data) ->
-        $scope.versions = data
-        $scope.$digest()
-        forms = {}
-        forms[v.name] = {} for v in data
-        console.log forms, data
-        $scope.forms = forms
     ]
