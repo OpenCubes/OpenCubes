@@ -26,6 +26,19 @@ body {
   top: 0;
   left: 0;
 }
+.ui.menu.tabular {
+  margin-top: -20px !important;
+  margin-right: -20px !important;
+  margin-left: -20px !important;
+  border-radius: 0px !important;
+  .active {
+    
+  }
+  .item {
+    border-radius: 2pxb !important;
+  }
+  
+}
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .marketing,
@@ -183,4 +196,7 @@ tr.up {
   -ms-transition: all 500ms ease;
   -o-transition: all 500ms ease;
   transition: all 500ms ease;
+}
+#wmd-button-row {
+  box-shadow: none;
 }

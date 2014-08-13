@@ -1,19 +1,14 @@
-body,
-html
-{
-    height: 100%;
-    margin: 0 0;
-}
+
 .wmd-panel
 {
     float: left;
 
     width: 48%;
     height: 88%;
-    margin: auto;
 }
-.input-panel {
-  height: 93%;
+.input-panel
+{
+    height: 93%;
 }
 .wmd-button-bar
 {
@@ -23,87 +18,81 @@ html
 {
     font-family: Menlo, Consolas, 'Courier New', Courier, monospace;
 
-    display: block;
     float: left;
 
-    width: 100%;
+    width: 90%;
     height: 100%;
-    margin-top: 38px;
     margin-left: 20px;
-    padding-top: 20px;
+
+    resize: none;
 
     border-width: 0;
     outline: none;
-
-    resize: none;
 }
-.left.panel {
-    display: block;
+.left.panel
+{
     float: right;
-    width: 50%;
-    height: 95%;
-    margin-top: 38px;
-    padding-left: 20px;
 
+    width: 48%;
+    height: 95%;
+    padding-left: 20px;
 }
-.ui.divider {
-   z-index: 0;
-    background-color: #fff;
+.divider
+{
+    position: absolute;
+    z-index: 0;
+
+    width: 20px;
 }
-a i.arrow.icon {
-    color: #000;
+a i.arrow.icon
+{
     text-decoration: none;
+
+    color: #000;
 }
-i.arrow.icon {
-    -moz-transition: all 500ms ease;
+i.arrow.icon
+{
     /* WebKit */
     -webkit-transition: all 500ms ease;
+       -moz-transition: all 500ms ease;
     /* Opera */
-    -o-transition: all 500ms ease;
+         -o-transition: all 500ms ease;
     /* Standard */
-    transition: all 500ms ease;
+            transition: all 500ms ease;
 }
-i.arrow.icon.spinned {
-    -moz-transform: rotate(-180deg);
+i.arrow.icon.spinned
+{
     -webkit-transform: rotate(-180deg);
-    transform: rotate(-180deg);
-
+       -moz-transform: rotate(-180deg);
+            transform: rotate(-180deg);
 }
 .wmd-preview
 {
     font-family: Menlo, Consolas, 'Courier New', Courier, monospace;
 
-    width: 97.5%;
-    height: 100%;
-    margin-left: 0px;
-    padding-left: 20px;
+    overflow-y: scroll;
 
-    background-color: #f6f6f8;
-        overflow-y: scroll;
+    width: 97.5%;
+    height: 88%;
+    margin-left: 0;
+    padding-left: 20px;
+}
+#wmd-button-bar
+{
+    width: 100%;
 }
 .wmd-button-row
 {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    padding: 0 0;
-    width: 100%;
     z-index: 100;
+
+    width: 100% !important;
+    padding: 0 0;
 }
-.menu {
+.menu
+{
     border-radius: 0 0 0 0 !important;
 }
-.wmd-spacer
-{
-    position: absolute;
 
-    display: inline-block;
-
-    list-style: none;
-
-    background-color: silver;
-}
 .wmd-button
 {
     display: inline-block;

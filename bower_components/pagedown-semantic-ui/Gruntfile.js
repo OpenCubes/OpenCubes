@@ -1,3 +1,4 @@
+/* global module: true */
 module.exports = function (grunt) {
     'use strict';
     // Project configuration
@@ -11,7 +12,7 @@ module.exports = function (grunt) {
                 stripBanners: true
             },
             dist: {
-                src: ['Markdown.Converter.js', 'Markdown.Sanitizer.js', 'Markdown.Editor.js'],
+                src: ['Markdown.Converter.js', 'Markdown.Sanitizer.js', 'Markdown.Editor.js', 'main.js'],
                 dest: 'pagedown.js'
             }
         },

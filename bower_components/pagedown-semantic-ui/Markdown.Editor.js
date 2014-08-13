@@ -299,6 +299,7 @@
     // normally since the focus never leaves the textarea.
     function PanelCollection(postfix) {
         this.buttonBar = doc.getElementById("wmd-button-bar" + postfix);
+        console.log(this.buttonBar);
         this.preview = doc.getElementById("wmd-preview" + postfix);
         this.input = doc.getElementById("wmd-input" + postfix);
     };
@@ -2209,38 +2210,4 @@
 
 
 })();
-$(document).ready(function () {
 
-    var $input = $('.wmd-input');
-    var $preview = $('.wmd-preview');
-    $input.scroll(function () {
-      var percentage = $input.get(0).scrollTop / ($input.get(0).scrollHeight - $input.get(0).offsetHeight);
-      $preview.scrollTop(percentage * ($preview.get(0).scrollHeight - $preview.get(0).offsetHeight));
-    });
-    $('#collapse').on('click', function (e) {
-        e.preventDefault();
-        if (!$('i.arrow.icon').hasClass('spinned')) {
-            $('.left.panel').animate({
-                width: '0px'
-            }, 750);
-            $('.input-panel').animate({
-                width: '98%'
-            }, 750);
-            $('.ui.divider').animate({
-                left: '98%'
-            }, 750);
-            $('i.arrow.icon').addClass('spinned');
-        } else {
-            $('.left.panel').animate({
-                width: '50%'
-            }, 750);
-            $('.ui.divider').animate({
-                left: '50%'
-            }, 750);
-            $('.input-panel').animate({
-                width: '48%'
-            }, 750);
-            $('i.arrow.icon').removeClass('spinned');
-        }
-    });
-});
