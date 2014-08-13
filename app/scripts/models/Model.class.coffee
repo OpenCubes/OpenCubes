@@ -16,26 +16,26 @@ class Model
 
   # Set value for such key
   set: (key, value) ->
-    if key typeof "string" and value
-      _dirty = true
+    if typeof key is "string" and value
+      @_dirty = true
       @[key] = value
       @_dirtyFields.push key
 
   # remove key
   remove: (key) ->
     if key and @[key]
-      _dirty = true
+      @_dirty = true
       delete @[key]
       @_dirtyFields.push key
   
   # Was it modified and not saved?
-  isDirty: -> _dirty
+  isDirty: -> @_dirty
   
   # Is it new?
-  isNew: -> _new
+  isNew: -> @_new
   
   # What was modified?
-  dirtyFields: -> _dirtyFields
+  dirtyFields: -> @_dirtyFields
   
   # Save the model
   save: (callback) ->

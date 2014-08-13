@@ -1,13 +1,13 @@
 cache = {}
 class Mod extends Model
   save: (callback)=>
-    data = {}
-    if isDirty() and not isNew()
+    data = _.pick @, @dirtyFields()
+    if @isDirty() and not @isNew()
       $.ajax
         url: "//#{window.config.host}/api/v1/mods/#{@slug}"
         dataType: "json"
         type: "PUT"
-        data: _.pick @, @dirtyFields()
+        data: data
         success: (data) ->
             callback()
         error: callback
@@ -19,6 +19,7 @@ class Mod extends Model
         dataType: "jsonp"
         success: (data) ->
           cache[slug] = new Mod data.result
+          console.log "cached", cache[slug]
           callback undefined, cache[slug]
         
         error: callback

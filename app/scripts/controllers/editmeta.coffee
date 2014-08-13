@@ -12,21 +12,24 @@ angular.module('opencubesDashboardApp')
     $rootScope.navbarSection = "mod"
     $rootScope.navbarHrefPre = "#{$routeParams.slug}/"
     $scope.save = ->
-      alert 'save'
-      $.ajax
-        url: "//#{window.config.host}/api/v1/mods/#{$routeParams.slug}"
-        dataType: "json"
-        type: "PUT"
-        data: $('form').serialize()
-        success: (data) ->
-          console.log data
-        error: console.log
-    $.ajax
-      url: "//#{window.config.host}/api/v1/mods/#{$routeParams.slug}"
-      dataType: "jsonp"
-      success: (data) ->
-        $scope.mod = data.result
-        $scope.$digest()
-        showed = false
-        $('.ui.dropdown').dropdown().dropdown("set selected", data.result.category)
-      ]
+      if not $scope.mod.isDirty()
+        return
+      $scope.mod.save ->
+        $('.ui.submit.button').addClass('green')
+        .removeClass('blue')
+        .addClass('disabled')
+        .html('Saved')
+    Mod.find $routeParams.slug, (err, mod) ->
+      $scope.mod =  mod
+      $scope.$digest()
+      showed = false
+      $('.ui.dropdown').dropdown().dropdown("set selected", mod.category)
+      $el =  $('textarea[name=summary]')
+      $dd = $('input[name=category]')
+      $dd.on 'change', -> 
+        $scope.mod.set "category", $dd.val()
+        $(".ui.blue.submit.button.disabled").removeClass "disabled"
+      $el.on 'input',  ->
+        $scope.mod.set "summary", $el.val()
+        $(".ui.blue.submit.button.disabled").removeClass "disabled"
+    ]
