@@ -1,11 +1,11 @@
 {
   "securitySalt": "ThisIsNotAVeryGoodSalt",
-  "db_uri": "mongodb://host:port/path",
+  "db_uri": "kahana.mongohq.com:10042/cloud9",
   "db_opt": {
-    "user": "user",
-    "pass": "pass"
+    "user": "server",
+    "pass": "S<"#Hjkskp^sjk92A#@zjsd,HH="
   },
-  "host": "host:port",
+  "host": "localhost:1234",
   "port": "%process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 1234%",
   "ip": "%process.env.OPENSHIFT_NODEJS_IP || process.env.IP%",
   "env": "dev",

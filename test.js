@@ -31,23 +31,12 @@ mongoose.connect(config.db_uri, config.db_opt, function(err) {
     "").bold + " ms").cyan);
   Mod = mongoose.model("Mod");
   Star = mongoose.model("Star");
-
-  function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-  var count = 0;
-
-  function update(i) {
-    if (i > 10000) return;
-    var slug = "floodgate";
-    var type = "view",
-      id = "53765b47cd95a4f823f51581";
-    app.api.stats.get(id, type, Date.now()).then(function(a) {
-      console.log(a)
-    });
-  }
-  var i = 0;
-  update(0);
+var Subscription, n;
+Subscription = mongoose.model("Subscription");
+  return Subscription.find({
+    'subscriptions.obj': '53e88f70edcfe99201772374',
+    'subscriptions.filter': 'release'
+  }, console.log);
 
 
 });

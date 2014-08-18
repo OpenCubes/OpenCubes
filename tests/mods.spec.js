@@ -233,8 +233,8 @@ describe("mods", function() {
   it("should be able to itemize a mod with options and criterias", function(
   done) {
     api.mods.itemize({}, {}).then(function(results) {
-      expect(results.totalCount).toBe(14);
-      expect(results.mods.length).toBe(14);
+      expect(results.totalCount).toBe(15);
+      expect(results.mods.length).toBe(15);
       return api.mods.itemize({
         name: "*mod"
       }, {

@@ -26,6 +26,19 @@ parse = (regexpMeta, regexpCriterias, query) ->
 
 exports.routes =
   v1:
+    notifications:
+      get: (req, res)->
+        app.api.notifications.get(req.params.sid).then (doc) ->
+          res.jsonp result: doc
+      subscribe: (req, res) ->
+        app.api.notifications.subscribe(req.params.sid, req.body.subject, req.body.filters).then (sid) ->
+          res.jsonp
+            sid: sid
+
+      create: (req, res) ->
+        app.api.notifications.createSubscription().then (sid) ->
+          res.jsonp
+            sid: sid
     stats:
       mods:
         views: (req, res) ->

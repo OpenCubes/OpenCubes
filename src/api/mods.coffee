@@ -639,15 +639,19 @@ exports.addVersion = (slug, name) ->
   Mod = mongoose.model "Mod"
   Version = mongoose.model "Version"
   modid = undefined
+  auth = undefined
   query = Mod.findOne({slug: slug})
-  query.select("name slug")
+  query.select("name slug author")
   query.exec().then((mod) ->
     modid = mod._id
+    auth = mod.author
     return Version.findOne({mod: mod._id, name: name}).exec()
   ).then((version) ->
     if version
       return deferred.resolve version
     version = new Version()
+    console.log auth
+    version.author = auth
     version.name = name
     version.mod = modid
     version.save (err, v) ->
