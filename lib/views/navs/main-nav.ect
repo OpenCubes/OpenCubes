@@ -16,6 +16,11 @@
           <a href="/signup" class="item" data-no-instant ><i class="user icon"></i> Register</a></a>
           <a class="need-login no-redirect item" id="login" href="/login" data-no-instant>Login</a>
       <% else :%>
+          <a class="item" href="#" >
+            <span id="inbox" class="ui label">
+               0
+            </span>
+          </a>
           <a class="item" href="/user"><i class="user icon"></i><%- @luser.username %></a>
           <a class="item" id="logout" href="/logout" data-no-instant>Logout</a>
       <% end %>

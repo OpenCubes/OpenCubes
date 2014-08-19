@@ -39,7 +39,7 @@ exports.subscribe = (sid, subject, filters=AVAILABLE_FILTERS) ->
   deferred.promise
 
 ###
-Get a subscription document and its notifications
+Get a subscription document and its quick notifications
 @param sid its sid
 @return promise
 @promise.arg the document
@@ -47,7 +47,21 @@ Get a subscription document and its notifications
 exports.get = (sid) ->
   deferred = Q.defer()
   Subscription.findOne sid: sid
-  .populate "notifications.nid"
+  .select "-notifications"
   .exec (err, s) ->
     if err then deferred.reject err else deferred.resolve s
+  deferred.promise
+###
+Get notifications
+@param sid its sid
+@return promise
+@promise.arg the notifications
+###
+exports.getNotifications = (sid) ->
+  deferred = Q.defer()
+  Subscription.findOne sid: sid
+  .populate "notifications.nid"
+  .exec (err, s) ->
+    s.fill().then (s) ->
+      deferred.resolve s
   deferred.promise

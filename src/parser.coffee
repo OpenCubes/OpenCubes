@@ -11,9 +11,8 @@ marked.setOptions
   smartypants: false
   langPrefix: "language-"
 
-module.exports = (md) ->
-  html = marked(md)
+module.exports = marked
 
   # We end with symbols b/c otherwise
   # the tags created by symbols would be deleted by marked
-  symbols.process html
+  # symbols.process html

@@ -30,6 +30,9 @@ exports.routes =
       get: (req, res)->
         app.api.notifications.get(req.params.sid).then (doc) ->
           res.jsonp result: doc
+      getNotifications: (req, res)->
+        app.api.notifications.getNotifications(req.params.sid).then (doc) ->
+          res.jsonp result: doc
       subscribe: (req, res) ->
         app.api.notifications.subscribe(req.params.sid, req.body.subject, req.body.filters).then (sid) ->
           res.jsonp

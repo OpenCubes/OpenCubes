@@ -86,6 +86,7 @@ module.exports = (app) ->
   app.server.post  "/api/v1/subscriptions",  app.bodyParser, app.controllers.api.routes.v1.notifications.create
   app.server.post  "/api/v1/subscriptions/:sid",  app.bodyParser, app.controllers.api.routes.v1.notifications.subscribe
   app.server.get   "/api/v1/subscriptions/:sid",  app.bodyParser, app.controllers.api.routes.v1.notifications.get
+  app.server.get   "/api/v1/subscriptions/:sid/notifications",  app.bodyParser, app.controllers.api.routes.v1.notifications.getNotifications
 
 
   app.server.post  "/api/ajax/comments/:slug/add", auth.requiresLogin, app.bodyParser, app.controllers.comments.addComment

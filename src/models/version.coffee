@@ -22,7 +22,6 @@ Schema = mongoose.Schema(
 Schema.pre 'save', true, (next, done) ->
   next()
   if @isNew
-    console.log "new"
     GlobalNotification = mongoose.model "GlobalNotification"
     GlobalNotification.notify
       author: @author._id or @author

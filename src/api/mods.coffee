@@ -221,12 +221,18 @@ exports.lookup = (userid, slug, options) ->
         cb(error.throwError("Forbidden", "UNAUTHORIZED"))
       # Validate options
       Mod = mongoose.model "Mod"
-      query = Mod.findOne({slug: slug})
+      q = {}
+      if /[0-9a-f]{24}/.test slug
+        q._id = slug
+      else
+        q.slug = slug
+      query = Mod.findOne q
       query.select("name slug body description summary comments logo created updatedAt author category")
       query.populate("author", "name")
       query.populate("comments.author", "username")
       query.lean()
       query.exec((err, mod) ->
+        if not mod then return deferred.resolve mod
         if cartId and mod
           return Cart.findById(cartId, (err, cart)->
             if !err and cart
