@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PageDown Demo Page</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/0.18.0/css/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/semantic-ui/0.18.0/javascript/semantic.min.js"></script>
+    <script type="text/javascript" src="pagedown.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+    <style>
+body,html
+{
+    height: 100%;
+    margin: 0 0;
+}
+    </style>
+</head>
+
+<body>
+    <p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel turpis id ligula accumsan mollis imperdiet id diam. Nunc bibendum ipsum vulputate massa tempus aliquet. Integer hendrerit orci eu tellus pharetra dictum. Duis eu neque mi. Etiam nec massa lacus. In eget pretium eros, id blandit nisi. Donec et condimentum nisl. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed at nisi sapien. Curabitur non imperdiet mauris, id pharetra felis. Mauris malesuada sodales augue, id porttitor nisl dapibus ac.
+
+Pellentesque tempor elit vel lectus porta vulputate. Vivamus at dui vehicula, rutrum purus et, tincidunt magna. Vivamus egestas, urna id mattis molestie, lorem metus tempus nisi, eget consectetur metus ipsum a mi. Ut suscipit dignissim nibh, at lobortis magna. Phasellus lacinia magna et vulputate eleifend. Praesent vitae tempus turpis. Nam et aliquam magna. Sed iaculis dignissim augue vel viverra. Nullam et lorem mi. Sed leo nisl, volutpat sit amet nisi a, malesuada euismod turpis. Nulla mollis nibh quis odio vestibulum, quis consequat lacus bibendum.
+
+Ut nec pharetra orci, at viverra eros. Curabitur tincidunt quam quis malesuada feugiat. Ut eu metus sed augue commodo elementum id et diam. Donec lorem urna, gravida vehicula condimentum id, commodo in enim. Integer sit amet turpis nec erat vehicula blandit id vel eros. Sed adipiscing interdum sem, at auctor massa egestas venenatis. Vivamus facilisis metus quis orci tincidunt, sit amet faucibus nisi eleifend. Nunc sodales consequat nulla et tempus. Vestibulum ultricies ipsum eget purus egestas, lobortis dictum est sagittis. Proin ut adipiscing ipsum. Suspendisse diam lacus, dignissim malesuada tincidunt vitae, eleifend eu elit. Proin vehicula auctor eleifend. Duis porttitor, ligula vitae eleifend volutpat, dolor libero bibendum magna, facilisis dignissim magna neque ac tellus.
+
+Cras ut purus tristique, ultricies nibh nec, accumsan nisi. Vivamus suscipit semper augue, a semper diam aliquet id. Mauris vitae fermentum ligula. Etiam convallis ligula lacinia orci mattis, in eleifend orci aliquet. Morbi quam ante, sodales in tincidunt vel, tincidunt lacinia urna. Cras interdum placerat dui, id cursus nunc rhoncus sit amet. In turpis tellus, gravida sit amet orci a, euismod malesuada enim.
+
+Etiam ornare euismod nunc a tincidunt. Vestibulum venenatis turpis id dui cursus, porta sodales felis tristique. Praesent non sagittis enim, vitae adipiscing sapien. Nam id dictum tellus. Sed molestie eros et lorem luctus convallis. Vestibulum tincidunt laoreet pharetra. Donec vitae est blandit, varius magna et, dictum lectus. Mauris et nunc eu nisl semper tincidunt. Quisque at justo volutpat, ullamcorper massa et, cursus quam. Praesent aliquet non elit in mattis. Sed a ornare libero. Sed sit amet magna massa. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam adipiscing nunc ligula, non facilisis nibh congue eget.
+    </p>
+    <div id="editor">
+     </div>
+    <script>
+        $(document).ready(function(){
+            $('#editor').setupEditor("**Bold**", false);
+        });
+    </script>
+</body>
+
+</html>

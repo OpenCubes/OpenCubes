@@ -1,0 +1,33 @@
+{
+  "name": "pagedown-semantic-ui",
+  "homepage": "https://craftyourmodcorporation.github.io/pagedown/",
+  "authors": [
+    "Vinz243 <vinz243@gmail.com>"
+  ],
+  "description": "A modern fork of pagedown using semantic-ui inspired by stackedit",
+  "main": "pagedown.js",
+  "keywords": [
+    "markdown",
+    "semanic-ui",
+    "markdown-editor",
+    "pagedown",
+    "editor"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "57940dcc23",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "57940dcc23a201782a5b7492839a8885d35a5ff5"
+  },
+  "_source": "git://github.com/CraftYourModCorporation/pagedown.git",
+  "_target": "*",
+  "_originalSource": "pagedown-semantic-ui"
+}
