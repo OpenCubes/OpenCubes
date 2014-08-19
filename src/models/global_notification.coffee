@@ -40,7 +40,6 @@ Schema.statics =
     n.date = n.date or new Date()
     n.save (err, obj) ->
       id = obj._id
-      console.log "object", object
       Subscription.update {
         'subscriptions.obj': object.subject
         'subscriptions.filter': object.verb
