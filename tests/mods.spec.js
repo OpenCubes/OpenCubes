@@ -1,5 +1,5 @@
 /* global describe: false, it: false,, expect: false */
-describe("mods", function() {
+describe("notifications", function() {
   var models_path, api, api_path;
   var mongoose = require('mongoose');
   var mockgoose = require('mockgoose');

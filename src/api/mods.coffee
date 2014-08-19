@@ -364,7 +364,6 @@ exports.put = (userid, slug, body) ->
   body = _.pick body, ['name', 'body', 'summary', 'category']
   canThis(userid, "mod", "browse").then (can)->
     # Validate options
-
     Mod = mongoose.model "Mod"
 
     Mod.findOne {slug: slug}, (err, mod) ->

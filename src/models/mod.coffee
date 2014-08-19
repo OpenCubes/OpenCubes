@@ -52,8 +52,8 @@ ModSchema.pre 'save', true, (next, done) ->
     GlobalNotification = mongoose.model "GlobalNotification"
     GlobalNotification.notify
       author: @author._id or @author
-      subject: @mod._id or @mod
-      object_id: @mod._id or @mod
+      subject: @_id
+      object_id: @_id
       verb: "edit"
   next()
   feed.save(done)
