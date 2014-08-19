@@ -23,7 +23,7 @@ $(document).ready(function() {
               data.result = data.result.reverse();
               str = "<div class=\"ui small selection divided list\">"
               for (var i in data.result) {
-                var n = data.result[i];
+                var n = data.result[i].notification;
                 switch (n.verb) {
                   case "release":
                     icon = "tags";
@@ -31,7 +31,13 @@ $(document).ready(function() {
                     description = "version <strong>" + n.object_id.name +
                       "</strong> is available for mod " + n.subject.name
 
-                    str += "<div class=\"item\">\n  <i class=\"" + icon +
+                    str += "<div class=\"item\" data-nid=\"" + data.result[
+                      i]._id + "\">\n" +
+                      "<div class=\"right floated ui\">" +
+                      "<i class=\"remove icon\" onclick=\"markAsRead('" +
+                      data.result[i]._id +
+                      "')\"></i></div>\n <i class=\"" +
+                      icon +
                       " icon\"></i>\n  <div class=\"content\">\n    <a class=\"header\">" +
                       title + "</a>\n    <div class=\"description\">" +
                       description + "</div>\n  </div>\n</div>";
@@ -45,6 +51,7 @@ $(document).ready(function() {
     }
   });
 });
+
 $(document).on('click', 'a.need-login', function(event) {
   if ($.isLoggedIn)
     return;
@@ -198,6 +205,24 @@ followMod = function(id) {
     }
   });
 };
+markAsRead = function(id) {
+  $item = $('.item[data-nid=' + id + ']');
+  $inbox = $('#inbox');
+  $item.animate({height: 0}, "350ms", function(){
+    $item.remove()
+    $inbox.html($inbox.html() - 1);
+    // No more items
+    if($('.item[data-nid]').length === 0) {
+      $('#inbox').popup("hide");
+      $('#inbox').removeClass("red");
+    }
+  });
+  $.ajax({
+    method: "DELETE",
+    url: "/api/v1/subscriptions/" + $.sid +  "/notifications/" + id
+  })
+
+}
 pushToCart = function(id) {
   var $el = $('.cart[data-id=' + id + ']');
   var $a = $('.cart-a.cart-' + id);

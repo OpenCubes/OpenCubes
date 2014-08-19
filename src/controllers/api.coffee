@@ -37,7 +37,9 @@ exports.routes =
         app.api.notifications.subscribe(req.params.sid, req.body.subject, req.body.filters).then (sid) ->
           res.jsonp
             sid: sid
-
+      markAsRead: (req, res) ->
+        app.api.notifications.markAsRead(req.params.sid, req.params.nid)
+        res.send 200
       create: (req, res) ->
         app.api.notifications.createSubscription().then (sid) ->
           res.jsonp

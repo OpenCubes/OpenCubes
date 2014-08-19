@@ -51,6 +51,7 @@ exports.get = (sid) ->
   .exec (err, s) ->
     if err then deferred.reject err else deferred.resolve s
   deferred.promise
+
 ###
 Get notifications
 @param sid its sid
@@ -65,3 +66,17 @@ exports.getNotifications = (sid) ->
     s.fill().then (s) ->
       deferred.resolve s
   deferred.promise
+
+###
+Mark a notification as read, thereby removing it
+@param sid the subscription id
+@param nid the notification ObjectId (`_id`)
+###
+exports.markAsRead = (sid, nid) ->
+  Subscription.findOne(sid: sid).exec().then (subscription) ->
+    console.log "sub", subscription
+    subscription.notifications.id(nid).remove()
+    subscription.unread--
+    subscription.save console.log
+    return
+  , console.log

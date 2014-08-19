@@ -16,16 +16,18 @@ Schema = mongoose.Schema
   date: Date
 
 Schema.methods =
-  fill: ->
+  fill: (id)->
     Mod = mongoose.model "Mod"
     Version = mongoose.model "Version"
     deferred = Q.defer()
     self = @
     _then = (subject, object) ->
-      obj = self.toObject()
-      obj.subject = subject
-      obj.object_id = object
-      deferred.resolve obj
+      r =
+        notification: self.toObject()
+        _id: id
+      r.notification.subject = subject
+      r.notification.object_id = object
+      deferred.resolve r
     switch @verb
       when "release"
         # The object is a version

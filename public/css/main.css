@@ -288,11 +288,18 @@ div.user-edit-group a {
   margin-left: 50px;
   margin-top: 20px;
 }
-.content {
+body > .content {
   width: 89.5%;
 }
 .header small {
   float: right;
+}
+.ui.popup {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+.ui.popup > .header {
+  margin-left: 20px;
 }
 a {
   text-decoration: none;

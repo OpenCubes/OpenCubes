@@ -20,7 +20,7 @@ Schema.methods =
     deferred = Q.defer()
     promises = []
     for subscription in @notifications
-      promises.push subscription.nid.fill()
+      promises.push subscription.nid.fill(subscription._id)
     Q.all(promises).spread ->
       console.log arguments
       deferred.resolve Array::slice.call arguments, 0
