@@ -552,6 +552,8 @@ Get the stats of the mod
 
 exports.getStats = (userid, slug, name, type="day") ->
   deferred = Q.defer()
+  all = (type is "all")
+  if all then type = "day"
   canThis(userid, "mod", "browse").then (can)->
     if can is false
       callback(error.throwError("Forbidden", "UNAUTHORIZED"))
@@ -588,6 +590,7 @@ exports.getStats = (userid, slug, name, type="day") ->
         when type is "hour" then 24
         when type is "year"  then 3
         else 0
+      if all then max = mods.length
       while i < max
         dates.push new TimeBucket(new Date(time - (if type is "year" then 12 else 1)  * (if type is "month" then 31 else 1) * 24 * 3600 * 1000 * i))[type]
         i++

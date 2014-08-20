@@ -26,7 +26,7 @@ mongoose.connect(config.db_uri, config.db_opt, function(err) {
       app.api[file.slice(0, -3)] = require(api_path + "/" + file);
     }
   });
-  userid = "537377493f6432ac1d89b6c7";
+  userid = "53e88edbedcfe99201772373";
   console.log((" Info - Bootstraping took " + (new Date().getTime() - timer2 +
     "").bold + " ms").cyan);
   Mod = mongoose.model("Mod");
@@ -35,19 +35,16 @@ mongoose.connect(config.db_uri, config.db_opt, function(err) {
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
-  var count = 0;
-
-  function update(i) {
-    if (i > 10000) return;
-    var slug = "floodgate";
-    var type = "view",
-      id = "53765b47cd95a4f823f51581";
-    app.api.stats.get(id, type, Date.now()).then(function(a) {
-      console.log(a)
+  var slug = "a-game-of-cubes";
+  hit = function(i){
+    i++;
+    if(i > 500) return;
+    app.api.mods.star(userid, slug, Date.now() - getRandomInt(0, 31) * 24 * 3600 * 1000, true).then(function(){
+      hit(i);
+      console.log(i);
+    }).fail(function(star) {
+      console.log(star)
     });
   }
-  var i = 0;
-  update(0);
-
-
+  hit(0);
 });

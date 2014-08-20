@@ -16,6 +16,16 @@ Schema = mongoose.Schema(
   ]
 
 )
+Schema.post 'remove',  (doc) ->
+
+  console.log('`%s` has been removed', doc.name)
+  # Remove the files
+  for file of @files
+    fs.unlink "../uploads/"+doc.logo, (err) ->
+      if err then console.log err
+      else console.log "File #{mod.logo} has been deleted"
+  mongoose.model("Version").find {mod: doc._id}, (err, versions) ->
+    version.remove() for version in versions when version
 Schema.methods = {}
 Schema.statics = createFile: (uid, path, modId, v, cb) ->
   self = @

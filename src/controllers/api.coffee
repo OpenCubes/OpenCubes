@@ -32,7 +32,7 @@ exports.routes =
           app.api.mods.check(req.params.slug).then (mod) ->
             app.api.stats.get(mod._id, "view", req.params.ts)
           .then (r) ->
-            res.jsonp r
+            res.jsonp result: r
         stars: (req, res) ->
           app.api.mods.getStats(req.getUserId(), req.params.slug, "stars", req.params.type).then (stats) ->
             res.jsonp {
