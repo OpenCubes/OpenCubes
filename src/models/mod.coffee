@@ -48,6 +48,13 @@ ModSchema.pre 'save', true, (next, done) ->
     mod_name: @name
     author: @author._id or @author
     link: "/mods/#{@slug}"
+  if not @isNew
+    GlobalNotification = mongoose.model "GlobalNotification"
+    GlobalNotification.notify
+      author: @author._id or @author
+      subject: @_id
+      object_id: @_id
+      verb: "edit"
   next()
   feed.save(done)
 

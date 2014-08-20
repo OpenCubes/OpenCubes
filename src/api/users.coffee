@@ -183,14 +183,17 @@ Creates an user
 @permission user:add
 ###
 exports.registerLocal = ((userid, data, callback) ->
+  User = mongoose.model "User"
   canThis(userid, "user", "browse").then (can)->
     if can is false then return callback(error.throwError "", "UNAUTHORIZED")
-    User = mongoose.model "User"
+    return app.api.notifications.createSubscription()
+  .then (sid) ->
     user = new User(
       username: data.username
       email: data.email
       password: data.password
       provider: "local"
+      subscription_sid: sid
     )
     user.save (err, user) ->
       callback err or user

@@ -56,6 +56,7 @@ UserSchema = new Schema(
   location: String
   company: String
   public_email: String
+  subscription_sid: String
 )
 
 ###

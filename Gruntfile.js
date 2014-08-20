@@ -10,6 +10,13 @@ module.exports = function(grunt) {
           nospawn: true
         }
       },
+      css: {
+        files: ['lib/less/main.less'],
+        tasks: ['less'],
+        options: {
+          nospawn: true
+        }
+      },
       test: {
         files: ['tests/*.spec.js', 'src/**/*.coffee'],
         tasks: ['coffee', 'jasmine_node'],
@@ -68,9 +75,17 @@ module.exports = function(grunt) {
     less: {
       development: {
         files: {
-          "public/css/main.css": "src/less/main.less"
+          "public/css/main.css": "lib/less/main.less"
         }
       }
+    },
+    concurrent: {
+      options: {
+        logConcurrentOutput: true
+      },
+      serve: {
+        tasks: ["watch:css", "watch:serve"]
+      },
     }
   });
   grunt.registerTask('usetheforce_on', 'force the force option on if needed',
@@ -121,7 +136,8 @@ module.exports = function(grunt) {
   // grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.registerTask('serve', ['coffee', 'develop', 'watch:serve']);
+  grunt.loadNpmTasks('grunt-concurrent');
+  grunt.registerTask('serve', ['coffee', 'develop', 'concurrent:serve']);
   grunt.registerTask('test', ['coffee', 'jasmine_node'/*, 'watch:test'*/]);
   grunt.registerTask('build', ['coffee', 'less']);
   grunt.registerTask('templates', ['copy']);

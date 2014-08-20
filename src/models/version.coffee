@@ -1,6 +1,9 @@
 mongoose = require("mongoose")
 Schema = mongoose.Schema(
   name: String
+  author:
+    type: mongoose.Schema.Types.ObjectId
+    ref: "User"
   mod:
     type: mongoose.Schema.Types.ObjectId
     ref: "Mod"
@@ -26,6 +29,18 @@ Schema.post 'remove',  (doc) ->
       else console.log "File #{mod.logo} has been deleted"
   mongoose.model("Version").find {mod: doc._id}, (err, versions) ->
     version.remove() for version in versions when version
+    
+Schema.pre 'save', true, (next, done) ->
+  next()
+  if @isNew
+    GlobalNotification = mongoose.model "GlobalNotification"
+    GlobalNotification.notify
+      author: @author._id or @author
+      subject: @mod._id or @mod
+      object_id: @_id
+      verb: "release"
+  done()
+  
 Schema.methods = {}
 Schema.statics = createFile: (uid, path, modId, v, cb) ->
   self = @

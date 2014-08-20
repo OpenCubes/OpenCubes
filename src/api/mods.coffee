@@ -221,12 +221,18 @@ exports.lookup = (userid, slug, options) ->
         cb(error.throwError("Forbidden", "UNAUTHORIZED"))
       # Validate options
       Mod = mongoose.model "Mod"
-      query = Mod.findOne({slug: slug})
+      q = {}
+      if /[0-9a-f]{24}/.test slug
+        q._id = slug
+      else
+        q.slug = slug
+      query = Mod.findOne q
       query.select("name slug body description summary comments logo created updatedAt author category")
       query.populate("author", "name")
       query.populate("comments.author", "username")
       query.lean()
       query.exec((err, mod) ->
+        if not mod then return deferred.resolve mod
         if cartId and mod
           return Cart.findById(cartId, (err, cart)->
             if !err and cart
@@ -358,7 +364,6 @@ exports.put = (userid, slug, body) ->
   body = _.pick body, ['name', 'body', 'summary', 'category']
   canThis(userid, "mod", "browse").then (can)->
     # Validate options
-
     Mod = mongoose.model "Mod"
 
     Mod.findOne {slug: slug}, (err, mod) ->
@@ -642,15 +647,19 @@ exports.addVersion = (slug, name) ->
   Mod = mongoose.model "Mod"
   Version = mongoose.model "Version"
   modid = undefined
+  auth = undefined
   query = Mod.findOne({slug: slug})
-  query.select("name slug")
+  query.select("name slug author")
   query.exec().then((mod) ->
     modid = mod._id
+    auth = mod.author
     return Version.findOne({mod: mod._id, name: name}).exec()
   ).then((version) ->
     if version
       return deferred.resolve version
     version = new Version()
+    console.log auth
+    version.author = auth
     version.name = name
     version.mod = modid
     version.save (err, v) ->

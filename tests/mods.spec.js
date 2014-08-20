@@ -1,5 +1,5 @@
 /* global describe: false, it: false,, expect: false */
-describe("mods", function() {
+describe("notifications", function() {
   var models_path, api, api_path;
   var mongoose = require('mongoose');
   var mockgoose = require('mockgoose');
@@ -233,8 +233,8 @@ describe("mods", function() {
   it("should be able to itemize a mod with options and criterias", function(
   done) {
     api.mods.itemize({}, {}).then(function(results) {
-      expect(results.totalCount).toBe(14);
-      expect(results.mods.length).toBe(14);
+      expect(results.totalCount).toBe(15);
+      expect(results.mods.length).toBe(15);
       return api.mods.itemize({
         name: "*mod"
       }, {

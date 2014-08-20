@@ -1,0 +1,31 @@
+<form id="edit-meta" class="ui form segment">
+  <div class="field">
+    <label>Summary</label>
+    <div class="ui left labeled icon input">
+      <textarea name="summary">{{mod.summary}}</textarea>
+    </div>
+  </div>
+  <div class="field">
+    <label>Category</label>
+    <div class="ui selection dropdown">
+      <input name="category" type="hidden">
+        <div class="default text">Please select one</div>
+        <i class="dropdown icon">
+        </i>
+        <div class="menu">
+          <div class="item" data-value="api">API</div>
+          <div class="item" data-value="cheats">Cheats</div>
+          <div class="item" data-value="decoration">Decoration</div>
+          <div class="item" data-value="fixes">Fixes</div>
+          <div class="item" data-value="gameplay">Gameplay</div>
+          <div class="item" data-value="gui">GUI</div>
+          <div class="item" data-value="miscellaneous">Miscellaneous</div>
+          <div class="item" data-value="mobs">Mobs</div>
+          <div class="item" data-value="sounds">Sounds</div>
+          <div class="item" data-value="world">World</option>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui blue submit disabled button" ng-click="save()">Save</div>
+</form>
