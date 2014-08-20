@@ -6,7 +6,7 @@ renderStars = (date, slug) ->
     ts = "daily"
   i = 0
   $.ajax(
-    url: "https://opencubes-c9-vinz243.c9.io/api/v1/stats/#{slug}/stars/day"
+    url: "//#{config.host}/api/v1/stats/#{slug}/stars/day"
     dataType: "jsonp"
   ).done (data) ->
       $('#chart-stars').highcharts
@@ -39,8 +39,8 @@ renderStars = (date, slug) ->
 
   return
 renderAdv = (slug) ->
-  viewsURL = "https://opencubes-c9-vinz243.c9.io/api/v1/stats/#{slug}/views/daily"
-  starsURL = "https://opencubes-c9-vinz243.c9.io/api/v1/stats/#{slug}/stars/all"
+  viewsURL = "//#{config.host}/api/v1/stats/#{slug}/views/daily"
+  starsURL = "//#{config.host}/api/v1/stats/#{slug}/stars/all"
   viewsData = {}
   starsData = {}
   views = []
@@ -49,7 +49,7 @@ renderAdv = (slug) ->
     url: viewsURL,
     dataType: "jsonp",
     success: (data) -> viewsData = data
-  ), $.ajax( 
+  ), $.ajax(
     url: starsURL,
     dataType: "jsonp",
     success: (data) -> starsData = data
@@ -87,7 +87,7 @@ renderAdv = (slug) ->
                 return @value
               else
                 return " "
-              
+
         },
         yAxis: {
           title:{
@@ -108,7 +108,7 @@ renderViews = (date, slug) ->
   else
     ts = "daily"
   $.ajax(
-    url: "https://opencubes-c9-vinz243.c9.io/api/v1/stats/#{slug}/views/" + ts
+    url: "//#{config.host}/api/v1/stats/#{slug}/views/" + ts
     dataType: "jsonp"
   ).done (data) ->
        $('#chart-views').highcharts
@@ -122,7 +122,7 @@ renderViews = (date, slug) ->
           categories: data.result.labels.map (d) -> d+ ":00"
           formatter: ->
             d = @value
-            if /(\d+):00/.exec(d)[1] % 2 is 1 
+            if /(\d+):00/.exec(d)[1] % 2 is 1
               return d
             ""
         },

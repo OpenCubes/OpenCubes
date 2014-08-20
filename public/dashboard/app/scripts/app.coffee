@@ -28,7 +28,7 @@ String::hashCode = ->
 
 
 window.config = {
-  host: "opencubes-c9-vinz243.c9.io"
+  host: "opencubes.io"
 }
 angular
   .module('opencubesDashboardApp', [
