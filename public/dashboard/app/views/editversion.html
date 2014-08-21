@@ -1,4 +1,4 @@
-<div class="ui green right floated  icon button add-version" ng-class="labeled: versions.length"><i class="plus icon"></i>{{ versions.length === 0 ? "Add a new version" : "" }}</div>
+<div class="ui green icon labeled button add-version"><i class="plus icon"></i>Add a new version</div>
 <div class="ui modal">
   <i class="close icon"></i>
   <div class="header">
@@ -7,7 +7,7 @@
   <div class="content">
     <div class="left"></div>
     <div class="right">
-      Please enter the new version name. 
+      Please enter the new version name.
       It must follow this pattern <pre>minecraft.supported.version#major.minor.patch</pre>
       where the second version (after the #) corresponds to your mod version following semver. <br />
       <div class="large ui input"><input id="new-version-name" /></div>

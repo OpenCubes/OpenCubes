@@ -3,20 +3,25 @@
    <head>
       <meta charset="utf-8">
       <title>
+        Dashboard - OpenCubes
       </title>
       <meta name="description" content="">
       <meta name="viewport" content="width=device-width">
+      <script src="//cdnjs.cloudflare.com/ajax/libs/pace/0.5.5/pace.min.js"></script>
+      <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/0.5.5/themes/white/pace-theme-center-simple.css" />
       <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
       <!-- build:css(./) styles/vendor.css -->
-      <link rel="stylesheet" href="bower_components/pagedown-semantic-ui/style.css" />
       <!-- bower:css -->
+      <link rel="stylesheet" href="bower_components/pagedown-semantic-ui/style.css" />
+      <link rel="stylesheet" href="bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css" />
       <!-- endbower -->
       <!-- endbuild -->
       <!-- build:css(.tmp) styles/main.css -->
       <link rel="stylesheet" href="styles/main.css">
+
       <!-- endbuild -->
    </head>
-   <body ng-app="opencubesDashboardApp">
+   <body class="" ng-app="opencubesDashboardApp">
       <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
       <![endif]-->
@@ -28,7 +33,7 @@
          <i class="home icon"></i> Home
          </a>
          <div class="right menu">
-            <a class="item" href="/user"><i class="user icon"></i>Vinz243</a>
+            <a class="item" href="/user"><i class="user icon"></i>{{user.username || '...'}}</a>
             <a class="item" id="logout" href="/logout" data-no-instant>Logout</a>
          </div>
       </div>
@@ -83,6 +88,8 @@
       <script src="bower_components/angular-touch/angular-touch.js"></script>
       <script src="bower_components/angular-route/angular-route.js"></script>
       <script src="bower_components/pagedown-semantic-ui/pagedown.js"></script>
+      <script src="bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
+      <script src="bower_components/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js"></script>
       <!-- endbower -->
       <!-- endbuild -->
       <!-- build:js({.tmp,app}) scripts/scripts.js -->

@@ -39,6 +39,7 @@ angular.module('opencubesDashboardApp')
           console.log forms, data
           $scope.forms = forms
           $scope.$digest()
+          $("ng-view").mCustomScrollbar theme: "minimal-dark"
     loadVersions()
     $('.add-version').on 'click', ->
       $el = $ 'input#new-version-name'

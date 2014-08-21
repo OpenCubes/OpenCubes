@@ -26,7 +26,7 @@ String::hashCode = ->
     i++
   hash
 
-
+$.ajaxSetup({xhrFields: { withCredentials: true }})
 window.config = {
   host: "opencubes.io"
 }
@@ -40,6 +40,7 @@ angular
     'ngTouch'
   ])
   .config ($routeProvider) ->
+
     $routeProvider
       .when '/',
         templateUrl: 'views/main.html'
@@ -70,3 +71,4 @@ angular
 
 window.menu = true
 $ ->
+  $(".vertical > div:nth-child(2)").mCustomScrollbar theme: "dark-3"
