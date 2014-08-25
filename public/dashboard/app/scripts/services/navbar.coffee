@@ -37,6 +37,10 @@ angular.module('opencubesDashboardApp')
           text: "Manage files & versions"
           href: "edit/versions"
           icon: "archive icon"
+        ,
+          text: "Images"
+          href: "images"
+          icon: "photo icon"
         ]
         right: [
           text: "Actions"
