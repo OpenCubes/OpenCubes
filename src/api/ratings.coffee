@@ -8,6 +8,20 @@ Q = require "q"
 Mod = mongoose.model "Mod"
 User = mongoose.model "User"
 Rating = mongoose.model "Rating"
+exports.getVote = (authorId, slug) ->
+  deferred = Q.defer()
+  Mod.findOne(slug: slug).select("slug").execQ().then (doc) ->
+    mod = doc
+
+    # Find the rating
+    Rating.findOneQ
+      user: authorId
+      mod: mod._id
+  .then (rating) ->
+    deferred.resolve if not rating then 0 else rating.rate
+  .fail (err) ->
+    deferred.reject err
+  deferred.promise
 ###
 Cast a vote
 @param authorId the caster id

@@ -196,7 +196,14 @@ exports.routes =
           res.jsonp data
         .fail (data) ->
           res.jsonp data
+      get:  (req, res) ->
 
+        app.api.ratings.getVote(req.user._id, req.params.slug).then (data) ->
+          res.jsonp
+            status: "success"
+            rating: data
+        .fail (data) ->
+          res.jsonp data
 
 
 

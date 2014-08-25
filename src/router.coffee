@@ -90,6 +90,7 @@ module.exports = (app) ->
   app.server.delete   "/api/v1/subscriptions/:sid/notifications/:nid", app.controllers.api.routes.v1.notifications.markAsRead
 
   app.server.post     "/api/v1/ratings/:slug", auth.requiresLogin, app.bodyParser, app.controllers.api.routes.v1.ratings.post
+  app.server.get      "/api/v1/ratings/:slug", auth.requiresLogin, app.controllers.api.routes.v1.ratings.get
 
 
   app.server.post  "/api/ajax/comments/:slug/add", auth.requiresLogin, app.bodyParser, app.controllers.comments.addComment
