@@ -2,7 +2,9 @@ errors = require("../error")
 qfs = require("q-io/fs")
 fs = require("fs")
 uuid = require("node-uuid")
+imgur = require "imgur"
 
+imgur.setClientId "7924e825500f106"
 ###
 Parses and validates options according regex
 ###
@@ -66,7 +68,25 @@ exports.routes =
     mods:
       # remove: (req, res) ->
       # create: (req, res) ->
+
       edit: (req, res) ->
+        if req.files.image
+          console.log "image", req.files.image
+          imgur.upload(image.path).then (data) ->
+            console.log data
+            qfs.unlink image.path
+          .then ->
+            app.api.mods.put(req.getUserId(), req.params.slug, req.body)
+          .then (status) ->
+            return res.jsonp
+              status: "success",
+              result: status
+          .fail (err) ->
+            console.log err
+            res.jsonp 500, {
+              status: "error"
+              result: {}
+            }
         app.api.mods.put(req.getUserId(), req.params.slug, req.body).then((status) ->
           return res.jsonp
             status: "success",
@@ -77,6 +97,7 @@ exports.routes =
             status: "error"
             result: {}
           }
+
       get: (req, res) ->
         if req.user then user = req.user._id else user = ""
         app.api.mods.lookup(user, req.params.slug).then((mod) ->
@@ -166,6 +187,20 @@ exports.routes =
 
           return
         remove: (req, res) ->
+
+    ratings:
+      post: (req, res) ->
+
+        app.api.ratings.castVote(req.user._id,
+          req.params.slug, req.body.rate).then (data) ->
+          res.jsonp data
+        .fail (data) ->
+          res.jsonp data
+
+
+
+
+
 
 exports.ajaxLogin = (req, res) ->
   res.render "forms/login.ect"

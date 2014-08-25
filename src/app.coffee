@@ -52,7 +52,7 @@ app =
       server.set "ip", config.ip
       server.set "views", path.join(__dirname, "views")
       server.set "view engine", "html"
-      server.use express.favicon()
+      server.use express.favicon('public/favicon.ico')
       server.use express.logger("dev")
       server.use express.json()
       server.use express.urlencoded()
@@ -78,6 +78,8 @@ app =
         req.getIp = () ->
           ip = (req.headers['x-forwarded-for'] or '').split(',')[0] or req.connection.remoteAddress
           ip
+
+        # res.header('Access-Control-Allow-Origin', req.headers.origin)
         for own key, value of app.config.api_headers
           res.header key, value
 

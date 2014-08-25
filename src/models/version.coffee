@@ -29,9 +29,10 @@ Schema.post 'remove',  (doc) ->
       else console.log "File #{mod.logo} has been deleted"
   mongoose.model("Version").find {mod: doc._id}, (err, versions) ->
     version.remove() for version in versions when version
-    
+
 Schema.pre 'save', true, (next, done) ->
   next()
+  Mod = mongoose.model "Mod"
   if @isNew
     GlobalNotification = mongoose.model "GlobalNotification"
     GlobalNotification.notify
@@ -39,8 +40,16 @@ Schema.pre 'save', true, (next, done) ->
       subject: @mod._id or @mod
       object_id: @_id
       verb: "release"
+    Mod.update _id: @mod._id or @mod, {
+      '$addToSet': {
+        'cached.versions': @name
+      },
+      '$inc': {
+        'cached.versions_count': 1
+      }
+    }, console.log
   done()
-  
+
 Schema.methods = {}
 Schema.statics = createFile: (uid, path, modId, v, cb) ->
   self = @

@@ -288,8 +288,8 @@ div.user-edit-group a {
   margin-left: 50px;
   margin-top: 20px;
 }
-body > .content {
-  width: 89.5%;
+.ui.list > .item > .content {
+  width: 89.1%;
 }
 .header small {
   float: right;
@@ -316,4 +316,17 @@ a {
   font-size: 20px;
   margin-left: 15px;
   margin-top: 0px;
+}
+.buttons {
+  float: right;
+}
+.stats {
+  display: inline;
+}
+.stats .icon,
+.stats .description {
+  color: #555;
+}
+.stats .icon:not(:last-child) {
+  margin-left: 30px;
 }

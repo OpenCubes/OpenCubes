@@ -3,11 +3,44 @@
         <a class="two wide column" href="#">
             <img class="media-object"  src="/assets/<%- @mod.slug %>.png" alt="logo" height="96" width="96" />
         </a>
-        <div class="thirteen wide column">
-            <h2 class="ui header"><%- @mod.name %></h3>
+        <div class="fourteen wide column">
+            <h2 class="ui header"><%- @mod.name %><div class="buttons">
+              <div class="ui small dropdown icon labeled button"><i class="download icon"></i>
+  <div class="default text">Download</div>
+              <div class="menu">
+                <% for v in @mod.cached.versions.reverse(): %>
+                <div class="item"><i class="tag icon"></i><%- v %></i></div>
+                <% end %>
+              </div>
+              </div>
+              <div class="ui small icon labeled button"><i class="unhide icon"></i> Follo</div>
+              <div class="ui small icon button"><i class="cart icon"></i></div>
+            </div></h2>
             <div class="sub header"><%- @mod.summary %></div>
             <br />
         </div>
+    </div>
+    <div class="ui segment">
+      <div class="stats downloads">
+        <i class="download icon"></i>
+        <span class="number"> 1.2m</span>
+        <span class="description"> downloads</span>
+      </div>
+      <div class="stats versions">
+        <i class="tags icon"></i>
+        <span class="number"> <%- @mod.cached.versions_count or 0 %></span>
+        <span class="description"> version<% if @mod.cached.versions_count > 1: %>s<%end%></span>
+      </div>
+      <div class="stats comments">
+        <i class="comment outline icon"></i>
+        <span class="number"> 842</span>
+        <span class="description"> comments</span>
+      </div>
+      <div class="stats note">
+        <i class="star icon"></i>
+        <span class="number"> 4.2</span>
+        <span class="description"> average</span>
+      </div>
     </div>
     <div class="ui tiered top attached pointing menu">
         <a class="active item" data-tab="description">
@@ -76,6 +109,6 @@
     jQuery(document).ready(function () {
         jQuery("abbr.timeago").timeago();
         $('.menu .item').tab({history:false});
-        
+        $('.dropdown').dropdown();
     });
 </script>

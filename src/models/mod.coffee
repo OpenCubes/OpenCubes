@@ -22,6 +22,13 @@ ModSchema = mongoose.Schema(
   category:    String
   stars:       Number
   published:   Boolean
+  screens:     [String]
+  cached:
+    versions:  [String]
+    followers: [String]
+    versions_count: Number
+    rating:    Number
+    rating_count: Number
   comments: [
     author:
       type: Schema.Types.ObjectId
@@ -31,6 +38,7 @@ ModSchema = mongoose.Schema(
     date:      Date
   ]
 )
+
 
 ModSchema.pre 'save', true, (next, done) ->
   fields = ['name', 'summary', 'category', 'body', 'logo']
