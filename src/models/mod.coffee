@@ -26,9 +26,15 @@ ModSchema = mongoose.Schema(
   cached:
     versions:  [String]
     followers: [String]
-    versions_count: Number
-    rating:    Number
-    rating_count: Number
+    versions_count:
+      type:    Number
+      default: 0
+    rating:
+      type:    Number
+      default: 0
+    rating_count:
+      type:    Number
+      default: 0
   comments: [
     author:
       type: Schema.Types.ObjectId
