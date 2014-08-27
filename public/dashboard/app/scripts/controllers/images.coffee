@@ -19,7 +19,11 @@ angular.module('opencubesDashboardApp')
         .removeClass('blue')
         .addClass('disabled')
         .html('Saved')
+<<<<<<< HEAD
     $("div.dropzone").dropzone
+=======
+    ###$("div.dropzone").dropzone
+>>>>>>> dropzone
       success: -> console.log arguments
       paramName: "image"
       method: "post"
@@ -27,7 +31,11 @@ angular.module('opencubesDashboardApp')
       url: "https://api.imgur.com/3/upload"
       headers:
         "Content-Type": "multipart/form-data"
+<<<<<<< HEAD
         "Authorization": "Client-ID 7924e825500f106"
+=======
+        "Authorization": "Client-ID 7924e825500f106"###
+>>>>>>> dropzone
     $('#upload').submit ->
       data = new FormData()
       data.append 'image', $('input[name=file]').get(0).files[0]

@@ -66,6 +66,9 @@ angular
       .when '/:slug/stats',
         templateUrl: 'views/stats.html'
         controller: 'StatsCtrl'
+      .when '/:slug/images',
+        templateUrl: 'views/images.html'
+        controller: 'ImagesCtrl'
       #.otherwise
       #  redirectTo: '/'
 
