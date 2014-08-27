@@ -228,7 +228,8 @@ exports.lookup = (userid, slug, options) ->
         q.slug = slug
       query = Mod.findOne q
       query.select("name slug body description summary comments logo created
-       updatedAt author category cached.versions cached.versions_count images")
+       updatedAt author category cached.rating cached.rating_count
+       cached.versions cached.versions_count images")
       query.populate("author", "name")
       query.populate("comments.author", "username")
       query.lean()

@@ -1,177 +1,198 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<div class="meta">
-   <div class="ui relaxed grid">
-      <a class="two wide column" href="#">
-      <img class="media-object"  src="/assets/<%- @mod.slug %>.png" alt="logo" height="96" width="96" />
-      </a>
-      <div class="fourteen wide column">
-         <h2 class="ui header">
-            <%- @mod.name %>
-            <div class="buttons">
-               <div class="ui small dropdown icon labeled button">
-                  <i class="download icon">
-                  </i>
-                  <div class="default text">Download</div>
-                  <div class="menu">
-                     <% if @mod.cached and @mod.cached.versions and @mod.cached.versions.length isnt 0 :%>
-                     <% for v in @mod.cached.versions.reverse(): %>
-                     <div class="item">
-                        <i class="tag icon">
-                        </i>
-                        <%- v %>
-                     </div>
-                     <% end %>
-                     <%else: %>
-                     <div class="item">No public version yet</div>
-                     <%end%>
-                  </div>
-               </div>
-               <div class="ui small icon labeled button">
-                  <i class="unhide icon">
-                  </i> Follow
-               </div>
-               <div class="ui small icon button">
-                  <i class="cart icon">
-                  </i>
-               </div>
+<div class="ui relaxed grid">
+
+  <a class="two wide column" href="#">
+    <img class="media-object"  src="/assets/<%- @mod.slug %>.png" alt="logo" height="96" width="96" />
+  </a>
+
+  <div class="fourteen wide column">
+    <h2 class="ui header">
+      <%- @mod.name %>
+      <div class="buttons">
+        <div class="ui small dropdown icon labeled button">
+          <i class="download icon">
+          </i>
+          <div class="default text">Download</div>
+          <div class="menu">
+            <% if @mod.cached and @mod.cached.versions and @mod.cached.versions.length isnt 0 :%>
+            <% for v in @mod.cached.versions.reverse(): %>
+            <div class="item">
+              <i class="tag icon">
+              </i>
+              <%- v %>
             </div>
-         </h2>
-         <div class="sub header">
-            <%- @mod.summary %>
-         </div>
-         <br />
-      </div>
-   </div>
-   <div class="ui segment" id="stats">
-      <div class="stats downloads">
-         <i class="download icon">
-         </i>
-         <span class="number"> 1.2m</span>
-         <span class="description"> downloads</span>
-      </div>
-      <div class="stats versions">
-         <i class="tags icon">
-         </i>
-         <span class="number">
-         <%- if @mod.cached then @mod.cached.versions_count or 0 else 0 %>
-         </span>
-         <span class="description"> version<% if @mod.cached and @mod.cached.versions_count > 1: %>s<%end%>
-         </span>
-      </div>
-      <div class="stats comments">
-         <i class="comment outline icon">
-         </i>
-         <span class="number">
-         <%- @mod.comments.length %>
-         </span>
-         <span class="description"> comments</span>
-      </div>
-      <div class="stats note">
-         <i class="star icon">
-         </i>
-         <span class="number" id="rating-count">
-         <%- if @mod.cached and @mod.cached.rating_count and @mod.cached.rating_count isnt 0 then (@mod.cached.rating / @mod.cached.rating_count) else "" %>
-         </span>
-         <span class="description"> average</span>
-      </div>
-   </div>
-   <div class="ui tiered top attached pointing menu">
-      <a class="active item" data-tab="description">
-      <i class="align left icon">
-      </i> Description        </a>
-      <a class="item" data-tab="comments">
-      <i class="comment outline icon">
-      </i> Comments        </a>
-      <a class="item" data-tab="images">
-      <i class="photo icon">
-      </i> Screenshots        </a>
-   </div>
-   <div class="ui active bottom attached tab segment" data-tab="description" id="description">
-      <div class="main-desc">
-         <%- @mod.htmlbody %>
-      </div>
-   </div>
-      <div class="ui active bottom attached tab segment" data-tab="images" id="images">
-         <% counter = 1 %>
-         <% for image in @mod.images : %>
-         <a href="//i.imgur.com/<%- image %>.jpg" class="lightbox-image" data-lightbox="image">
-         <img src="//i.imgur.com/<%- image %>m.jpg" height="200px" />
-         </a>
-         <% end %>
-      </div>
-    <div class="ui bottom attached tab segment" data-tab="comments" id="comments">
-         <div id="comments-area">
-            <% for comment in @mod.comments : %>
-            <div class="ui comments">
-               <div class="comment">
-                  <a class="avatar">
-                  <img src="//lorempixel.com/128/128/">
-                  </a>
-                  <div class="content">
-                     <a class="author">
-                     <b>
-                     <%- comment.title %>
-                     </b> by <%-comment.author.username%>
-                     </a>
-                     <div class="metadata">
-                        <div class="date">
-                           <abbr class="timeago" title="<%-comment.date.toISOString()%>">
-                           </abbr>
-                        </div>
-                     </div>
-                     <div class="text">
-                        <%- comment.body %>
-                     </div>
-                     <div class="actions">
-                        <a class="edit active">Edit</a>
-                        <a class="delete">Delete</a>
-                     </div>
-                  </div>
-               </div>
-            </div>
+            <% end %>
+            <%else: %>
+            <div class="item">No public version yet</div>
             <%end%>
-            <label>Your rating:</label>
-            <div class="ui input">
-               <div class="ui large rating">
-                  <i class="icon">
-                  </i>
-                  <i class="icon">
-                  </i>
-                  <i class="icon">
-                  </i>
-                  <i class="icon">
-                  </i>
-                  <i class="icon">
-                  </i>
-               </div>
-            </div>
-            <form method="post" action="/api/ajax/comments/<%-@mod.slug %>/add" class="ui ajax form segment" data-target="#comments-area" enctype="no">
-            <div class="field">
-               <label>Title</label>
-               <div class="ui input">
-                  <input type="text" placeholder="Enter a title..." name="name">
-                  <div class="ui corner label">
-                     <i class="icon asterisk">
-                     </i>
-                  </div>
-               </div>
-            </div>
-            <div class="field">
-               <label>Body</label>
-               <div class="ui input">
-                  <textarea name="body">
-                                </textarea>
-                  <div class="ui corner label">
-                     <i class="icon asterisk">
-                     </i>
-                  </div>
-               </div>
-            </div>
-            <input type="submit" class="ui blue submit button" value="Post comment">
-         </div>
+          </div>
+        </div>
+        <div class="ui small icon labeled button">
+          <i class="unhide icon">
+          </i> Follow
+        </div>
+        <div class="ui small icon button">
+          <i class="cart icon">
+          </i>
+        </div>
       </div>
-   </div>
+    </h2>
+    <div class="sub header">
+      <%- @mod.summary %>
+    </div>
+    <br />
+  </div>
 </div>
+
+
+<div class="ui segment" id="stats">
+  <div class="stats downloads">
+    <i class="download icon">
+    </i>
+    <span class="number"> 1.2m</span>
+    <span class="description"> downloads</span>
+  </div>
+  <div class="stats versions">
+    <i class="tags icon">
+    </i>
+    <span class="number">
+    <%- if @mod.cached then @mod.cached.versions_count or 0 else 0 %>
+    </span>
+    <span class="description"> version<% if @mod.cached and @mod.cached.versions_count > 1: %>s<%end%>
+    </span>
+  </div>
+  <div class="stats comments">
+    <i class="comment outline icon">
+    </i>
+    <span class="number">
+    <%- @mod.comments.length %>
+    </span>
+    <span class="description"> comments</span>
+  </div>
+  <div class="stats note">
+    <i class="star icon">
+    </i>
+    <span class="number" id="rating-count">
+    <% if @mod.cached and @mod.cached.rating_count and @mod.cached.rating_count isnt 0 : %>
+        <%- (@mod.cached.rating / @mod.cached.rating_count) %>
+    <% else: %>
+    no
+    <% end %>
+    </span>
+    <span class="description"> average</span>
+  </div>
 </div>
+
+
+<div class="ui tiered top attached pointing menu">
+  <a class="active item" data-tab="description">
+  <i class="align left icon">
+  </i> Description        </a>
+  <a class="item" data-tab="comments">
+  <i class="comment outline icon">
+  </i> Comments        </a>
+  <a class="item" data-tab="images">
+  <i class="photo icon">
+  </i> Screenshots        </a>
 </div>
+
+
+<div class="ui active bottom attached tab segment" data-tab="description" id="description">
+  <div class="main-desc">
+    <%- @mod.htmlbody %>
+  </div>
+</div>
+
+
+<div class="ui active bottom attached tab segment" data-tab="images" id="images">
+  <% for image in @mod.images : %>
+  <a href="//i.imgur.com/<%- image %>.jpg" class="lightbox-image" data-lightbox="image">
+  <img src="//i.imgur.com/<%- image %>m.jpg" height="200px" />
+  </a>
+  <% end %>
+</div>
+
+
+<div class="ui bottom attached tab segment" data-tab="comments" id="comments">
+  <div id="comments-area">
+    <% if @mod.comments.length is 0 : %>
+
+      <div class="ui icon header">
+        <i class="circular meh icon"></i>Nothing here
+        <div class="sub header">No one has commented this mod yet.</div>
+      </div>
+    <% end %>
+    <% for comment in @mod.comments : %>
+    <div class="ui comments">
+      <div class="comment">
+        <a class="avatar">
+        <img src="//lorempixel.com/128/128/">
+        </a>
+        <div class="content">
+          <a class="author">
+          <b>
+          <%- comment.title %>
+          </b> by <%-comment.author.username%>
+          </a>
+          <div class="metadata">
+            <div class="date">
+              <abbr class="timeago" title="<%-comment.date.toISOString()%>">
+              </abbr>
+            </div>
+          </div>
+          <div class="text">
+            <%- comment.body %>
+          </div>
+          <div class="actions">
+            <a class="edit active">Edit</a>
+            <a class="delete">Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%end%>
+    <% if @user: %>
+    <label>Your rating:</label>
+    <div class="ui input">
+      <div class="ui large rating">
+        <i class="icon">
+        </i>
+        <i class="icon">
+        </i>
+        <i class="icon">
+        </i>
+        <i class="icon">
+        </i>
+        <i class="icon">
+        </i>
+      </div>
+    </div>
+    <form method="post" action="/api/ajax/comments/<%-@mod.slug %>/add" class="ui ajax form segment" data-target="#comments-area" enctype="no">
+      <div class="field">
+        <label>Title</label>
+        <div class="ui input">
+          <input type="text" placeholder="Enter a title..." name="name">
+          <div class="ui corner label">
+            <i class="icon asterisk">
+            </i>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Body</label>
+        <div class="ui input">
+          <textarea name="body">
+                                </textarea>
+          <div class="ui corner label">
+            <i class="icon asterisk">
+            </i>
+          </div>
+        </div>
+      </div>
+      <input type="submit" class="ui blue submit button" value="Post comment">
+    </form>
+    <%end %>
+  </div>
+</div>
+
+
 <script data-instant-track>jQuery(document).ready(function () {  $.getJSON('/api/v1/ratings/<%- @mod.slug %>', function(data) {    $('.ui.rating').rating('set rating', data.rating);      $('.ui.rating').rating({        onRate: function(value) {          $.ajax({            url: '/api/v1/ratings/<%- @mod.slug %>',            method: 'POST',            data: {              rate: value            },            success: function() {              $.reloadSection('#rating-count');            }          });        }      });  });      jQuery("abbr.timeago").timeago();        $('.menu .item').tab({history:false});        $('.dropdown').dropdown();    });</script>
