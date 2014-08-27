@@ -13,7 +13,7 @@
     "angular-route": "1.2.16",
     "pagedown-semantic-ui": "*",
     "malihu-custom-scrollbar-plugin": "~3.0.3",
-    "dropzone": "~3.10.2"
+    "dropzone": "https://github.com/pomeh/dropzone.git#patch-1"
   },
   "devDependencies": {
     "angular-mocks": "1.2.16",

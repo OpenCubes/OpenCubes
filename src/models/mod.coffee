@@ -22,7 +22,7 @@ ModSchema = mongoose.Schema(
   category:    String
   stars:       Number
   published:   Boolean
-  screens:     [String]
+  images:     [String]
   cached:
     versions:  [String]
     followers: [String]

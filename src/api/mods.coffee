@@ -228,8 +228,7 @@ exports.lookup = (userid, slug, options) ->
         q.slug = slug
       query = Mod.findOne q
       query.select("name slug body description summary comments logo created
-       updatedAt author category cached.versions
-       cached.versions_count cached.rating cached.rating_count")
+       updatedAt author category cached.versions cached.versions_count images")
       query.populate("author", "name")
       query.populate("comments.author", "username")
       query.lean()
@@ -362,9 +361,10 @@ Edit a mod
 ###
 
 exports.put = (userid, slug, body) ->
+  console.log "screen", body
   deferred = Q.defer()
-  body = _.pick body, ['name', 'body', 'summary', 'category']
   screen = body.screens
+  body = _.pick body, ['name', 'body', 'summary', 'category']
   canThis(userid, "mod", "browse").then (can)->
     # Validate options
     Mod = mongoose.model "Mod"
@@ -375,7 +375,7 @@ exports.put = (userid, slug, body) ->
       if err or not mod
         return handleResult(err, mod, deferred.reject)
       mod = _.assign mod, body
-      if screen then mod.screens.push screen
+      if screen then mod.images.push screen
       mod.save (err, mod) ->
         if err
           return deferred.reject err

@@ -39,7 +39,7 @@ angular.module('opencubesDashboardApp')
           icon: "archive icon"
         ,
           text: "Images"
-          href: "images"
+          href: "edit/images"
           icon: "photo icon"
         ]
         right: [

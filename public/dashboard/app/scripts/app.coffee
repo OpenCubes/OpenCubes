@@ -66,7 +66,7 @@ angular
       .when '/:slug/stats',
         templateUrl: 'views/stats.html'
         controller: 'StatsCtrl'
-      .when '/:slug/images',
+      .when '/:slug/edit/images',
         templateUrl: 'views/images.html'
         controller: 'ImagesCtrl'
       #.otherwise

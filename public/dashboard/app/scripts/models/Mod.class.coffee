@@ -12,7 +12,6 @@ class Mod extends Model
             callback()
         error: callback
   @find: (slug, callback) ->
-    console.log "find"
     if not cache[slug]
       $.ajax
         url: "//#{window.config.host}/api/v1/mods/#{slug}"
@@ -21,11 +20,13 @@ class Mod extends Model
           cache[slug] = new Mod data.result
           console.log "cached", cache[slug]
           callback undefined, cache[slug]
-        
+
         error: callback
     else callback undefined, cache[slug]
-  
-      
+
+  @invalidate: (slug) ->
+    delete cache[slug]
+
   @list: (query, callback) ->
     $.ajax
       url: "//#{window.config.host}/api/v1/mods"
@@ -38,5 +39,3 @@ class Mod extends Model
         console.log array
         callback array
 window.Mod = Mod
-
-    

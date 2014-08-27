@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  InstantClick.init();
+  InstantClick.init(true);
   if (!$.sid || $.sid === '')
     return;
   $.ajax({

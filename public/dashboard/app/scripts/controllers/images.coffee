@@ -1,6 +1,6 @@
 'use strict'
 
-###*
+###
  # @ngdoc function
  # @name opencubesDashboardApp.controller:EditmetaCtrl
  # @description
@@ -19,47 +19,29 @@ angular.module('opencubesDashboardApp')
         .removeClass('blue')
         .addClass('disabled')
         .html('Saved')
-<<<<<<< HEAD
+    loadData = ->
+      Mod.find $routeParams.slug, (err, mod) ->
+        $scope.mod =  mod
+        if not $scope.$$phase
+          $scope.$digest()
     $("div.dropzone").dropzone
-=======
-    ###$("div.dropzone").dropzone
->>>>>>> dropzone
-      success: -> console.log arguments
+      success: (file, result, evt)->
+        $.ajax
+          type: "PUT"
+          url: "//#{config.host}/api/v1/mods/#{$routeParams.slug}"
+          data:
+            screens: result.data.id
+          success: ->
+            Mod.invalidate($routeParams.slug)
+            loadData()
       paramName: "image"
       method: "post"
       maxFilesize: 2
       url: "https://api.imgur.com/3/upload"
       headers:
-        "Content-Type": "multipart/form-data"
-<<<<<<< HEAD
         "Authorization": "Client-ID 7924e825500f106"
-=======
-        "Authorization": "Client-ID 7924e825500f106"###
->>>>>>> dropzone
-    $('#upload').submit ->
-      data = new FormData()
-      data.append 'image', $('input[name=file]').get(0).files[0]
-      $.ajax
-        success: (data) -> console.log data
-        type: "POST"
-        data:
-          image: "http://placehold.it/300x500"
-        url: "https://api.imgur.com/3/upload"
-        headers:
-          Authorization: "Client-ID 7924e825500f106" # Don't forget to put your actual Client-ID here!
-      ###
-      data =  new FormData()
-      data.append 'image', $('input[name=file]').get(0).files[0]
-      xhr = new XMLHttpRequest()
-      xhr.open('POST', 'https://api.imgur.com/3/upload', true);
-      xhr.setRequestHeader('Authorization', "Client-ID 7924e825500f106");
-
-      xhr.send(data);
-      ###
+        "Cache-Control": null
+        "X-Requested-With": null
       false
-
-
-    Mod.find $routeParams.slug, (err, mod) ->
-      $scope.mod =  mod
-      $scope.$digest()
+    loadData()
   ]

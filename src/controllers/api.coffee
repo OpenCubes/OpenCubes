@@ -70,23 +70,6 @@ exports.routes =
       # create: (req, res) ->
 
       edit: (req, res) ->
-        if req.files.image
-          console.log "image", req.files.image
-          imgur.upload(image.path).then (data) ->
-            console.log data
-            qfs.unlink image.path
-          .then ->
-            app.api.mods.put(req.getUserId(), req.params.slug, req.body)
-          .then (status) ->
-            return res.jsonp
-              status: "success",
-              result: status
-          .fail (err) ->
-            console.log err
-            res.jsonp 500, {
-              status: "error"
-              result: {}
-            }
         app.api.mods.put(req.getUserId(), req.params.slug, req.body).then((status) ->
           return res.jsonp
             status: "success",
