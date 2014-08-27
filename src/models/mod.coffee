@@ -125,8 +125,8 @@ ModSchema.pre "save", (next) ->
     doc.name = escapeHtml(doc.name)
   if @isSelected "summary"
     doc.summary = escapeHtml(doc.summary)
-  if @isSelected "body"
-    doc.body = escapeHtml(doc.body)
+  #if @isSelected "body"
+  #  doc.body = escapeHtml(doc.body)
   return next()
 
 

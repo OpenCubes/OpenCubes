@@ -104,7 +104,7 @@
 
 
 <div class="ui active bottom attached tab segment" data-tab="images" id="images">
-  <% for image in @mod.images : %>
+  <% for image in (@mod.images or [])  : %>
   <a href="//i.imgur.com/<%- image %>.jpg" class="lightbox-image" data-lightbox="image">
   <img src="//i.imgur.com/<%- image %>m.jpg" height="200px" />
   </a>

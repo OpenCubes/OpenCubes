@@ -362,7 +362,6 @@ Edit a mod
 ###
 
 exports.put = (userid, slug, body) ->
-  console.log "screen", body
   deferred = Q.defer()
   screen = body.screens
   body = _.pick body, ['name', 'body', 'summary', 'category']
