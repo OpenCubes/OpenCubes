@@ -2,9 +2,6 @@ errors = require("../error")
 qfs = require("q-io/fs")
 fs = require("fs")
 uuid = require("node-uuid")
-imgur = require "imgur"
-
-imgur.setClientId "7924e825500f106"
 ###
 Parses and validates options according regex
 ###
@@ -176,6 +173,12 @@ exports.routes =
 
           return
         remove: (req, res) ->
+          app.api.mods.removeFile(req.user._id, req.params.slug,
+            req.params.name.replace('_', '#'), req.params.uid).then ->
+              res.json 200, status: "success"
+          .fail (err) ->
+            console.log err.stack
+            res.json err
 
     ratings:
       post: (req, res) ->

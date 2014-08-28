@@ -79,6 +79,7 @@ module.exports = (app) ->
   app.server.delete   "/api/v1/versions/:slug/:name",  auth.requiresLogin, app.controllers.api.routes.v1.versions.remove
   app.server.post     "/api/v1/versions/:slug",  app.controllers.api.routes.v1.versions.add
   app.server.get      "/api/v1/versions/:slug/:name/*",  app.controllers.api.routes.v1.versions.files.get
+  app.server.delete   "/api/v1/versions/:slug/:name/:uid",  app.controllers.api.routes.v1.versions.files.remove
   app.server.post     "/api/v1/versions/:slug/:name",  app.bodyParser, app.controllers.api.routes.v1.versions.files.add
 
   app.server.get   "/api/v1/stats/:slug/stars/:type", app.controllers.api.routes.v1.stats.mods.stars

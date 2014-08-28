@@ -6,10 +6,12 @@ errors = error = require "../error"
 _  = require("lodash")
 parse = require "../parser"
 Q = require "q"
+qfs = require("q-io/fs")
 async = require "async"
 Mod = mongoose.model "Mod"
 Star = mongoose.model "Star"
 User = mongoose.model "User"
+mongooseQ = require("mongoose-q")()
 
 exports.check = (slug) ->
   q = Mod.findOne slug: slug
@@ -494,13 +496,66 @@ exports.addFile = ((userid, slug, uid, path, versionName, callback) ->
     q.select("name slug author")
     q.exec (err, mod) ->
       if can is false and mod.author.equals(userid) isnt true
-        callback(error.throwError("Forbidden", "UNAUTHORIZED"))
+        return callback(error.throwError("Forbidden", "UNAUTHORIZED"))
       if err or not mod
-        callback err
+        return callback err
       mod.addFile uid, path, versionName, (err, doc) ->
         errors.handleResult err, doc, callback
 
 ).toPromise @
+
+###
+Remove a file from a mod
+@param userid the current logged user id
+@param slug the slug of the mod
+@param versionName the version of the mod
+@param uid the uid (name) of the files loacted in uploads
+@permission mod:edit
+###
+exports.removeFile = (userid, slug, v, uid) ->
+  deferred = Q.defer()
+  Mod = mongooseQ.model "Mod"
+  Version = mongooseQ.model "Version"
+  can = false
+  canThis(userid, "mod", "edit").then (can_) ->
+    can = can_
+    # Find the mod
+    Mod.findOne(slug: slug).select("name slug author").execQ()
+  .then (mod) ->
+
+    # Perm check
+    if can is false and mod.author.equals(userid) isnt true
+      return callback(error.throwError("Forbidden", "UNAUTHORIZED"))
+
+    # Mod found?
+    if not mod
+      return deferred.reject new Error(404)
+
+    # Find version
+    Version.findOneQ
+      mod: mod._id
+      name: v
+  .then (version) ->
+
+    # Remove file
+    for file in version.files
+      if  file.uid is uid
+        file.remove()
+        return version.saveQ()
+
+    # Nothing was found
+    deferred.reject new Error(404)
+    return
+  .then ->
+
+    # remove file
+    qfs.remove "../uploads/" + uid
+  .then ->
+    deferred.resolve {}
+  .fail deferred.reject
+
+  deferred.promise
+
 
 ###
 Get the file of a mod
