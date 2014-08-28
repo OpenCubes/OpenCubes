@@ -1,4 +1,5 @@
 mongoose = require("mongoose")
+fs = require("fs")
 Schema = mongoose.Schema(
   name: String
   author:
@@ -23,12 +24,10 @@ Schema.post 'remove',  (doc) ->
 
   console.log('`%s` has been removed', doc.name)
   # Remove the files
-  for file of @files
-    fs.unlink "../uploads/"+doc.logo, (err) ->
+  for file in @files
+    fs.unlink "../uploads/"+file.uid, (err) ->
       if err then console.log err
-      else console.log "File #{mod.logo} has been deleted"
-  mongoose.model("Version").find {mod: doc._id}, (err, versions) ->
-    version.remove() for version in versions when version
+      else console.log "File #{file.uid} has been deleted"
 
 Schema.pre 'save', true, (next, done) ->
   next()

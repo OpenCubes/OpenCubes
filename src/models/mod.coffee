@@ -75,12 +75,30 @@ ModSchema.pre 'save', true, (next, done) ->
 ModSchema.post 'remove',  (doc) ->
 
   console.log('`%s` has been removed', doc.name)
+
   # Remove the logo
   fs.unlink "../uploads/"+doc.logo, (err) ->
     if err then console.log err
     else console.log "File #{mod.logo} has been deleted"
+
   mongoose.model("Version").find {mod: doc._id}, (err, versions) ->
     version.remove() for version in versions when version
+
+  mongoose.model("Stat").findAndRemove ref_id: doc._id
+
+  mongoose.model("Rating").findAndRemove mod: mod._id
+
+  mongoose.model("Subscription").update(
+    { },
+    { $pull: { subscriptions: { obj: doc._id} } },
+    { multi: true }
+  )
+  Feed = new mongoose.model("Feed")
+   type: "deletion"
+   date: new Date()
+   author: doc._id
+   mod_name: doc.name
+   link: ""
 
 ModSchema.path("name").required true, "Mod title cannot be blank"
 ModSchema.path("body").required true, "Mod body cannot be blank"

@@ -140,6 +140,12 @@ exports.routes =
       add: (req, res) ->
         app.api.mods.addVersion(req.params.slug, req.body.name).then (r) ->
           res.jsonp r
+      remove: (req, res) ->
+        app.api.mods.removeVersion(req.user._id, req.params.slug,
+            req.params.name.replace("_", "#")).then ->
+              res.json 200, status: "success"
+        .fail (err)->
+          res.json err.message
       files:
         get: (req, res) ->
         add: (req, res) ->

@@ -671,3 +671,32 @@ exports.addVersion = (slug, name) ->
       deferred.resolve v
   )
   deferred.promise
+###
+Removes a version
+
+@param user the current logged user id
+@param slug the slug of the mod
+@param name the version of the mod
+@permission mod:edit
+@return promise
+###
+
+exports.removeVersion = (user, slug, name) ->
+  deferred = Q.defer()
+  Mod = mongoose.model "Mod"
+  Version = mongoose.model "Version"
+  modid = undefined
+  auth = undefined
+  console.log user, slug, name
+  query = Mod.findOne slug: slug
+  query.select("name slug author")
+  query.exec().then (mod) ->
+    modid = mod._id
+    auth = mod.author
+    return Version.findOne({mod: mod._id, name: name}).exec()
+  .then (version) ->
+    if not version then return deferred.reject new Error(404)
+    if not auth.equals user then return deferred.reject new Error(403)
+    version.remove ->
+      deferred.resolve version
+  deferred.promise
