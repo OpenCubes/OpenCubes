@@ -22,7 +22,7 @@ exports.view = (userid, name, callback) ->
     # Validate options
     User = mongoose.model "User"
     Feed = mongoose.model "Feed"
-    User.findOne({username: name}).exec (err, user) ->
+    User.findOne({username: name}).select("role provider username").exec (err, user) ->
       return callback err if err
       return callback errors.throwError("Not found", "NOT_FOUND") if not user
       data = user.toObject()

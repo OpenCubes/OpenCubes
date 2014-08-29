@@ -118,6 +118,12 @@ exports.routes =
 
     users:
       get: (req, res) ->
+        app.api.users.view(req.getUserId(), req.params.name).then((user) ->
+          res.jsonp
+            status: "success"
+            result: user
+        ).fail (err) ->
+          errors.handleHttp err, req, res, "text"
       mods: (req, res) ->
       list: (req, res) ->
         regexpMeta      = /sort_by|skip|limit/
