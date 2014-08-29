@@ -117,6 +117,21 @@ UserSchema.pre "save", (next) ->
     next()
   return
 
+UserSchema.post "remove", (user) ->
+  Feed = mongoose.model "Feed"
+  Rating = mongoose.model "Rating"
+  Subscription = mongoose.model "Subscription"
+  Mod = mongoose.model "Mod"
+  Mod.find author: user._id, (err, mods) ->
+    console.log "mods", mods
+    mod.remove() for mod in mods
+  Feed.remove author: user._id
+  Rating.find user: user._id, (err, ratings) ->
+    if ratings
+      for rating in ratings
+        rating.remove()
+  if user.sid
+    Subscription.remove sid: user.sid, ->
 
 ###
 Methods

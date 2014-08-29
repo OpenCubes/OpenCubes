@@ -1,13 +1,13 @@
 ###
 
-This module is the main part 
+This module is the main part
 for pushing things such as stats, notifications or whatever
 
 ###
 crypto = require "crypto"
 exports.stats =
  mod: {}
-geoip = require('geoip-lite')
+#geoip = require('geoip-lite')
 mongoose = require("mongoose")
 # download mod stat
 
@@ -27,11 +27,9 @@ createHash = (str, salt) ->
 
 exports.stats.mod.download = (ip, mod, version) ->
   # At first we hash and salt the ip
-  lookup = geoip.lookup(ip)
-  country = if lookup then lookup.country else ""
-  mongoose.model("Version").findOne({mod: mod, name: version}, (err, v) ->
-    hash = createHash(ip, mod)
-    mongoose.model("Stat").fetchAndHit(v._id, "Version", "dl", hash, country)
-  )
- 
- 
+  #lookup = geoip.lookup(ip)
+  #country = if lookup then lookup.country else ""
+  #mongoose.model("Version").findOne({mod: mod, name: version}, (err, v) ->
+  #  hash = createHash(ip, mod)
+  #  mongoose.model("Stat").fetchAndHit(v._id, "Version", "dl", hash, country)
+  #)

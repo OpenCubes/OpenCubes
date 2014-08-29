@@ -75,6 +75,7 @@ module.exports = (app) ->
 
   app.server.get     "/api/v1/users", app.controllers.api.routes.v1.users.list
   app.server.get     "/api/v1/users/:name", app.controllers.api.routes.v1.users.get
+  app.server.delete  "/api/v1/users/:name", app.controllers.api.routes.v1.users.delete
 
   app.server.get      "/api/v1/versions/:slug",  app.controllers.api.routes.v1.versions.list
   app.server.get      "/api/v1/versions/:slug/:name",  app.controllers.api.routes.v1.versions.get

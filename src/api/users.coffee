@@ -1,7 +1,7 @@
 perms = require "./permissions"
 validator = require "validator"
 canThis = perms.canThis
-mongoose = require "mongoose"
+mongoose = require("mongoose-q")()
 errors = error = require "../error"
 async = require "async"
 uuid = require "node-uuid"
@@ -15,16 +15,16 @@ Returns an user
 @param name the name of the user
 @permission user:browse
 ###
-exports.view = (userid, name, callback) ->
+exports.view = (userid, name) ->
   deferred = Q.defer()
   canThis(userid, "user", "browse").then (can)->
-    if can is false then return callback (error.throwError "", "UNAUTHORIZED")
+    if can is false then return deferred.reject(error.throwError "", "UNAUTHORIZED")
     # Validate options
     User = mongoose.model "User"
     Feed = mongoose.model "Feed"
     User.findOne({username: name}).select("role provider username").exec (err, user) ->
-      return callback err if err
-      return callback errors.throwError("Not found", "NOT_FOUND") if not user
+      return deferred.reject err if err
+      return deferred.reject errors.throwError("Not found", "NOT_FOUND") if not user
       data = user.toObject()
       data.meta = {}
       Mod = mongoose.model("Mod")
@@ -257,3 +257,24 @@ exports.recoverPassword = (uid, password, cb) ->
     return cb err if err
     doc.password = password
     doc.save()
+###
+Delete an account
+@param userid the current logged user
+@param the target
+@permission user:delete
+@api.error v2
+###
+exports.deleteAccount = (userid, target) ->
+  User = mongoose.model "User"
+  can = false
+  deferred = Q.defer()
+  canThis(userid, "user", "delete").then (_can) ->
+    can = _can
+    User.findOneQ username: target
+  .then (user) ->
+    if not user then return deferred.reject(new NotFoundError())
+    if can or not user._id.equals userid then return deferred.reject(new ForbiddenError())
+    user.removeQ()
+  .then deferred.resolve
+  .fail deferred.reject
+  deferred.promise

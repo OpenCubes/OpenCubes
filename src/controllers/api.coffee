@@ -124,6 +124,15 @@ exports.routes =
             result: user
         ).fail (err) ->
           errors.handleHttp err, req, res, "text"
+      delete: (req, res) ->
+        app.api.users.deleteAccount(req.getUserId(), req.params.name).then (r) ->
+          res.jsonp
+            status: "success"
+            result: r
+        .fail (err) ->
+          console.log err
+          if err.send then return err.send res, res
+
       mods: (req, res) ->
       list: (req, res) ->
         regexpMeta      = /sort_by|skip|limit/
