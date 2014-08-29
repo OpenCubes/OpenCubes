@@ -106,8 +106,9 @@ exports.getTrendingMods = (duration="month", limit=6, marker=Date.now()) ->
 
       # Process results
       for doc in docs
-        doc._id.vote_count = doc.stars
-        trendingMods.push doc._id
+        if doc._id
+          doc._id.vote_count = doc.stars
+          trendingMods.push doc._id
 
       # And we populate the author field
       User.populate trendingMods,
@@ -742,7 +743,6 @@ exports.removeVersion = (user, slug, name) ->
   Version = mongoose.model "Version"
   modid = undefined
   auth = undefined
-  console.log user, slug, name
   query = Mod.findOne slug: slug
   query.select("name slug author")
   query.exec().then (mod) ->
@@ -754,4 +754,30 @@ exports.removeVersion = (user, slug, name) ->
     if not auth.equals user then return deferred.reject new Error(403)
     version.remove ->
       deferred.resolve version
+  deferred.promise
+
+###
+Removes a mod
+@param user the current user
+@param slug the mod's slug
+@return promise
+@api.error v2
+###
+
+exports.removeMod = (user, slug) ->
+  deferred = Q.defer()
+  Mod = mongooseQ.model "Mod"
+  modid = undefined
+  can = false
+  canThis(user, "mod", "browse").then (can$) ->
+    can = can$
+    query = Mod.findOne slug: slug
+    query.execQ()
+  .then (mod) ->
+    if not mod then return deferred.reject new NotFoundError()
+    if not mod.author.equals(user) and not can
+      return deferred.reject(new ForbiddenError())
+    mod.removeQ()
+  .then deferred.resolve
+  .fail console.log
   deferred.promise

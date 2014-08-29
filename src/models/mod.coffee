@@ -84,21 +84,24 @@ ModSchema.post 'remove',  (doc) ->
   mongoose.model("Version").find {mod: doc._id}, (err, versions) ->
     version.remove() for version in versions when version
 
-  mongoose.model("Stat").findAndRemove ref_id: doc._id
+  mongoose.model("Stat").remove ref_id: doc._id
 
-  mongoose.model("Rating").findAndRemove mod: mod._id
+  mongoose.model("Rating").remove mod: doc._id
 
   mongoose.model("Subscription").update(
     { },
     { $pull: { subscriptions: { obj: doc._id} } },
     { multi: true }
   )
-  Feed = new mongoose.model("Feed")
-   type: "deletion"
-   date: new Date()
-   author: doc._id
-   mod_name: doc.name
-   link: ""
+  Feed = mongoose.model("Feed")
+  feed = new Feed
+    type: "deletion"
+    date: new Date()
+    author: doc._id
+    mod_name: doc.name
+    link: ""
+  feed.save()
+  return
 
 ModSchema.path("name").required true, "Mod title cannot be blank"
 ModSchema.path("body").required true, "Mod body cannot be blank"

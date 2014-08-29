@@ -19,6 +19,7 @@ app =
     app.parser = require("./parser.js")
     mongoose = require("mongoose")
     require "colors"
+    require "./utils/HttpError"
     console.log ("  Info - Trying to run server at " + config.ip.bold + " throught " + config.port.bold).yellow
     console.log ("  Info - Loading dependencies took " + (new Date().getTime() - timer + "").bold + " ms").cyan
     mongoose.connect config.db_uri, config.db_opt, (err) ->

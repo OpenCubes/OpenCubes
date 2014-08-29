@@ -109,6 +109,12 @@ exports.routes =
             status: "error"
             result: {}
           }
+      delete: (req, res) ->
+        app.api.mods.removeMod(req.user._id, req.params.slug).then ->
+          res.json status: "success"
+        .fail (err) ->
+          console.log err
+          err.send req, res
 
     users:
       get: (req, res) ->

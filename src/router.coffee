@@ -68,11 +68,12 @@ module.exports = (app) ->
 
   # API
 
-  app.server.get  "/api/v1/mods",      app.controllers.api.routes.v1.mods.list
-  app.server.get  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.get
-  app.server.put  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.edit
+  app.server.get     "/api/v1/mods",      app.controllers.api.routes.v1.mods.list
+  app.server.get     "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.get
+  app.server.put     "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.edit
+  app.server.delete  "/api/v1/mods/:slug", app.controllers.api.routes.v1.mods.delete
 
-  app.server.get  "/api/v1/users", app.controllers.api.routes.v1.users.list
+  app.server.get     "/api/v1/users", app.controllers.api.routes.v1.users.list
 
   app.server.get      "/api/v1/versions/:slug",  app.controllers.api.routes.v1.versions.list
   app.server.get      "/api/v1/versions/:slug/:name",  app.controllers.api.routes.v1.versions.get
@@ -82,8 +83,8 @@ module.exports = (app) ->
   app.server.delete   "/api/v1/versions/:slug/:name/:uid",  app.controllers.api.routes.v1.versions.files.remove
   app.server.post     "/api/v1/versions/:slug/:name",  app.bodyParser, app.controllers.api.routes.v1.versions.files.add
 
-  app.server.get   "/api/v1/stats/:slug/stars/:type", app.controllers.api.routes.v1.stats.mods.stars
-  app.server.get   "/api/v1/stats/:slug/views/:ts", app.controllers.api.routes.v1.stats.mods.views
+  app.server.get      "/api/v1/stats/:slug/stars/:type", app.controllers.api.routes.v1.stats.mods.stars
+  app.server.get      "/api/v1/stats/:slug/views/:ts", app.controllers.api.routes.v1.stats.mods.views
 
   app.server.post     "/api/v1/subscriptions",  app.bodyParser, app.controllers.api.routes.v1.notifications.create
   app.server.post     "/api/v1/subscriptions/:sid",  app.bodyParser, app.controllers.api.routes.v1.notifications.subscribe
@@ -95,7 +96,7 @@ module.exports = (app) ->
   app.server.get      "/api/v1/ratings/:slug", auth.requiresLogin, app.controllers.api.routes.v1.ratings.get
 
 
-  app.server.post  "/api/ajax/comments/:slug/add", auth.requiresLogin, app.bodyParser, app.controllers.comments.addComment
+  app.server.post     "/api/ajax/comments/:slug/add", auth.requiresLogin, app.bodyParser, app.controllers.comments.addComment
 
 
   app.server.get "/api/v1/users/\\$.json", (req, res) ->

@@ -25,9 +25,10 @@ Schema.post 'remove',  (doc) ->
   console.log('`%s` has been removed', doc.name)
   # Remove the files
   for file in @files
-    fs.unlink "../uploads/"+file.uid, (err) ->
-      if err then console.log err
-      else console.log "File #{file.uid} has been deleted"
+    if file and file.uid
+      fs.unlink "#{__dirname.getParent()}/uploads/#{file.uid}", (err) ->
+        if err then console.log err
+        else console.log "File #{file.uid} has been deleted"
 
 Schema.pre 'save', true, (next, done) ->
   next()
