@@ -52,7 +52,7 @@ exports.download = (req, res) ->
     return app.api.mods.getFiles(req.params.id, version)
 
   ).then((files) ->
-    app.api.push.stats.mod.download req.getIp(), mod._id, version
+    app.api.stats.hit mod._id, "download", new Date()
 
     # we create an uid for the file (temp) and then the output
     id = uuid.v4()

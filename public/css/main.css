@@ -289,7 +289,7 @@ div.user-edit-group a {
   margin-top: 20px;
 }
 .ui.list > .item > .content {
-  width: 89.1%;
+  width: 88.1%;
 }
 .header small {
   float: right;
@@ -369,4 +369,17 @@ a {
 .main-desc ul {
   margin-left: 25px;
   margin-bottom: 15px;
+}
+.ui.accurate.star.widget {
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAcklEQVQoz2P4//8/AzmYgWKN6KC4uFgYhGF8UjTqgjBJGqG2GUOxMF6NQAViQCwFxGpAbICk0QAqBpITw6ZRAUkxLqyA1akENCvg9SNQgRYWTVoEA4cSjTDFalAM5uPVCFTABY0/ASSDBKBiXNRNcqRiADBao1Bj6dJdAAAAAElFTkSuQmCC') repeat scroll 0% 0% transparent;
+  height: 14px;
+  width: 69px;
+}
+.ui.accurate.star.widget .highlight {
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAdElEQVQoz2P4//8/AzmYgWKN6KC4uDgBhGF8UjQ+AGGSNEJt+w/FCXg1AhUUAHEDEB8A4g9IGj9AxUByBdg0LkBSjAsvwOpUApoX4PUjUMEFLJouEAwcSjTCFB+AYjAfr0agAgNo/AUgGRQAFTOgbpIjFQMAtcfKBD81ItYAAAAASUVORK5CYII=') repeat scroll left bottom transparent;
+  height: 14px;
+}
+.ui.accurate.star.widget.inline {
+  display: inline-block;
+  margin-left: 5px;
 }

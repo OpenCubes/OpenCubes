@@ -35,6 +35,9 @@ ModSchema = mongoose.Schema(
     rating_count:
       type:    Number
       default: 0
+    stats:
+      views: Number
+      downloads: Number
   comments: [
     author:
       type: Schema.Types.ObjectId

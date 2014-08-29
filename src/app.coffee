@@ -18,6 +18,7 @@ app =
     passport = require("passport")
     app.parser = require("./parser.js")
     mongoose = require("mongoose")
+    humanize = require("humanize-plus")
     require "colors"
     require "./utils/HttpError"
     console.log ("  Info - Trying to run server at " + config.ip.bold + " throught " + config.port.bold).yellow
@@ -72,6 +73,7 @@ app =
         res.locals.luser = req.user
         res.locals.theme = config.theme
         res.locals.parse = app.parser
+        res.locals.humanize = humanize
         req.application = app
         req.getUserId = () ->
           if req.user then return req.user._id

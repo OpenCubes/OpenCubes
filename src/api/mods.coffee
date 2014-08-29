@@ -50,17 +50,20 @@ exports.getPopularMods = (limit=6) ->
 ###
 Get the trending mods for a period defined by a duration and a date,
 that is to say the mods that got the most stars in this period
-@params duration the duration of said period
-(hour, day, week, month, quarter, year)
 @params limit the max amount of mods
-@params marker the marker date.
-i. e.: the point of reference for the period
-e. g.: if duration = "day" and marker=July, 4th 2006
-       then it returns the trending mods on July, 4th 2006
+@api.error v2
 ###
-exports.getTrendingMods = (duration="month", limit=6, marker=Date.now()) ->
+exports.getTrendingMods = (limit=6) ->
   deferred = Q.defer()
-
+  Mod.find()
+  .populate("author")
+  .select("name author cached summary slug created lastUpdated")
+  .sort("-cached.stats.downloads")
+  .limit(limit)
+  .lean()
+  .exec (err, mods) ->
+    return deferred.reject new DatabaseError() if err
+    deferred.resolve mods
   deferred.promise
 
 ###
@@ -484,7 +487,7 @@ exports.removeFile = (userid, slug, v, uid) ->
     # Remove file
     for file in version.files
       console.log file.uid, uid
-      if  file.uid is uid
+      if file.uid is uid
         file.remove()
         return version.saveQ()
 

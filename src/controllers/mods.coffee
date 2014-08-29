@@ -8,6 +8,7 @@ archiver = require("archiver")
 send = require("send");
 Q = require "q"
 errors = error = require "../error"
+humanize = require("humanize-plus")
 
 ###
 Route for viewing mod
@@ -30,7 +31,7 @@ Route for browsing trending mods mod
 exports.browse = (req, res) ->
   Q.all([
     app.api.mods.getLatestMods()
-    #app.api.mods.getTrendingMods()
+    app.api.mods.getTrendingMods()
   ]).then((data) ->
     mods =
       latestMods:   data[0]

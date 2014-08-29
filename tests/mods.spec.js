@@ -131,16 +131,6 @@ describe("mods", function() {
     });
   });
 
-  it("should be able to star the mod", function(done) {
-    api.mods.star(userid, "foo-bar").then(function(mod) {
-      expect(mod.vote_count).toBe(1);
-
-      done();
-    }).fail(function(err) {
-      expect(err).toEqual(undefined);
-      done();
-    });
-  });
 
   it("should able to cart the mod", function(done) {
 
