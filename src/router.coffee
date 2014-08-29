@@ -19,7 +19,7 @@ module.exports = (app) ->
   app.server.post "/mods/:slug/edit/dependencies", auth.requiresLogin, app.bodyParser, app.controllers.deps.add
   app.server.post "/mods/:id/edit/logo/upload", app.bodyParser, app.controllers.mods.setLogo
 
-  app.server.get "/mods/:id/download", app.controllers.files.download
+  app.server.get "/mods/:id/download/:mc/:mod", app.controllers.files.download
   app.server.get "/file/:uid/delete", auth.requiresLogin, app.controllers.files.remove
 
   app.server.get "/star/:slug", auth.requiresLogin, app.controllers.mods.star

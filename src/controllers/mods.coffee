@@ -30,7 +30,7 @@ Route for browsing trending mods mod
 exports.browse = (req, res) ->
   Q.all([
     app.api.mods.getLatestMods()
-    app.api.mods.getTrendingMods()
+    #app.api.mods.getTrendingMods()
   ]).then((data) ->
     mods =
       latestMods:   data[0]

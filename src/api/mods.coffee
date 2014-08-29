@@ -483,6 +483,7 @@ exports.removeFile = (userid, slug, v, uid) ->
 
     # Remove file
     for file in version.files
+      console.log file.uid, uid
       if  file.uid is uid
         file.remove()
         return version.saveQ()

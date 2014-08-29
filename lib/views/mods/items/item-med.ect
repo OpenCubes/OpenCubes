@@ -10,7 +10,7 @@
     </div>
     <img width="64" height="64" class="left floated ui" src="/assets/<%- mod.slug %>.png" alt="Logo">
     <div class="ten wide column content" style="margin-top: 0px;">
-      <a class="header mod-title" href="/mods/<%- mod.slug %>/" data-no-instant><%- mod.name %></a> <small> by <a href="/users/<%- mod.author.username %>"><%- mod.author.username %></a></small>
+      <a class="header mod-title" href="/mods/<%- mod.slug %>/" data-no-instant><%- mod.name %></a> <small> by <a href="/users/<%- if mod.author then mod.author.username %>"><%- if mod.author then mod.author.username %></a></small>
       <div class="description">
         <%- mod.summary%><br />
         <small>updated <abbr class="timeago" title="<%-mod.lastUpdated.toISOString()%>"></abbr> | created

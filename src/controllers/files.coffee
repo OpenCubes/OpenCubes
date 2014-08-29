@@ -44,14 +44,8 @@ module.exports.upload = (req, res) ->
 exports.doDelete = (req, res) ->
 
 exports.download = (req, res) ->
-  unless req.query.v
-    return app.api.mods.getVersions(req.params.id).then((versions) ->
-      res.render "mods/download.ect",
-        versions: versions
-    ).fail (err) ->
-      res.send err
 
-  version = req.query.v.replace("/", "#")
+  version = "#{req.params.mc}##{req.params.mod}"
   mod = undefined
   app.api.mods.lookup(req.getUserId(), req.params.id).then((doc) ->
     mod = doc

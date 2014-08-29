@@ -8,18 +8,18 @@
     <h2 class="ui header">
       <%- @mod.name %>
       <div class="buttons">
-        <div class="ui small dropdown icon labeled button">
-          <i class="download icon">
-          </i>
-          <div class="default text">Download</div>
+        <div class="ui simple small dropdown icon labeled button">
+
+            <i class="download icon">
+            </i>Download <i class="dropdown icon"></i>
           <div class="menu">
             <% if @mod.cached and @mod.cached.versions and @mod.cached.versions.length isnt 0 :%>
             <% for v in @mod.cached.versions.reverse(): %>
-            <div class="item">
+            <a href="/mods/<%- @mod.slug %>/download/<%- v.replace "#", "/" %>"class="item">
               <i class="tag icon">
               </i>
               <%- v %>
-            </div>
+            </a>
             <% end %>
             <%else: %>
             <div class="item">No public version yet</div>
