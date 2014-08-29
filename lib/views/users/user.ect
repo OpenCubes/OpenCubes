@@ -2,7 +2,7 @@
 <h1 class="ui header">
   <img src="/images/user-default.png" width="128" height="128"/>
   <div class="content">
-    <%- @user.username %>  <a href="/users/<%- @user.username %>/edit"> <% if @luser.username is @user.username : %><i id="edit-user-button" class="circular pencil icon"></i><% end %></a>
+    <%- @user.username %>  <a href="/users/<%- @user.username %>/edit"> <% if @luser and @luser.username is @user.username : %><i id="edit-user-button" class="circular pencil icon"></i><% end %></a>
     <div class="user sub header">
       <div class="ui icon header">
         <%- @user.meta.mods %>
@@ -32,12 +32,12 @@
   <% if @user.company: %>
     <div><i class="users icon"></i><%- @user.company %></div>
   <% end %>
-  
+
   <% if @user.public_email: %>
     <div><% if @luser : %>
       <i class="mail icon"></i><a href="mailto:<%- @user.public_email %>"><%- @user.public_email %></a><%else:%>
       <i class="lock icon"></i>Login to view email
-      
+
       <% end %>
      </div>
   <% end %>
@@ -53,10 +53,10 @@
         </div>
         <div class="content">
           <div class="date">
-            <abbr class="timeago" title="<%- event.date.toISOString() %>"> </abbr>  
+            <abbr class="timeago" title="<%- event.date.toISOString() %>"> </abbr>
           </div>
           <div class="summary">
-            <%- @user.username %> <%- event.description %> <a href="<%- event.link or "/" %>"><%- event.mod_name %></a>. 
+            <%- @user.username %> <%- event.description %> <a href="<%- event.link or "/" %>"><%- event.mod_name %></a>.
           </div>
         </div>
       </div>

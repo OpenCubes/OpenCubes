@@ -95,8 +95,9 @@ Show profile
 ###
 exports.show = (req, res) ->
   app.api.users.view(req.getUserId(), req.params.name).then((user) ->
+    console.log user
     res.render "users/user.ect",
-      title: user.name
+      title: user.username
       user: user
     return
   ).fail (err) ->

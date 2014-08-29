@@ -52,10 +52,10 @@ exports.view = (userid, name, callback) ->
 
       ], (err) ->
         if err
-          return Q.reject err
-        Q.resolve data
+          return deferred.reject err
+        deferred.resolve data
 
-    return
+    return deferred.promise
 
 
 exports.itemize = ($criterias, options) ->
