@@ -61,64 +61,6 @@ e. g.: if duration = "day" and marker=July, 4th 2006
 exports.getTrendingMods = (duration="month", limit=6, marker=Date.now()) ->
   deferred = Q.defer()
 
-  # We convert the date marker
-  marker = new Date marker
-
-  # We create a time bucket and get the element
-  bucket = new TimeBucket(marker)
-  element = bucket[duration] or bucket["month"]
-
-  # Then we add it:
-  match = {}
-  match["time_bucket.#{duration}"] =  element
-
-  # Aggregation start!
-  Star.aggregate [
-    {
-      $match: match
-    }
-    {
-      $group:
-        _id: "$mod"
-        stars:
-          "$sum": 1
-    }
-    {
-      $limit : limit
-    }
-    {
-      $sort : {
-        "stars": -1
-        }
-    }
-
-  ], (err, docs) ->
-    if err then return deferred.reject err
-
-    # Then we populate the mods so we get the names and everything
-    Star.populate docs,
-      path: "_id",
-      model: "Mod",
-      select: "slug name summary author created lastUpdated"
-    , (err, docs) ->
-      if err then return deferred.reject err
-      trendingMods = []
-
-      # Process results
-      for doc in docs
-        if doc._id
-          doc._id.vote_count = doc.stars
-          trendingMods.push doc._id
-
-      # And we populate the author field
-      User.populate trendingMods,
-        path: "author"
-        select: "username"
-      , (err, docs) ->
-        if err then return deferred.reject err
-
-        # Resolve
-        deferred.resolve docs
   deferred.promise
 
 ###
@@ -242,8 +184,7 @@ exports.lookup = (userid, slug, options) ->
           return Cart.findById(cartId, (err, cart)->
             if !err and cart
               mod.fillCart cart
-            if user
-              mod.fillStargazer userid
+
             if err
               return deferred.reject err
             deferred.resolve mod
@@ -421,6 +362,8 @@ Star a mod
 ###
 
 exports.star = (userid, slug, date=Date.now(), dont_check=false) ->
+  console.log("STARS ARE DEPRECATED. ABORTING".red)
+  return
   deferred = Q.defer()
   canThis(userid, "mod", "star").then (can)->
     if can is false
